@@ -76,7 +76,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .navmenu a:active { background: #f2f2f7; }
 
 /* Tools menu + sub-pages */
-#view-menu, #view-coord { min-height: 100vh; background: #fff; }
+#view-menu, #view-coord, #view-settings, #view-origin, #view-data { min-height: 100vh; background: #fff; }
 #view-fullmap { background: #fff; }
 #fullmap-map { height: 100vh; width: 100%; cursor: pointer;
                touch-action: manipulation !important; }
@@ -97,6 +97,22 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .settings-version { font-size: 11px; color: #aaa; margin-top: 20px; }
 .settings-select { font-size: 16px; padding: 9px 10px; border: 1px solid #ccc; border-radius: 8px;
                     width: 100%; background: #fff; color: #1a1a1a; }
+
+/* Hide-my-finds toggle (icon-only label: smiley crossed out by an overlay slash) */
+.hidefound-icon { position: relative; display: inline-flex; align-items: center; justify-content: center;
+                   width: 15px; height: 15px; font-size: 13px; line-height: 1; }
+.hidefound-icon::after { content: ''; position: absolute; width: 150%; height: 1.6px;
+                          background: #ff3b30; top: 50%; left: -25%; transform: rotate(-40deg);
+                          border-radius: 1px; }
+
+/* Settings → Data sub-page */
+.data-status { font-size: 15px; color: #333; line-height: 1.7; margin-bottom: 10px; }
+.data-load-btn { display: block; background: #007aff; color: #fff; border: none; border-radius: 8px;
+                  padding: 10px 14px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.data-load-btn:active { background: #005ecb; }
+.data-msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
+.data-msg.err { color: #ff3b30; }
+.data-msg.ok { color: #248a3d; }
 
 /* Coordinate converter (ported from coordinate-converter.html) */
 #view-coord { background: #000; color: #fff; color-scheme: dark; }
@@ -143,7 +159,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
                   font-size: 12px; font-weight: 700; color: #fff; }
 </style>
-<meta name="build" content="2026-07-10 17:36 UTC · a64d406">
+<meta name="build" content="2026-07-10 20:37 UTC · 7183807">
 </head>
 <body>
 <div id="view-search">
@@ -158,6 +174,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   <div class="statusrow">
     <button type="button" id="menuBtn" aria-label="Menüü">...</button>
     <div id="count"></div>
+    <label class="ownertoggle" id="hideFoundWrap" style="display:none">
+      <input type="checkbox" id="hideFoundChk">
+      <span class="hidefound-icon" aria-hidden="true">🙂</span>
+    </label>
     <select id="sortSel">
       <option value="id" selected>ID järgi</option>
       <option value="name">Nime järgi</option>
@@ -186,12 +206,39 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     <button type="button" class="backbtn" id="settingsBackBtn" aria-label="Tagasi">‹</button>
     <div class="viewtitle">Seaded</div>
   </div>
+  <div id="settingsList">
+    <button type="button" class="menuitem" id="originMenuItem">Kauguse arvutamine</button>
+    <button type="button" class="menuitem" id="dataMenuItem">Andmed</button>
+  </div>
+  <div class="settings-body">
+    <div class="settings-version">2026-07-10 20:37 UTC · 7183807</div>
+  </div>
+</div>
+
+<div id="view-origin" style="display:none">
+  <div class="viewheader">
+    <button type="button" class="backbtn" id="originBackBtn" aria-label="Tagasi">‹</button>
+    <div class="viewtitle">Kauguse arvutamine</div>
+  </div>
   <div class="settings-body">
     <label class="settings-label" for="originSel">Arvuta kaugus asukohast:</label>
     <select id="originSel" class="settings-select">
       <option value="current" selected>Praegune asukoht</option>
     </select>
-    <div class="settings-version">2026-07-10 17:36 UTC · a64d406</div>
+  </div>
+</div>
+
+<div id="view-data" style="display:none">
+  <div class="viewheader">
+    <button type="button" class="backbtn" id="dataBackBtn" aria-label="Tagasi">‹</button>
+    <div class="viewtitle">Andmed</div>
+  </div>
+  <div class="settings-body">
+    <label class="settings-label">Minu leiud</label>
+    <div id="dataStatus" class="data-status"></div>
+    <input type="file" id="dataFileInput" accept="application/json,.json" style="display:none">
+    <button type="button" class="data-load-btn" id="dataLoadBtn">Laadi JSON fail</button>
+    <div id="dataMsg" class="data-msg"></div>
   </div>
 </div>
 
@@ -359,6 +406,8 @@ ensureLeaflet();
 const qEl = document.getElementById('q');
 const ownerChk = document.getElementById('ownerChk');
 const regionChk = document.getElementById('regionChk');
+const hideFoundWrap = document.getElementById('hideFoundWrap');
+const hideFoundChk = document.getElementById('hideFoundChk');
 const sortSel = document.getElementById('sortSel');
 const distOpt = document.getElementById('distOpt');
 const sortDirBtn = document.getElementById('sortDirBtn');
@@ -374,6 +423,94 @@ const CACHES_BY_NAME = CACHES.slice().sort((a, b) => a.n.localeCompare(b.n, 'et'
 let CACHES_BY_DISTANCE = null;
 let userLat = null;
 let userLon = null;
+
+// ─── Found-caches storage ───────────────────────────────────────────────
+// User-specific "which caches have I found" data never ships with the page
+// (it's not part of CACHES), so it lives in local storage instead. Kept
+// behind this interface so the backend (e.g. a SQLite file) can change later
+// without touching the rest of the app.
+const FindsStore = (function() {
+  const KEY = 'gcFindsV1';
+  function load() {
+    let raw;
+    try {
+      raw = localStorage.getItem(KEY);
+    } catch (e) {
+      return null;
+    }
+    if (!raw) return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || !parsed.finds) return null;
+      return parsed;
+    } catch (e) {
+      return null;
+    }
+  }
+  function save(finds) {
+    localStorage.setItem(KEY, JSON.stringify({ finds: finds, uploadedAt: new Date().toISOString() }));
+  }
+  function getFinds() {
+    const rec = load();
+    return rec ? rec.finds : {};
+  }
+  function getCount() {
+    return Object.keys(getFinds()).length;
+  }
+  function getUploadedAt() {
+    const rec = load();
+    return rec ? rec.uploadedAt : null;
+  }
+  function hasData() {
+    return getCount() > 0;
+  }
+  return { save, getFinds, getCount, getUploadedAt, hasData };
+})();
+
+// Whether the "hide my finds" checkbox itself was last checked/unchecked —
+// separate from the finds data, so it survives independently of it.
+const HideFindsPref = (function() {
+  const KEY = 'gcHideFindsPrefV1';
+  function get() {
+    let v;
+    try {
+      v = localStorage.getItem(KEY);
+    } catch (e) {
+      return true;
+    }
+    return v === null ? true : v === '1';
+  }
+  function set(checked) {
+    localStorage.setItem(KEY, checked ? '1' : '0');
+  }
+  return { get, set };
+})();
+
+let FOUND_SET = new Set();
+let FOUND_IN_ESTONIA_COUNT = 0;
+function rebuildFoundSet() {
+  FOUND_SET = new Set(Object.keys(FindsStore.getFinds()));
+  FOUND_IN_ESTONIA_COUNT = 0;
+  for (let i = 0; i < CACHES.length; i++) {
+    if (FOUND_SET.has(CACHES[i].g)) FOUND_IN_ESTONIA_COUNT++;
+  }
+}
+rebuildFoundSet();
+
+function isFound(c) {
+  return !!c.g && FOUND_SET.has(c.g);
+}
+
+function hideFoundActive() {
+  return hideFoundWrap.style.display !== 'none' && hideFoundChk.checked;
+}
+
+function refreshHideFoundVisibility() {
+  const has = FindsStore.hasData();
+  hideFoundWrap.style.display = has ? '' : 'none';
+  hideFoundChk.checked = has && HideFindsPref.get();
+}
+refreshHideFoundVisibility();
 
 const OWNER_COUNTS = {};
 for (let i = 0; i < CACHES.length; i++) {
@@ -558,14 +695,18 @@ function render(q) {
   openCacheMaps = [];
   const searchOwner = ownerChk.checked;
   const searchRegion = regionChk.checked;
+  const hideFound = hideFoundActive();
   const source = sortSel.value === 'name' ? CACHES_BY_NAME
     : (sortSel.value === 'distance' && CACHES_BY_DISTANCE) ? CACHES_BY_DISTANCE
     : CACHES;
-  const results = q ? source.filter(c => matches(c, q, searchOwner, searchRegion)) : source.slice();
+  let results = q ? source.filter(c => matches(c, q, searchOwner, searchRegion)) : source.slice();
+  if (hideFound) results = results.filter(c => !isFound(c));
   if (sortDir === 'desc') results.reverse();
 
+  const totalCount = hideFound ? CACHES.length - FOUND_IN_ESTONIA_COUNT : CACHES.length;
+
   if (!results.length) {
-    countEl.textContent = '0 / ' + CACHES.length;
+    countEl.textContent = '0 / ' + totalCount;
     listEl.innerHTML = '<div id="empty">Tulemusi ei leitud</div>';
     return;
   }
@@ -575,7 +716,7 @@ function render(q) {
 
   countEl.textContent = capped
     ? shown.length + ' / ' + results.length + ' — täpsusta otsingut'
-    : (q ? results.length + ' / ' + CACHES.length : CACHES.length + ' peitu');
+    : (q ? results.length + ' / ' + totalCount : totalCount + ' peitu');
 
   const rows = [];
   for (let i = 0; i < shown.length; i++) {
@@ -734,6 +875,10 @@ qEl.addEventListener('input', function() {
 });
 ownerChk.addEventListener('change', function() { render(qEl.value.trim()); });
 regionChk.addEventListener('change', function() { render(qEl.value.trim()); });
+hideFoundChk.addEventListener('change', function() {
+  HideFindsPref.set(hideFoundChk.checked);
+  render(qEl.value.trim());
+});
 sortSel.addEventListener('change', function() {
   userChangedSort = true;
   sortDir = DEFAULT_SORT_DIR[sortSel.value];
@@ -758,9 +903,12 @@ function showView(name) {
   document.getElementById('view-coord').style.display = name === 'coord' ? '' : 'none';
   document.getElementById('view-proj').style.display = name === 'proj' ? '' : 'none';
   document.getElementById('view-settings').style.display = name === 'settings' ? '' : 'none';
+  document.getElementById('view-origin').style.display = name === 'origin' ? '' : 'none';
+  document.getElementById('view-data').style.display = name === 'data' ? '' : 'none';
   document.getElementById('view-fullmap').style.display = name === 'fullmap' ? '' : 'none';
   if (name === 'coord' && leafletLoaded) ccInitMap();
   if (name === 'proj' && leafletLoaded) pjInitMap();
+  if (name === 'data') refreshDataView();
 }
 
 document.getElementById('menuBtn').addEventListener('click', function() { showView('menu'); });
@@ -771,6 +919,79 @@ document.getElementById('projMenuItem').addEventListener('click', function() { s
 document.getElementById('projBackBtn').addEventListener('click', function() { showView('search'); });
 document.getElementById('settingsMenuItem').addEventListener('click', function() { showView('settings'); });
 document.getElementById('settingsBackBtn').addEventListener('click', function() { showView('search'); });
+document.getElementById('originMenuItem').addEventListener('click', function() { showView('origin'); });
+document.getElementById('originBackBtn').addEventListener('click', function() { showView('settings'); });
+document.getElementById('dataMenuItem').addEventListener('click', function() { showView('data'); });
+document.getElementById('dataBackBtn').addEventListener('click', function() { showView('settings'); });
+
+// ─── Settings → Data (found-caches JSON upload) ─────────────────────────
+const dataStatusEl = document.getElementById('dataStatus');
+const dataMsgEl = document.getElementById('dataMsg');
+const dataFileInput = document.getElementById('dataFileInput');
+const dataLoadBtn = document.getElementById('dataLoadBtn');
+
+function formatUploadedAt(iso) {
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2, '0');
+  return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() +
+    ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function refreshDataView() {
+  const count = FindsStore.getCount();
+  const uploadedAt = FindsStore.getUploadedAt();
+  dataStatusEl.innerHTML = (count ? '<div>' + count + ' leidu</div>' : '<div>Andmeid ei ole</div>') +
+    (uploadedAt ? '<div>Laaditud: ' + formatUploadedAt(uploadedAt) + '</div>' : '');
+  dataMsgEl.textContent = '';
+  dataMsgEl.className = 'data-msg';
+}
+
+// Expected shape: { "GC-code": [foundDateString, logText], ... }
+function isValidFindsShape(obj) {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+  for (const key in obj) {
+    const v = obj[key];
+    if (!Array.isArray(v) || v.length !== 2) return false;
+    if (typeof v[0] !== 'string' || typeof v[1] !== 'string') return false;
+  }
+  return true;
+}
+
+dataLoadBtn.addEventListener('click', function() { dataFileInput.click(); });
+
+dataFileInput.addEventListener('change', function() {
+  const file = dataFileInput.files[0];
+  dataFileInput.value = '';
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function() {
+    let parsed;
+    try {
+      parsed = JSON.parse(reader.result);
+    } catch (e) {
+      dataMsgEl.textContent = 'Fail ei ole korrektne JSON';
+      dataMsgEl.className = 'data-msg err';
+      return;
+    }
+    if (!isValidFindsShape(parsed)) {
+      dataMsgEl.textContent = 'Fail ei vasta oodatud vormingule';
+      dataMsgEl.className = 'data-msg err';
+      return;
+    }
+    FindsStore.save(parsed);
+    rebuildFoundSet();
+    refreshHideFoundVisibility();
+    refreshDataView();
+    dataMsgEl.textContent = 'Andmed laaditud (' + Object.keys(parsed).length + ' leidu)';
+    dataMsgEl.className = 'data-msg ok';
+    render(qEl.value.trim());
+  };
+  reader.onerror = function() {
+    dataMsgEl.textContent = 'Faili lugemine ebaõnnestus';
+    dataMsgEl.className = 'data-msg err';
+  };
+  reader.readAsText(file);
+});
 
 // ─── Coordinate converter map (ported from coordinate-converter.html) ──────
 function ccInitMap() {
