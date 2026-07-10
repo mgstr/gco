@@ -21,7 +21,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 #menuBtn { font-size: 15px; padding: 1px 8px; border: 1px solid #ccc; border-radius: 6px;
            background: #fff; color: #555; flex-shrink: 0; line-height: 1.4; cursor: pointer; }
 #count { font-size: 13px; color: #888; padding-left: 2px; flex: 1; min-width: 0;
-         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+         -webkit-touch-callout: none; user-select: none; touch-action: manipulation !important; }
 #sortSel { font-size: 13px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 6px;
            color: #555; flex-shrink: 0; max-width: 34vw; }
 #sortDirBtn { font-size: 15px; padding: 1px 8px; border: 1px solid #ccc; border-radius: 6px;
@@ -58,6 +59,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             overflow: hidden; background: #e5e5e5; cursor: pointer;
             touch-action: manipulation !important; }
 #empty { text-align: center; padding: 40px 20px; color: #888; font-size: 15px; }
+#mapview { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; background: #e5e5e5; }
+#map-canvas { width: 100%; height: 100%; touch-action: manipulation !important; }
+.cache-pin-wrap { position: relative; width: 22px; height: 30px; }
+.cache-pin { position: absolute; left: 2px; top: 0; width: 18px; height: 18px;
+             border: 2px solid #fff; border-radius: 50% 50% 50% 0;
+             transform: rotate(-45deg); box-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+.cache-pin.green { background: #34c759; }
+.cache-pin.black { background: #1c1c1e; }
+.cache-pin.orange { background: #ff9500; }
+.cache-pin.yellow { background: #ffd60a; }
+.user-location-dot { width: 14px; height: 14px; border-radius: 50%;
+                      background: #007aff; border: 2px solid #fff;
+                      box-shadow: 0 0 4px rgba(0,0,0,0.4); }
 
 /* Nav buttons (Drive / Map) + long-press alternative-apps menu */
 .navbtn { display: inline-flex; align-items: center; gap: 3px; vertical-align: middle;
@@ -159,7 +173,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
                   font-size: 12px; font-weight: 700; color: #fff; }
 </style>
-<meta name="build" content="2026-07-10 20:37 UTC · 7183807">
+<meta name="build" content="2026-07-10 23:25 UTC · baeba9d">
 </head>
 <body>
 <div id="view-search">
@@ -187,6 +201,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   </div>
 </div>
 <div id="list"></div>
+<div id="mapview" style="display:none"><div id="map-canvas"></div></div>
 </div>
 
 <div id="view-menu" style="display:none">
@@ -211,7 +226,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     <button type="button" class="menuitem" id="dataMenuItem">Andmed</button>
   </div>
   <div class="settings-body">
-    <div class="settings-version">2026-07-10 20:37 UTC · 7183807</div>
+    <div class="settings-version">2026-07-10 23:25 UTC · baeba9d</div>
   </div>
 </div>
 
@@ -369,6 +384,16 @@ let openCacheMaps = [];
 let previousView = 'search';
 let fullMap = null;
 let fullMapMarker = null;
+let searchMap = null;
+let searchMapMarkers = [];
+let mapViewActive = false;
+let lastShown = [];
+let customOriginLat = null;
+let customOriginLon = null;
+let originMarker = null;
+let lastMapClickAt = 0;
+let cachePinIcons = null;
+let userLocationMarker = null;
 const ESTONIA_BOUNDS = [[57.5, 21.5], [59.7, 28.3]]; // mainland + islands, incl. Narva/Saaremaa/Hiiumaa
 const FULLMAP_ZOOM = 17; // close enough for on-the-spot cache finding
 
@@ -394,6 +419,7 @@ function ensureLeaflet() {
     }
     pendingCacheMapDivs.forEach(ensureCacheMap);
     pendingCacheMapDivs = [];
+    if (mapViewActive) { ensureSearchMap(); updateMapMarkers(lastShown); }
   };
   script.onerror = function() {
     leafletLoading = false;
@@ -414,6 +440,9 @@ const sortDirBtn = document.getElementById('sortDirBtn');
 const originSel = document.getElementById('originSel');
 const listEl = document.getElementById('list');
 const countEl = document.getElementById('count');
+const topEl = document.getElementById('top');
+const mapviewEl = document.getElementById('mapview');
+const mapCanvasEl = document.getElementById('map-canvas');
 // Per-column default sort direction: newest first for ID, A-Z for name, nearest first for distance.
 const DEFAULT_SORT_DIR = { id: 'desc', name: 'asc', distance: 'asc' };
 let sortDir = DEFAULT_SORT_DIR[sortSel.value];
@@ -523,6 +552,31 @@ for (let i = 0; i < CACHES.length; i++) {
 const SIZE_NAMES = { 0: 'Muu', 1: 'Mikro', 2: 'Väike', 3: 'Normaalne', 4: 'Suur' };
 const SIZE_LETTERS = { 0: 'o', 1: 'm', 2: 'v', 3: 'n', 4: 'l' };
 
+// Map-view pin color by cache type (c.ty holds the Estonian type_name — see
+// TYPE_NAME_TO_KEY in build_search.py). Only the three most common types get
+// their own color; everything else (virtual, wherigo, letterbox, reverse,
+// webcam) shares the "other" color.
+function cachePinColor(ty) {
+  if (ty === 'Tavaline') return 'green';   // traditional
+  if (ty === 'Mõistatus') return 'black';  // mystery
+  if (ty === 'Multi') return 'orange';     // multi-cache
+  return 'yellow';                         // everything else
+}
+
+function getCachePinIcon(color) {
+  if (!cachePinIcons) {
+    cachePinIcons = {};
+    ['green', 'black', 'orange', 'yellow'].forEach(function(c) {
+      cachePinIcons[c] = L.divIcon({
+        className: '',
+        html: '<div class="cache-pin-wrap"><div class="cache-pin ' + c + '"></div></div>',
+        iconSize: [22, 30], iconAnchor: [11, 30]
+      });
+    });
+  }
+  return cachePinIcons[color];
+}
+
 function haversineKm(lat1, lon1, lat2, lon2) {
   const toRad = deg => deg * Math.PI / 180;
   const R = 6371;
@@ -539,24 +593,47 @@ function formatDistance(km) {
   return Math.round(km) + ' km';
 }
 
-// Only 'current' exists today, but the origin is a user-facing setting
-// (see Settings view), so distance should honor it rather than assuming
-// userLat/userLon always applies.
+// The origin is a user-facing setting (see Settings → "Kauguse arvutamine"):
+// either the device's current location, or a point picked by double-clicking
+// the search map (see "Map view" — setMapOrigin() adds/selects the 'map'
+// option here). Distance and distance-sort both read whichever is selected.
+function currentOrigin() {
+  if (originSel.value === 'map' && customOriginLat != null) {
+    return { lat: customOriginLat, lon: customOriginLon };
+  }
+  if (originSel.value === 'current' && userLat != null) {
+    return { lat: userLat, lon: userLon };
+  }
+  return null;
+}
+
 function distanceFor(c) {
-  if (originSel.value !== 'current' || userLat == null || c.lat == null) return null;
-  return formatDistance(haversineKm(userLat, userLon, c.lat, c.lon));
+  const origin = currentOrigin();
+  if (!origin || c.lat == null) return null;
+  return formatDistance(haversineKm(origin.lat, origin.lon, c.lat, c.lon));
+}
+
+function rebuildDistanceSort() {
+  const origin = currentOrigin();
+  if (!origin) {
+    CACHES_BY_DISTANCE = null;
+    distOpt.disabled = true;
+    return;
+  }
+  CACHES_BY_DISTANCE = CACHES.slice().sort((a, b) => {
+    const da = a.lat != null ? haversineKm(origin.lat, origin.lon, a.lat, a.lon) : Infinity;
+    const db = b.lat != null ? haversineKm(origin.lat, origin.lon, b.lat, b.lon) : Infinity;
+    return da - db;
+  });
+  distOpt.disabled = false;
 }
 
 if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(function(pos) {
     userLat = pos.coords.latitude;
     userLon = pos.coords.longitude;
-    CACHES_BY_DISTANCE = CACHES.slice().sort((a, b) => {
-      const da = a.lat != null ? haversineKm(userLat, userLon, a.lat, a.lon) : Infinity;
-      const db = b.lat != null ? haversineKm(userLat, userLon, b.lat, b.lon) : Infinity;
-      return da - db;
-    });
-    distOpt.disabled = false;
+    rebuildDistanceSort();
+    updateUserLocationMarker();
     if (!userChangedSort) {
       sortSel.value = 'distance';
       sortDir = DEFAULT_SORT_DIR.distance;
@@ -631,15 +708,19 @@ const navMenuEl = document.getElementById('navMenu');
 const navBackdropEl = document.getElementById('navBackdrop');
 
 function openNavMenu(btn, alts) {
+  const rect = btn.getBoundingClientRect();
+  openNavMenuAt(rect.left + rect.width / 2, rect.bottom, alts);
+}
+
+function openNavMenuAt(x, y, alts) {
   navMenuEl.innerHTML = alts.map(function(a) {
     return '<a href="' + esc(a.url) + '" target="_blank">' + esc(a.label) + '</a>';
   }).join('');
-  const rect = btn.getBoundingClientRect();
   const menuW = 200;
-  let left = rect.left + rect.width / 2 - menuW / 2;
+  let left = x - menuW / 2;
   left = Math.max(8, Math.min(left, window.innerWidth - menuW - 8));
   navMenuEl.style.left = left + 'px';
-  navMenuEl.style.top = (rect.bottom + 8) + 'px';
+  navMenuEl.style.top = (y + 8) + 'px';
   navMenuEl.style.width = menuW + 'px';
   navBackdropEl.classList.add('visible');
   navMenuEl.classList.add('visible');
@@ -705,18 +786,23 @@ function render(q) {
 
   const totalCount = hideFound ? CACHES.length - FOUND_IN_ESTONIA_COUNT : CACHES.length;
 
+  const mapPrefix = mapViewActive ? '🗺️ ' : '';
+
   if (!results.length) {
-    countEl.textContent = '0 / ' + totalCount;
+    countEl.textContent = mapPrefix + '0 / ' + totalCount;
     listEl.innerHTML = '<div id="empty">Tulemusi ei leitud</div>';
+    lastShown = [];
+    if (mapViewActive) updateMapMarkers(lastShown);
     return;
   }
 
   const capped = results.length > RENDER_CAP;
   const shown = capped ? results.slice(0, RENDER_CAP) : results;
+  lastShown = shown;
 
-  countEl.textContent = capped
+  countEl.textContent = mapPrefix + (capped
     ? shown.length + ' / ' + results.length + ' — täpsusta otsingut'
-    : (q ? results.length + ' / ' + totalCount : totalCount + ' peitu');
+    : (q ? results.length + ' / ' + totalCount : totalCount + ' peitu'));
 
   const rows = [];
   for (let i = 0; i < shown.length; i++) {
@@ -778,6 +864,7 @@ function render(q) {
   }
   listEl.innerHTML = rows.join('');
   listEl.querySelectorAll('.navbtn').forEach(bindNavButton);
+  if (mapViewActive) updateMapMarkers(lastShown);
 }
 
 function toggle(row) {
@@ -851,6 +938,142 @@ function openFullMap(lat, lon) {
   fullMapMarker.setLatLng([lat, lon]);
 }
 
+// ─── Map view (all currently matching results on one map) ─────────────────
+// #mapview sits below the sticky #top bar rather than as its own full-screen
+// view, so the search box/filters/sort stay visible and usable while it's
+// showing — its top offset is set to #top's rendered height instead of a
+// fixed value since that height varies (owner/region toggles, wrapping).
+function positionMapView() {
+  mapviewEl.style.top = topEl.offsetHeight + 'px';
+}
+
+function ensureSearchMap() {
+  if (searchMap) { searchMap.invalidateSize(); return; }
+  if (!leafletLoaded) return; // ensureLeaflet's onload finishes the init once it's ready
+  searchMap = L.map(mapCanvasEl, { doubleClickZoom: false });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(searchMap);
+  searchMap.fitBounds(ESTONIA_BOUNDS);
+  // Same click-timing double-tap detection as bindDoubleTap (see there for why
+  // Leaflet's own 'dblclick' isn't used) — but bound to the map itself, since
+  // we need the actual click's latlng, not just "was the map double-tapped".
+  searchMap.on('click', function(e) {
+    const now = Date.now();
+    if (now - lastMapClickAt < 400) {
+      lastMapClickAt = 0;
+      setMapOrigin(e.latlng.lat, e.latlng.lng);
+    } else {
+      lastMapClickAt = now;
+    }
+  });
+  updateUserLocationMarker(); // geolocation may have already resolved before the map existed
+}
+
+// Small blue dot for the device's actual current position — distinct from
+// `originMarker` above, which marks wherever distances are being calculated
+// from (the default 'current' origin has no marker of its own; this dot is
+// the only on-map indicator of where the device physically is).
+function updateUserLocationMarker() {
+  if (!searchMap || userLat == null) return;
+  if (!userLocationMarker) {
+    // A plain L.marker + divIcon (like the cache pins), not L.circleMarker —
+    // circleMarker draws into Leaflet's overlayPane, which sits *below* the
+    // markerPane cache pins live in, so it would end up hidden under any
+    // overlapping pin. zIndexOffset keeps it on top of other markers too,
+    // regardless of Leaflet's default latitude-based marker stacking.
+    const dotIcon = L.divIcon({
+      className: '', html: '<div class="user-location-dot"></div>',
+      iconSize: [14, 14], iconAnchor: [7, 7]
+    });
+    userLocationMarker = L.marker([userLat, userLon], { icon: dotIcon, zIndexOffset: 1000 }).addTo(searchMap);
+    userLocationMarker.bindTooltip('Praegune asukoht');
+  } else {
+    userLocationMarker.setLatLng([userLat, userLon]);
+  }
+}
+
+// Double-clicking the map picks a new distance-calculation origin, reflected
+// in the Settings → "Kauguse arvutamine" selector as a 'map' option labeled
+// with the clicked coordinates. Uses Leaflet's default (blue) marker icon,
+// left un-styled so it stays visually distinct from the colored cache pins.
+function setMapOrigin(lat, lon) {
+  customOriginLat = lat;
+  customOriginLon = lon;
+  if (!originMarker) {
+    originMarker = L.marker([lat, lon]).addTo(searchMap);
+    originMarker.bindTooltip('Lähtepunkt');
+  } else {
+    originMarker.setLatLng([lat, lon]);
+  }
+  let opt = document.getElementById('originMapOpt');
+  if (!opt) {
+    opt = document.createElement('option');
+    opt.id = 'originMapOpt';
+    opt.value = 'map';
+    originSel.appendChild(opt);
+  }
+  opt.textContent = ccFmtDMM(lat, lon);
+  originSel.value = 'map';
+  rebuildDistanceSort();
+  render(qEl.value.trim());
+}
+
+function updateMapMarkers(list) {
+  if (!searchMap) return;
+  searchMapMarkers.forEach(function(m) { m.remove(); });
+  searchMapMarkers = [];
+  const pts = [];
+  list.forEach(function(c) {
+    if (c.lat == null) return;
+    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(cachePinColor(c.ty)) }).addTo(searchMap);
+    marker.bindTooltip(c.n);
+    marker.on('click', function(e) {
+      const alts = [];
+      if (c.g) alts.push({ label: 'Ava GC.com', url: 'https://coord.info/' + c.g });
+      if (c.gp) alts.push({ label: 'Ava Geopeitus', url: 'https://www.geopeitus.ee/aare/' + c.gp });
+      if (!alts.length) return;
+      const pt = searchMap.latLngToContainerPoint(e.latlng);
+      const mapRect = mapCanvasEl.getBoundingClientRect();
+      openNavMenuAt(mapRect.left + pt.x, mapRect.top + pt.y, alts);
+    });
+    searchMapMarkers.push(marker);
+    pts.push([c.lat, c.lon]);
+  });
+  if (pts.length) {
+    searchMap.fitBounds(pts, { padding: [30, 30], maxZoom: 16 });
+  } else {
+    searchMap.fitBounds(ESTONIA_BOUNDS);
+  }
+}
+
+function showMapView() {
+  mapViewActive = true;
+  listEl.style.display = 'none';
+  mapviewEl.style.display = '';
+  positionMapView();
+  ensureSearchMap();
+  render(qEl.value.trim());
+}
+
+function showListView() {
+  mapViewActive = false;
+  mapviewEl.style.display = 'none';
+  listEl.style.display = '';
+  render(qEl.value.trim());
+}
+
+bindDoubleTap(countEl, function() {
+  if (mapViewActive) showListView(); else showMapView();
+});
+
+window.addEventListener('resize', function() {
+  if (!mapViewActive) return;
+  positionMapView();
+  if (searchMap) searchMap.invalidateSize();
+});
+
 function copyCoords(btn) {
   navigator.clipboard.writeText(btn.dataset.coords).then(function() {
     const orig = btn.textContent;
@@ -885,7 +1108,7 @@ sortSel.addEventListener('change', function() {
   updateSortDirBtn();
   render(qEl.value.trim());
 });
-originSel.addEventListener('change', function() { render(qEl.value.trim()); });
+originSel.addEventListener('change', function() { rebuildDistanceSort(); render(qEl.value.trim()); });
 sortDirBtn.addEventListener('click', function() {
   userChangedSort = true;
   sortDir = sortDir === 'desc' ? 'asc' : 'desc';
