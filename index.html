@@ -94,6 +94,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .settings-body { padding: 16px; }
 .settings-label { display: block; font-size: 13px; font-weight: 600; color: #555;
                    margin-bottom: 8px; }
+.settings-version { font-size: 11px; color: #aaa; margin-top: 20px; }
 .settings-select { font-size: 16px; padding: 9px 10px; border: 1px solid #ccc; border-radius: 8px;
                     width: 100%; background: #fff; color: #1a1a1a; }
 
@@ -124,7 +125,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .cc-status { font-size: 13px; margin-top: 8px; min-height: 18px; color: #636366; }
 .cc-status.ok { color: #30d158; }
 .cc-status.err { color: #ff453a; }
+
+/* Coordinates projection (angle + distance from a start point) */
+#view-proj { background: #000; color: #fff; color-scheme: dark; }
+#view-proj .viewheader { background: #000; border-bottom: 1px solid #333; }
+#view-proj .viewtitle { color: #fff; }
+#view-proj .backbtn { color: #0a84ff; }
+.cc-pair { display: flex; gap: 12px; }
+.cc-pair > div { flex: 1; }
+.cc-pair .cc-label-text { display: block; margin-bottom: 6px; }
+.sp-pin-wrap { position: relative; width: 30px; height: 40px; }
+.sp-pin-shape { position: absolute; left: 3px; top: 0; width: 24px; height: 24px;
+                 border: 2px solid #fff; border-radius: 50% 50% 50% 0;
+                 transform: rotate(-45deg); box-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+.sp-pin-shape.s { background: #ff9f0a; }
+.sp-pin-shape.p { background: #ff453a; }
+.sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
+                  font-size: 12px; font-weight: 700; color: #fff; }
 </style>
+<meta name="build" content="2026-07-10 07:57 UTC · f275acf">
 </head>
 <body>
 <div id="view-search">
@@ -157,6 +176,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   </div>
   <div id="menuList">
     <button type="button" class="menuitem" id="coordMenuItem">Koordinaatide teisendaja</button>
+    <button type="button" class="menuitem" id="projMenuItem">Koordinaatide projektsioon</button>
     <button type="button" class="menuitem" id="settingsMenuItem">Seaded</button>
   </div>
 </div>
@@ -171,6 +191,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     <select id="originSel" class="settings-select">
       <option value="current" selected>Praegune asukoht</option>
     </select>
+    <div class="settings-version">2026-07-10 07:57 UTC · f275acf</div>
   </div>
 </div>
 
@@ -224,6 +245,53 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   </div>
 </div>
 
+<div id="view-proj" style="display:none">
+  <div class="viewheader">
+    <button type="button" class="backbtn" id="projBackBtn" aria-label="Tagasi">‹</button>
+    <div class="viewtitle">Koordinaatide projektsioon</div>
+  </div>
+  <div class="cc-body">
+    <div class="cc-card cc-input-card">
+      <div class="cc-row-label">
+        <span class="cc-label-text">Sisend</span>
+        <span class="cc-badge" id="pj-badge" style="display:none"></span>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button type="button" class="cc-copy-btn" id="pj-paste-btn">Kleebi</button>
+          <button type="button" class="cc-copy-btn" id="pj-loc-btn" style="display:none">⌖</button>
+        </div>
+      </div>
+      <input id="pj-inp" type="text" placeholder="Kleebi mistahes koordinaadi formaat"
+             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <div class="cc-status" id="pj-status"></div>
+    </div>
+
+    <div class="cc-card">
+      <div class="cc-pair">
+        <div>
+          <span class="cc-label-text">Nurk (°)</span>
+          <input id="pj-angle" type="number" inputmode="decimal" placeholder="0–360">
+        </div>
+        <div>
+          <span class="cc-label-text">Vahemaa (m)</span>
+          <input id="pj-dist" type="number" inputmode="decimal" placeholder="meetrites">
+        </div>
+      </div>
+    </div>
+
+    <div class="cc-card">
+      <div class="cc-row-label">
+        <span class="cc-label-text">Kraadid + detsimaalminutid</span>
+        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="pj-copy-out-btn">Kopeeri</button>
+      </div>
+      <input id="pj-out" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
+    </div>
+
+    <div id="pj-map-wrap" style="display:none;margin-top:10px">
+      <div id="pj-map" style="height:300px;border-radius:14px;overflow:hidden"></div>
+    </div>
+  </div>
+</div>
+
 <div id="view-fullmap" style="display:none">
   <div id="fullmap-map"></div>
 </div>
@@ -243,7 +311,12 @@ let leafletLoading = false;
 let currentView = 'search';
 let ccLeafMap = null;
 let ccLeafMarker = null;
+let pjLeafMap = null;
+let pjSMarker = null;
+let pjPMarker = null;
+let pjLine = null;
 let ccPendingLatLon = null;
+let pjPendingPoints = null;
 let pendingCacheMapDivs = [];
 let openCacheMaps = [];
 let previousView = 'search';
@@ -267,6 +340,10 @@ function ensureLeaflet() {
     if (currentView === 'coord') {
       ccInitMap();
       if (ccPendingLatLon) ccMapUpdate(ccPendingLatLon.lat, ccPendingLatLon.lon);
+    }
+    if (currentView === 'proj') {
+      pjInitMap();
+      if (pjPendingPoints) pjMapUpdate(pjPendingPoints.sLat, pjPendingPoints.sLon, pjPendingPoints.pLat, pjPendingPoints.pLon);
     }
     pendingCacheMapDivs.forEach(ensureCacheMap);
     pendingCacheMapDivs = [];
@@ -665,15 +742,19 @@ function showView(name) {
   document.getElementById('view-search').style.display = name === 'search' ? '' : 'none';
   document.getElementById('view-menu').style.display = name === 'menu' ? '' : 'none';
   document.getElementById('view-coord').style.display = name === 'coord' ? '' : 'none';
+  document.getElementById('view-proj').style.display = name === 'proj' ? '' : 'none';
   document.getElementById('view-settings').style.display = name === 'settings' ? '' : 'none';
   document.getElementById('view-fullmap').style.display = name === 'fullmap' ? '' : 'none';
   if (name === 'coord' && leafletLoaded) ccInitMap();
+  if (name === 'proj' && leafletLoaded) pjInitMap();
 }
 
 document.getElementById('menuBtn').addEventListener('click', function() { showView('menu'); });
 document.getElementById('menuBackBtn').addEventListener('click', function() { showView('search'); });
 document.getElementById('coordMenuItem').addEventListener('click', function() { showView('coord'); });
 document.getElementById('coordBackBtn').addEventListener('click', function() { showView('search'); });
+document.getElementById('projMenuItem').addEventListener('click', function() { showView('proj'); });
+document.getElementById('projBackBtn').addEventListener('click', function() { showView('search'); });
 document.getElementById('settingsMenuItem').addEventListener('click', function() { showView('settings'); });
 document.getElementById('settingsBackBtn').addEventListener('click', function() { showView('search'); });
 
@@ -909,6 +990,135 @@ ccLocBtn.addEventListener('click', function() {
       ccStatusEl.className = 'cc-status err';
       ccLocBtn.textContent = '⌖';
       ccLocBtn.disabled = false;
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+});
+
+// ─── Coordinates projection (start point + bearing/distance → destination) ─
+function pjInitMap() {
+  if (pjLeafMap) return;
+  pjLeafMap = L.map('pj-map', { zoomControl: true }).setView([58.5, 25.0], 7);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+  }).addTo(pjLeafMap);
+  const sIcon = L.divIcon({
+    className: '',
+    html: '<div class="sp-pin-wrap"><div class="sp-pin-shape s"></div><div class="sp-pin-letter">S</div></div>',
+    iconSize: [30, 40], iconAnchor: [15, 40]
+  });
+  const pIcon = L.divIcon({
+    className: '',
+    html: '<div class="sp-pin-wrap"><div class="sp-pin-shape p"></div><div class="sp-pin-letter">P</div></div>',
+    iconSize: [30, 40], iconAnchor: [15, 40]
+  });
+  pjSMarker = L.marker([58.5, 25.0], { icon: sIcon }).addTo(pjLeafMap);
+  pjPMarker = L.marker([58.5, 25.0], { icon: pIcon }).addTo(pjLeafMap);
+  pjLine = L.polyline([[58.5, 25.0], [58.5, 25.0]], { color: '#0a84ff', weight: 2, dashArray: '4,6' }).addTo(pjLeafMap);
+}
+
+function pjMapUpdate(sLat, sLon, pLat, pLon) {
+  pjPendingPoints = { sLat: sLat, sLon: sLon, pLat: pLat, pLon: pLon };
+  if (!pjLeafMap) return;
+  const wrap = document.getElementById('pj-map-wrap');
+  if (wrap.style.display === 'none') {
+    wrap.style.display = '';
+    pjLeafMap.invalidateSize();
+  }
+  pjSMarker.setLatLng([sLat, sLon]);
+  pjPMarker.setLatLng([pLat, pLon]);
+  pjLine.setLatLngs([[sLat, sLon], [pLat, pLon]]);
+  pjLeafMap.fitBounds([[sLat, sLon], [pLat, pLon]], { padding: [40, 40], maxZoom: 17 });
+}
+
+// Destination point given a start point, compass bearing (0-360°, clockwise
+// from true north) and distance in metres. Spherical approximation — same
+// model haversineKm already uses elsewhere in this app.
+function pjDestinationPoint(lat, lon, bearingDeg, distM) {
+  const R = 6371000;
+  const brng = bearingDeg * Math.PI / 180;
+  const lat1 = lat * Math.PI / 180, lon1 = lon * Math.PI / 180;
+  const dR = distM / R;
+  const lat2 = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(brng));
+  const lon2 = lon1 + Math.atan2(
+    Math.sin(brng) * Math.sin(dR) * Math.cos(lat1),
+    Math.cos(dR) - Math.sin(lat1) * Math.sin(lat2)
+  );
+  return { lat: lat2 * 180 / Math.PI, lon: ((lon2 * 180 / Math.PI) + 540) % 360 - 180 };
+}
+
+const pjInpEl = document.getElementById('pj-inp');
+const pjAngleEl = document.getElementById('pj-angle');
+const pjDistEl = document.getElementById('pj-dist');
+const pjStatusEl = document.getElementById('pj-status');
+const pjBadgeEl = document.getElementById('pj-badge');
+const pjOutEl = document.getElementById('pj-out');
+
+function pjRecompute() {
+  const val = pjInpEl.value;
+  if (!val.trim()) {
+    pjOutEl.value = '';
+    pjStatusEl.textContent = '';
+    pjStatusEl.className = 'cc-status';
+    pjBadgeEl.style.display = 'none';
+    return;
+  }
+  const result = ccDetect(val);
+  if (!result) {
+    pjOutEl.value = '';
+    pjStatusEl.textContent = 'Formaati ei tuvastatud';
+    pjStatusEl.className = 'cc-status err';
+    pjBadgeEl.style.display = 'none';
+    return;
+  }
+  pjStatusEl.textContent = 'Tuvastati: ' + result.fmt;
+  pjStatusEl.className = 'cc-status ok';
+  pjBadgeEl.textContent = result.fmt;
+  pjBadgeEl.style.display = '';
+
+  const angle = parseFloat(pjAngleEl.value);
+  const dist = parseFloat(pjDistEl.value);
+  if (isNaN(angle) || isNaN(dist)) {
+    pjOutEl.value = '';
+    return;
+  }
+  const dest = pjDestinationPoint(result.lat, result.lon, angle, dist);
+  pjOutEl.value = ccFmtDMM(dest.lat, dest.lon);
+  pjMapUpdate(result.lat, result.lon, dest.lat, dest.lon);
+}
+
+pjInpEl.addEventListener('input', pjRecompute);
+pjAngleEl.addEventListener('input', pjRecompute);
+pjDistEl.addEventListener('input', pjRecompute);
+
+document.getElementById('pj-copy-out-btn').addEventListener('click', function() { ccCopyField('pj-out', this); });
+
+document.getElementById('pj-paste-btn').addEventListener('click', function() {
+  navigator.clipboard.readText().then(function(t) {
+    pjInpEl.value = t;
+    pjRecompute();
+  });
+});
+
+const pjLocBtn = document.getElementById('pj-loc-btn');
+if ('geolocation' in navigator) pjLocBtn.style.display = '';
+
+pjLocBtn.addEventListener('click', function() {
+  pjLocBtn.textContent = '…';
+  pjLocBtn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      pjInpEl.value = ccFmtDD(pos.coords.latitude, pos.coords.longitude);
+      pjRecompute();
+      pjLocBtn.textContent = '⌖';
+      pjLocBtn.disabled = false;
+    },
+    function(err) {
+      pjStatusEl.textContent = 'Asukoht pole saadaval';
+      pjStatusEl.className = 'cc-status err';
+      pjLocBtn.textContent = '⌖';
+      pjLocBtn.disabled = false;
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
