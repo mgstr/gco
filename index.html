@@ -143,7 +143,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
                   font-size: 12px; font-weight: 700; color: #fff; }
 </style>
-<meta name="build" content="2026-07-10 07:57 UTC · f275acf">
+<meta name="build" content="2026-07-10 08:39 UTC · 59df3c9">
 </head>
 <body>
 <div id="view-search">
@@ -191,7 +191,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     <select id="originSel" class="settings-select">
       <option value="current" selected>Praegune asukoht</option>
     </select>
-    <div class="settings-version">2026-07-10 07:57 UTC · f275acf</div>
+    <div class="settings-version">2026-07-10 08:39 UTC · 59df3c9</div>
   </div>
 </div>
 
@@ -365,7 +365,10 @@ const sortDirBtn = document.getElementById('sortDirBtn');
 const originSel = document.getElementById('originSel');
 const listEl = document.getElementById('list');
 const countEl = document.getElementById('count');
-let sortDir = 'desc'; // newest/highest first by default
+// Per-column default sort direction: newest first for ID, A-Z for name, nearest first for distance.
+const DEFAULT_SORT_DIR = { id: 'desc', name: 'asc', distance: 'asc' };
+let sortDir = DEFAULT_SORT_DIR[sortSel.value];
+let userChangedSort = false; // once true, geolocation resolving no longer overrides the user's sort choice
 
 const CACHES_BY_NAME = CACHES.slice().sort((a, b) => a.n.localeCompare(b.n, 'et'));
 let CACHES_BY_DISTANCE = null;
@@ -417,6 +420,11 @@ if (navigator.geolocation) {
       return da - db;
     });
     distOpt.disabled = false;
+    if (!userChangedSort) {
+      sortSel.value = 'distance';
+      sortDir = DEFAULT_SORT_DIR.distance;
+      updateSortDirBtn();
+    }
     render(qEl.value.trim());
   });
 }
@@ -726,9 +734,15 @@ qEl.addEventListener('input', function() {
 });
 ownerChk.addEventListener('change', function() { render(qEl.value.trim()); });
 regionChk.addEventListener('change', function() { render(qEl.value.trim()); });
-sortSel.addEventListener('change', function() { render(qEl.value.trim()); });
+sortSel.addEventListener('change', function() {
+  userChangedSort = true;
+  sortDir = DEFAULT_SORT_DIR[sortSel.value];
+  updateSortDirBtn();
+  render(qEl.value.trim());
+});
 originSel.addEventListener('change', function() { render(qEl.value.trim()); });
 sortDirBtn.addEventListener('click', function() {
+  userChangedSort = true;
   sortDir = sortDir === 'desc' ? 'asc' : 'desc';
   updateSortDirBtn();
   render(qEl.value.trim());
