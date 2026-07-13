@@ -1,5 +1,28 @@
-const CACHE_NAME = 'geocaches-e9a8dd7';
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icons/pwa/icon-192.png", "./icons/pwa/icon-512.png", "./icons/pwa/icon-180.png", "./icons/pwa/favicon-32.png", "./icons/pwa/favicon-16.png"];
+// Static file — hand-edited, not generated. Bump CACHE_NAME when ASSETS
+// changes so the activate handler purges the old cache; content updates to
+// existing files don't need a bump (stale-while-revalidate refreshes them).
+const CACHE_NAME = 'geocaches-v2';
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./style.css",
+  "./app.js",
+  "./manifest.json",
+  "./data.json",
+  "./icons/regular.png",
+  "./icons/mystery.png",
+  "./icons/multi.png",
+  "./icons/virtual.png",
+  "./icons/wherigo.png",
+  "./icons/letterbox.png",
+  "./icons/reverse.png",
+  "./icons/webcam.png",
+  "./icons/pwa/icon-192.png",
+  "./icons/pwa/icon-512.png",
+  "./icons/pwa/icon-180.png",
+  "./icons/pwa/favicon-32.png",
+  "./icons/pwa/favicon-16.png",
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
