@@ -770,7 +770,27 @@ updateSortDirBtn();
 render('');
 
 // ─── Views (search / tools menu / coordinate converter / full map) ─────────
-function showView(name) {
+// Path-shaped hash routes, e.g. #/tools/coordinates/conversion — a real path
+// would need a server-side rewrite for the very first (pre-service-worker)
+// load of a deep link, which we can't rely on, so the routing lives entirely
+// in the fragment. The empty/root hash just redirects to /search for now —
+// kept separate so the root can be repurposed later without touching search's
+// own route. 'fullmap' needs a specific lat/lon so it stays a session-only
+// overlay, not deep-linkable, and never touches the hash.
+const VIEW_TO_PATH = {
+  search: '/search',
+  menu: '/tools',
+  coord: '/tools/coordinates/conversion',
+  proj: '/tools/coordinates/projection',
+  settings: '/settings',
+  origin: '/settings/distance',
+  data: '/settings/data',
+};
+const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(function(e) { return [e[1], e[0]]; }));
+
+function isRootPath(path) { return path === '' || path === '/'; }
+
+function applyView(name) {
   currentView = name;
   document.getElementById('view-search').style.display = name === 'search' ? '' : 'none';
   document.getElementById('view-menu').style.display = name === 'menu' ? '' : 'none';
@@ -785,6 +805,20 @@ function showView(name) {
   if (name === 'data') refreshDataView();
 }
 
+function showView(name) {
+  applyView(name);
+  const path = VIEW_TO_PATH[name];
+  if (!path) return; // e.g. 'fullmap' — session-only, leave the URL alone
+  const target = '#' + path;
+  if (location.hash !== target) location.hash = target;
+}
+
+window.addEventListener('hashchange', function() {
+  const path = location.hash.slice(1);
+  if (isRootPath(path)) { location.hash = '#' + VIEW_TO_PATH.search; return; }
+  applyView(PATH_TO_VIEW[path] || 'search');
+});
+
 document.getElementById('menuBtn').addEventListener('click', function() { showView('menu'); });
 document.getElementById('menuBackBtn').addEventListener('click', function() { showView('search'); });
 document.getElementById('coordMenuItem').addEventListener('click', function() { showView('coord'); });
@@ -797,6 +831,14 @@ document.getElementById('originMenuItem').addEventListener('click', function() {
 document.getElementById('originBackBtn').addEventListener('click', function() { showView('settings'); });
 document.getElementById('dataMenuItem').addEventListener('click', function() { showView('data'); });
 document.getElementById('dataBackBtn').addEventListener('click', function() { showView('settings'); });
+
+// Honor a deep link on initial load instead of always defaulting to search.
+(function() {
+  const initialPath = location.hash.slice(1);
+  if (isRootPath(initialPath)) { location.hash = '#' + VIEW_TO_PATH.search; return; }
+  const initialView = PATH_TO_VIEW[initialPath];
+  if (initialView) applyView(initialView);
+})();
 
 // ─── Settings → Data (found-caches JSON upload) ─────────────────────────
 const dataStatusEl = document.getElementById('dataStatus');
