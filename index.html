@@ -2,8 +2,17 @@
 <html lang="et">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Geocaches</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#007aff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Geocaches">
+<link rel="apple-touch-icon" href="./icons/pwa/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/pwa/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./icons/pwa/favicon-16.png">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -173,7 +182,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
                   font-size: 12px; font-weight: 700; color: #fff; }
 </style>
-<meta name="build" content="2026-07-10 23:25 UTC · baeba9d">
+<meta name="build" content="2026-07-13 09:10 UTC · e9a8dd7">
 </head>
 <body>
 <div id="view-search">
@@ -226,7 +235,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     <button type="button" class="menuitem" id="dataMenuItem">Andmed</button>
   </div>
   <div class="settings-body">
-    <div class="settings-version">2026-07-10 23:25 UTC · baeba9d</div>
+    <div class="settings-version">2026-07-13 09:10 UTC · e9a8dd7</div>
   </div>
 </div>
 
@@ -1605,6 +1614,12 @@ pjLocBtn.addEventListener('click', function() {
     { enableHighAccuracy: true, timeout: 10000 }
   );
 });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js').catch(function() {});
+  });
+}
 </script>
 </body>
 </html>
