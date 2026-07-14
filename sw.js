@@ -1,14 +1,13 @@
 // Static file — hand-edited, not generated. Bump CACHE_NAME when ASSETS
 // changes so the activate handler purges the old cache; content updates to
 // existing files don't need a bump (stale-while-revalidate refreshes them).
-const CACHE_NAME = 'geocaches-v2';
+const CACHE_NAME = 'geocaches-v3';
 const ASSETS = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
   "./manifest.json",
-  "./data.json",
   "./icons/regular.png",
   "./icons/mystery.png",
   "./icons/multi.png",
@@ -22,6 +21,13 @@ const ASSETS = [
   "./icons/pwa/icon-180.png",
   "./icons/pwa/favicon-32.png",
   "./icons/pwa/favicon-16.png",
+  "./vendor/leaflet/leaflet.js",
+  "./vendor/leaflet/leaflet.css",
+  "./vendor/leaflet/images/marker-icon.png",
+  "./vendor/leaflet/images/marker-icon-2x.png",
+  "./vendor/leaflet/images/marker-shadow.png",
+  "./vendor/leaflet/images/layers.png",
+  "./vendor/leaflet/images/layers-2x.png",
 ];
 
 self.addEventListener('install', (event) => {

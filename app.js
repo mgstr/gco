@@ -1,9 +1,9 @@
 const ICONS = {"Tavaline": "icons/regular.png", "Mõistatus": "icons/mystery.png", "Multi": "icons/multi.png", "Virtuaalne": "icons/virtual.png", "KusMaLäen": "icons/wherigo.png", "Kirjakast": "icons/letterbox.png", "Asukohata": "icons/reverse.png", "Veebikaamera": "icons/webcam.png"};
 
 // ─── Leaflet (shared by cache-detail maps and the coordinate converter) ────
-// Loaded eagerly, first thing, so the fetch starts as early as possible —
-// this is the one part of the page that needs the network. It lives outside
-// initApp() below so the fetch isn't held up waiting on data.json to load.
+// Self-hosted (./vendor/leaflet) and precached by the service worker, so
+// repeat map opens work offline. Loaded lazily — only once the user actually
+// opens a view that needs a map — instead of on every app start.
 let leafletLoaded = false;
 let leafletLoading = false;
 let leafletReadyHandler = null; // wired up by initApp() once its map state exists
@@ -13,10 +13,10 @@ function ensureLeaflet() {
   leafletLoading = true;
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  link.href = './vendor/leaflet/leaflet.css';
   document.head.appendChild(link);
   const script = document.createElement('script');
-  script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  script.src = './vendor/leaflet/leaflet.js';
   script.onload = function() {
     leafletLoaded = true;
     leafletLoading = false;
@@ -28,7 +28,6 @@ function ensureLeaflet() {
   };
   document.head.appendChild(script);
 }
-ensureLeaflet();
 
 // ─── App init — runs once cache data has loaded from data.json ────────────
 function initApp(CACHES) {
@@ -517,7 +516,7 @@ function toggle(row) {
   row.classList.toggle('open');
   if (opening) {
     const mapDiv = row.querySelector('.cachemap');
-    if (mapDiv) ensureCacheMap(mapDiv);
+    if (mapDiv) { ensureLeaflet(); ensureCacheMap(mapDiv); }
   }
 }
 // Rows use inline onclick="toggle(this)" (see esc()-built row markup below),
@@ -702,6 +701,7 @@ function showMapView() {
   listEl.style.display = 'none';
   mapviewEl.style.display = '';
   positionMapView();
+  ensureLeaflet();
   ensureSearchMap();
   render(qEl.value.trim());
 }
@@ -800,6 +800,7 @@ function applyView(name) {
   document.getElementById('view-origin').style.display = name === 'origin' ? '' : 'none';
   document.getElementById('view-data').style.display = name === 'data' ? '' : 'none';
   document.getElementById('view-fullmap').style.display = name === 'fullmap' ? '' : 'none';
+  if (name === 'coord' || name === 'proj') ensureLeaflet();
   if (name === 'coord' && leafletLoaded) ccInitMap();
   if (name === 'proj' && leafletLoaded) pjInitMap();
   if (name === 'data') refreshDataView();
