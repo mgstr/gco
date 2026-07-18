@@ -76,8 +76,7 @@ if (leafletLoaded) leafletReadyHandler();
 const qEl = document.getElementById('q');
 const ownerChk = document.getElementById('ownerChk');
 const regionChk = document.getElementById('regionChk');
-const hideFoundWrap = document.getElementById('hideFoundWrap');
-const hideFoundChk = document.getElementById('hideFoundChk');
+const hideFoundBtn = document.getElementById('hideFoundBtn');
 const sortSel = document.getElementById('sortSel');
 const distOpt = document.getElementById('distOpt');
 const sortDirBtn = document.getElementById('sortDirBtn');
@@ -175,13 +174,13 @@ function isFound(c) {
 }
 
 function hideFoundActive() {
-  return hideFoundWrap.style.display !== 'none' && hideFoundChk.checked;
+  return hideFoundBtn.style.display !== 'none' && hideFoundBtn.getAttribute('aria-pressed') === 'true';
 }
 
 function refreshHideFoundVisibility() {
   const has = FindsStore.hasData();
-  hideFoundWrap.style.display = has ? '' : 'none';
-  hideFoundChk.checked = has && HideFindsPref.get();
+  hideFoundBtn.style.display = has ? '' : 'none';
+  hideFoundBtn.setAttribute('aria-pressed', String(has && HideFindsPref.get()));
 }
 refreshHideFoundVisibility();
 
@@ -192,8 +191,8 @@ for (let i = 0; i < CACHES.length; i++) {
 }
 
 // Size is stored as an integer (not the Estonian name) so the display text
-// can be swapped for other locales later without touching the data.
-const SIZE_NAMES = { 0: 'Muu', 1: 'Mikro', 2: 'Väike', 3: 'Normaalne', 4: 'Suur' };
+// can be swapped for other locales later without touching the data — see
+// sizeLabel() in i18n.js.
 const SIZE_LETTERS = { 0: 'o', 1: 'm', 2: 'v', 3: 'n', 4: 'l' };
 
 // Map-view pin color by cache type (c.ty holds the Estonian type_name — see
@@ -341,7 +340,7 @@ function organicMapsUrl(c) {
   const name = encodeURIComponent(c.n);
   if (userLat != null) {
     return 'om://route?v=1&sll=' + userLat + ',' + userLon +
-      '&saddr=' + encodeURIComponent('Praegune asukoht') +
+      '&saddr=' + encodeURIComponent(t('currentLocationOption')) +
       '&dll=' + c.lat + ',' + c.lon + '&daddr=' + name + '&type=pedestrian';
   }
   return 'https://omaps.app/map?v=1&ll=' + c.lat + ',' + c.lon + '&n=' + name;
@@ -434,7 +433,7 @@ function render(q) {
 
   if (!results.length) {
     countEl.textContent = mapPrefix + '0 / ' + totalCount;
-    listEl.innerHTML = '<div id="empty">Tulemusi ei leitud</div>';
+    listEl.innerHTML = '<div id="empty">' + esc(t('noResults')) + '</div>';
     lastShown = [];
     if (mapViewActive) updateMapMarkers(lastShown);
     return;
@@ -445,8 +444,8 @@ function render(q) {
   lastShown = shown;
 
   countEl.textContent = mapPrefix + (capped
-    ? shown.length + ' / ' + results.length + ' — täpsusta otsingut'
-    : (q ? results.length + ' / ' + totalCount : totalCount + ' peitu'));
+    ? shown.length + ' / ' + results.length + ' — ' + t('refineSearch')
+    : (q ? results.length + ' / ' + totalCount : totalCount + ' ' + t('cachesSuffix')));
 
   const rows = [];
   for (let i = 0; i < shown.length; i++) {
@@ -468,10 +467,10 @@ function render(q) {
               (c.g ? '<a href="https://coord.info/' + c.g + '" target="_blank">GC</a>' : '') +
               (c.gp ? '<a href="https://www.geopeitus.ee/aare/' + c.gp + '" target="_blank">GP</a>' : '') +
               '</span>' : '') + '</div>' +
-          '<div><b>Tüüp:</b> ' + esc(c.ty) +
-            (c.sz != null ? ' · <b>Suurus:</b> ' + SIZE_NAMES[c.sz].toLowerCase() : '') + '</div>' +
-          (c.r ? '<div><b>Aadress:</b> ' + esc(c.r) + '</div>' : '') +
-          '<div class="coord"><b>Koordinaadid:</b> ' +
+          '<div><b>' + t('typeFieldLabel') + '</b> ' + esc(typeLabel(c.ty)) +
+            (c.sz != null ? ' · <b>' + t('sizeFieldLabel') + '</b> ' + esc(sizeLabel(c.sz).toLowerCase()) : '') + '</div>' +
+          (c.r ? '<div><b>' + t('addressLabel') + '</b> ' + esc(c.r) + '</div>' : '') +
+          '<div class="coord"><b>' + t('coordinatesLabel') + '</b> ' +
             '<button type="button" class="coordbtn" data-coords="' + esc(c.la + ' ' + c.lo) + '" onclick="event.stopPropagation(); copyCoords(this)">' + c.la + ' · ' + c.lo + ' 📋</button>' +
             (listDist ? ' <span class="dist">' + listDist + '</span>' : '') +
             (c.lat != null ? (function() {
@@ -495,12 +494,12 @@ function render(q) {
                 mapAlts = [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
                            {label:'google maps', url: gmapsUrl}];
               }
-              return ' <button type="button" class="navbtn" data-default="' + escAttr(wazeUrl) + '" data-alts="' + escAttr(JSON.stringify(driveAlts)) + '">🚗 Sõida</button>' +
-                     ' <button type="button" class="navbtn" data-default="' + escAttr(mapDefault) + '" data-alts="' + escAttr(JSON.stringify(mapAlts)) + '">🗺️ Kaart</button>';
+              return ' <button type="button" class="navbtn" data-default="' + escAttr(wazeUrl) + '" data-alts="' + escAttr(JSON.stringify(driveAlts)) + '">' + esc(t('driveBtn')) + '</button>' +
+                     ' <button type="button" class="navbtn" data-default="' + escAttr(mapDefault) + '" data-alts="' + escAttr(JSON.stringify(mapAlts)) + '">' + esc(t('mapBtn')) + '</button>';
             })() : '') +
           '</div>' +
           (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '"></div>' : '') +
-          '<div><b>Peidetud:</b> ' + c.h + ' by ' + esc(c.o) +
+          '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' ' + t('byLabel') + ' ' + esc(c.o) +
             (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
         '</div>' +
       '</div>'
@@ -636,7 +635,7 @@ function updateUserLocationMarker() {
       iconSize: [14, 14], iconAnchor: [7, 7]
     });
     userLocationMarker = L.marker([userLat, userLon], { icon: dotIcon, zIndexOffset: 1000 }).addTo(searchMap);
-    userLocationMarker.bindTooltip('Praegune asukoht');
+    userLocationMarker.bindTooltip(t('currentLocationOption'));
   } else {
     userLocationMarker.setLatLng([userLat, userLon]);
   }
@@ -651,7 +650,7 @@ function setMapOrigin(lat, lon) {
   customOriginLon = lon;
   if (!originMarker) {
     originMarker = L.marker([lat, lon]).addTo(searchMap);
-    originMarker.bindTooltip('Lähtepunkt');
+    originMarker.bindTooltip(t('originPointTooltip'));
   } else {
     originMarker.setLatLng([lat, lon]);
   }
@@ -679,8 +678,8 @@ function updateMapMarkers(list) {
     marker.bindTooltip(c.n);
     marker.on('click', function(e) {
       const alts = [];
-      if (c.g) alts.push({ label: 'Ava GC.com', url: 'https://coord.info/' + c.g });
-      if (c.gp) alts.push({ label: 'Ava Geopeitus', url: 'https://www.geopeitus.ee/aare/' + c.gp });
+      if (c.g) alts.push({ label: t('openGcCom'), url: 'https://coord.info/' + c.g });
+      if (c.gp) alts.push({ label: t('openGeopeitus'), url: 'https://www.geopeitus.ee/aare/' + c.gp });
       if (!alts.length) return;
       const pt = searchMap.latLngToContainerPoint(e.latlng);
       const mapRect = mapCanvasEl.getBoundingClientRect();
@@ -749,8 +748,10 @@ qEl.addEventListener('input', function() {
 });
 ownerChk.addEventListener('change', function() { render(qEl.value.trim()); });
 regionChk.addEventListener('change', function() { render(qEl.value.trim()); });
-hideFoundChk.addEventListener('change', function() {
-  HideFindsPref.set(hideFoundChk.checked);
+hideFoundBtn.addEventListener('click', function() {
+  const pressed = hideFoundBtn.getAttribute('aria-pressed') === 'true';
+  hideFoundBtn.setAttribute('aria-pressed', String(!pressed));
+  HideFindsPref.set(!pressed);
   render(qEl.value.trim());
 });
 sortSel.addEventListener('change', function() {
@@ -857,8 +858,8 @@ function formatUploadedAt(iso) {
 function refreshDataView() {
   const count = FindsStore.getCount();
   const uploadedAt = FindsStore.getUploadedAt();
-  dataStatusEl.innerHTML = (count ? '<div>' + count + ' leidu</div>' : '<div>Andmeid ei ole</div>') +
-    (uploadedAt ? '<div>Laaditud: ' + formatUploadedAt(uploadedAt) + '</div>' : '');
+  dataStatusEl.innerHTML = (count ? '<div>' + esc(t('findsCount', { count: count })) + '</div>' : '<div>' + esc(t('noData')) + '</div>') +
+    (uploadedAt ? '<div>' + esc(t('loadedAt', { date: formatUploadedAt(uploadedAt) })) + '</div>' : '');
   dataMsgEl.textContent = '';
   dataMsgEl.className = 'data-msg';
 }
@@ -886,12 +887,12 @@ dataFileInput.addEventListener('change', function() {
     try {
       parsed = JSON.parse(reader.result);
     } catch (e) {
-      dataMsgEl.textContent = 'Fail ei ole korrektne JSON';
+      dataMsgEl.textContent = t('fileNotJson');
       dataMsgEl.className = 'data-msg err';
       return;
     }
     if (!isValidFindsShape(parsed)) {
-      dataMsgEl.textContent = 'Fail ei vasta oodatud vormingule';
+      dataMsgEl.textContent = t('fileWrongFormat');
       dataMsgEl.className = 'data-msg err';
       return;
     }
@@ -899,12 +900,12 @@ dataFileInput.addEventListener('change', function() {
     rebuildFoundSet();
     refreshHideFoundVisibility();
     refreshDataView();
-    dataMsgEl.textContent = 'Andmed laaditud (' + Object.keys(parsed).length + ' leidu)';
+    dataMsgEl.textContent = t('dataLoaded', { count: Object.keys(parsed).length });
     dataMsgEl.className = 'data-msg ok';
     render(qEl.value.trim());
   };
   reader.onerror = function() {
-    dataMsgEl.textContent = 'Faili lugemine ebaõnnestus';
+    dataMsgEl.textContent = t('fileReadFailed');
     dataMsgEl.className = 'data-msg err';
   };
   reader.readAsText(file);
@@ -1116,13 +1117,13 @@ ccInpEl.addEventListener('input', function() {
     ccDdEl.value = ccFmtDD(result.lat, result.lon);
     ccLestEl.value = ccFmtLEST(xy.x, xy.y);
     ccMapUpdate(result.lat, result.lon);
-    ccStatusEl.textContent = 'Tuvastati: ' + result.fmt;
+    ccStatusEl.textContent = t('detected', { fmt: result.fmt });
     ccStatusEl.className = 'cc-status ok';
     ccBadgeEl.textContent = result.fmt;
     ccBadgeEl.style.display = '';
   } else {
     ccClearOutputs();
-    ccStatusEl.textContent = 'Formaati ei tuvastatud';
+    ccStatusEl.textContent = t('formatNotDetected');
     ccStatusEl.className = 'cc-status err';
   }
 });
@@ -1132,7 +1133,7 @@ function ccCopyField(id, btn) {
   if (!val) return;
   navigator.clipboard.writeText(val).then(function() {
     const orig = btn.textContent;
-    btn.textContent = 'Kopeeritud!';
+    btn.textContent = t('copied');
     btn.classList.add('copied');
     setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
   });
@@ -1162,7 +1163,7 @@ ccLocBtn.addEventListener('click', function() {
       ccLocBtn.disabled = false;
     },
     function(err) {
-      ccStatusEl.textContent = 'Asukoht pole saadaval';
+      ccStatusEl.textContent = t('locationUnavailable');
       ccStatusEl.className = 'cc-status err';
       ccLocBtn.textContent = '⌖';
       ccLocBtn.disabled = false;
@@ -1243,12 +1244,12 @@ function pjRecompute() {
   const result = ccDetect(val);
   if (!result) {
     pjOutEl.value = '';
-    pjStatusEl.textContent = 'Formaati ei tuvastatud';
+    pjStatusEl.textContent = t('formatNotDetected');
     pjStatusEl.className = 'cc-status err';
     pjBadgeEl.style.display = 'none';
     return;
   }
-  pjStatusEl.textContent = 'Tuvastati: ' + result.fmt;
+  pjStatusEl.textContent = t('detected', { fmt: result.fmt });
   pjStatusEl.className = 'cc-status ok';
   pjBadgeEl.textContent = result.fmt;
   pjBadgeEl.style.display = '';
@@ -1291,7 +1292,7 @@ pjLocBtn.addEventListener('click', function() {
       pjLocBtn.disabled = false;
     },
     function(err) {
-      pjStatusEl.textContent = 'Asukoht pole saadaval';
+      pjStatusEl.textContent = t('locationUnavailable');
       pjStatusEl.className = 'cc-status err';
       pjLocBtn.textContent = '⌖';
       pjLocBtn.disabled = false;
@@ -1303,7 +1304,7 @@ pjLocBtn.addEventListener('click', function() {
 } // end initApp
 
 const countEl0 = document.getElementById('count');
-if (countEl0) countEl0.textContent = 'Laen andmeid…';
+if (countEl0) countEl0.textContent = t('loadingData');
 
 function loadData() {
   fetch('./data.json')
@@ -1316,8 +1317,8 @@ function loadData() {
     .catch(function(err) {
       const listEl0 = document.getElementById('list');
       if (countEl0) countEl0.textContent = '';
-      listEl0.innerHTML = '<div id="empty">Andmete laadimine ebaõnnestus.<br>Kontrolli internetiühendust ja proovi uuesti.'
-        + '<br><button type="button" id="dataRetryBtn" class="data-load-btn" style="display:inline-block;margin-top:12px">Proovi uuesti</button></div>';
+      listEl0.innerHTML = '<div id="empty">' + t('loadFailed')
+        + '<br><button type="button" id="dataRetryBtn" class="data-load-btn" style="display:inline-block;margin-top:12px">' + esc(t('retryBtn')) + '</button></div>';
       document.getElementById('dataRetryBtn').addEventListener('click', loadData);
     });
 }

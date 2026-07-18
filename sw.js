@@ -1,11 +1,12 @@
 // Static file — hand-edited, not generated. Bump CACHE_NAME when ASSETS
 // changes so the activate handler purges the old cache; content updates to
 // existing files don't need a bump (stale-while-revalidate refreshes them).
-const CACHE_NAME = 'geocaches-v3';
+const CACHE_NAME = 'geocaches-v4';
 const ASSETS = [
   "./",
   "./index.html",
   "./style.css",
+  "./i18n.js",
   "./app.js",
   "./manifest.json",
   "./icons/regular.png",

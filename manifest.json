@@ -1,7 +1,7 @@
 {
   "name": "Geocaches",
   "short_name": "GCO",
-  "description": "Offline otsing Eesti geopeitustele",
+  "description": "Offline search for Estonian geocaches",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

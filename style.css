@@ -105,12 +105,20 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .settings-select { font-size: 16px; padding: 9px 10px; border: 1px solid #ccc; border-radius: 8px;
                     width: 100%; background: #fff; color: #1a1a1a; }
 
-/* Hide-my-finds toggle (icon-only label: smiley crossed out by an overlay slash) */
+/* Hide-my-finds toggle button (icon-only: smiley, crossed out by an overlay
+   slash while pressed/active). Not pressed = finds shown; pressed = finds hidden. */
+.findsToggleBtn { display: inline-flex; align-items: center; justify-content: center;
+                   width: 28px; height: 28px; border: 1px solid #ccc; border-radius: 6px;
+                   background: #fff; cursor: pointer; flex-shrink: 0;
+                   -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
+.findsToggleBtn:active { background: #f0f0f0; }
+.findsToggleBtn[aria-pressed="true"] { background: #ffecec; border-color: #ff9d97; }
 .hidefound-icon { position: relative; display: inline-flex; align-items: center; justify-content: center;
                    width: 15px; height: 15px; font-size: 13px; line-height: 1; }
 .hidefound-icon::after { content: ''; position: absolute; width: 150%; height: 1.6px;
-                          background: #ff3b30; top: 50%; left: -25%; transform: rotate(-40deg);
-                          border-radius: 1px; }
+                          background: #ff3b30; top: 50%; left: -25%; transform: rotate(-40deg) scaleX(0);
+                          border-radius: 1px; transition: transform .12s ease-out; }
+.findsToggleBtn[aria-pressed="true"] .hidefound-icon::after { transform: rotate(-40deg) scaleX(1); }
 
 /* Settings → Data sub-page */
 .data-status { font-size: 15px; color: #333; line-height: 1.7; margin-bottom: 10px; }

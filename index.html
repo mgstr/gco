@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -20,25 +20,25 @@
 <div id="view-search">
 <div id="top">
   <div class="searchrow">
-    <input id="q" type="search" placeholder="Otsi nime või GC koodi…" autofocus autocorrect="off" autocapitalize="none" spellcheck="false">
+    <input id="q" type="search" data-i18n-placeholder="searchPlaceholder" autofocus autocorrect="off" autocapitalize="none" spellcheck="false">
     <div class="toggles">
-      <label class="ownertoggle"><input type="checkbox" id="ownerChk"> omanik</label>
-      <label class="ownertoggle"><input type="checkbox" id="regionChk"> maakond</label>
+      <label class="ownertoggle"><input type="checkbox" id="ownerChk"> <span data-i18n="ownerLabel"></span></label>
+      <label class="ownertoggle"><input type="checkbox" id="regionChk"> <span data-i18n="regionLabel"></span></label>
     </div>
   </div>
   <div class="statusrow">
-    <button type="button" id="menuBtn" aria-label="Menüü">...</button>
+    <button type="button" id="menuBtn" data-i18n-aria-label="menuAria">...</button>
     <div id="count"></div>
-    <label class="ownertoggle" id="hideFoundWrap" style="display:none">
-      <input type="checkbox" id="hideFoundChk">
+    <button type="button" class="findsToggleBtn" id="hideFoundBtn" style="display:none"
+            aria-pressed="false" data-i18n-aria-label="hideFoundAria">
       <span class="hidefound-icon" aria-hidden="true">🙂</span>
-    </label>
+    </button>
     <select id="sortSel">
-      <option value="id" selected>ID järgi</option>
-      <option value="name">Nime järgi</option>
-      <option value="distance" id="distOpt" disabled>Kauguse järgi</option>
+      <option value="id" selected data-i18n="sortById"></option>
+      <option value="name" data-i18n="sortByName"></option>
+      <option value="distance" id="distOpt" disabled data-i18n="sortByDistance"></option>
     </select>
-    <button type="button" id="sortDirBtn" aria-label="Sortimise suund">⬇️</button>
+    <button type="button" id="sortDirBtn" data-i18n-aria-label="sortDirAria">⬇️</button>
   </div>
 </div>
 <div id="list"></div>
@@ -47,24 +47,24 @@
 
 <div id="view-menu" style="display:none">
   <div class="viewheader">
-    <button type="button" class="backbtn" id="menuBackBtn" aria-label="Tagasi">‹</button>
-    <div class="viewtitle">Tööriistad</div>
+    <button type="button" class="backbtn" id="menuBackBtn" data-i18n-aria-label="backAria">‹</button>
+    <div class="viewtitle" data-i18n="toolsTitle"></div>
   </div>
   <div id="menuList">
-    <button type="button" class="menuitem" id="coordMenuItem">Koordinaatide teisendaja</button>
-    <button type="button" class="menuitem" id="projMenuItem">Koordinaatide projektsioon</button>
-    <button type="button" class="menuitem" id="settingsMenuItem">Seaded</button>
+    <button type="button" class="menuitem" id="coordMenuItem" data-i18n="coordConverterItem"></button>
+    <button type="button" class="menuitem" id="projMenuItem" data-i18n="coordProjectionItem"></button>
+    <button type="button" class="menuitem" id="settingsMenuItem" data-i18n="settingsItem"></button>
   </div>
 </div>
 
 <div id="view-settings" style="display:none">
   <div class="viewheader">
-    <button type="button" class="backbtn" id="settingsBackBtn" aria-label="Tagasi">‹</button>
-    <div class="viewtitle">Seaded</div>
+    <button type="button" class="backbtn" id="settingsBackBtn" data-i18n-aria-label="backAria">‹</button>
+    <div class="viewtitle" data-i18n="settingsTitle"></div>
   </div>
   <div id="settingsList">
-    <button type="button" class="menuitem" id="originMenuItem">Kauguse arvutamine</button>
-    <button type="button" class="menuitem" id="dataMenuItem">Andmed</button>
+    <button type="button" class="menuitem" id="originMenuItem" data-i18n="distanceOriginItem"></button>
+    <button type="button" class="menuitem" id="dataMenuItem" data-i18n="dataItem"></button>
   </div>
   <div class="settings-body">
     <div class="settings-version" id="settingsVersion"></div>
@@ -73,71 +73,71 @@
 
 <div id="view-origin" style="display:none">
   <div class="viewheader">
-    <button type="button" class="backbtn" id="originBackBtn" aria-label="Tagasi">‹</button>
-    <div class="viewtitle">Kauguse arvutamine</div>
+    <button type="button" class="backbtn" id="originBackBtn" data-i18n-aria-label="backAria">‹</button>
+    <div class="viewtitle" data-i18n="distanceTitle"></div>
   </div>
   <div class="settings-body">
-    <label class="settings-label" for="originSel">Arvuta kaugus asukohast:</label>
+    <label class="settings-label" for="originSel" data-i18n="distanceFromLabel"></label>
     <select id="originSel" class="settings-select">
-      <option value="current" selected>Praegune asukoht</option>
+      <option value="current" selected data-i18n="currentLocationOption"></option>
     </select>
   </div>
 </div>
 
 <div id="view-data" style="display:none">
   <div class="viewheader">
-    <button type="button" class="backbtn" id="dataBackBtn" aria-label="Tagasi">‹</button>
-    <div class="viewtitle">Andmed</div>
+    <button type="button" class="backbtn" id="dataBackBtn" data-i18n-aria-label="backAria">‹</button>
+    <div class="viewtitle" data-i18n="dataTitle"></div>
   </div>
   <div class="settings-body">
-    <label class="settings-label">Minu leiud</label>
+    <label class="settings-label" data-i18n="myFindsLabel"></label>
     <div id="dataStatus" class="data-status"></div>
     <input type="file" id="dataFileInput" accept="application/json,.json" style="display:none">
-    <button type="button" class="data-load-btn" id="dataLoadBtn">Laadi JSON fail</button>
+    <button type="button" class="data-load-btn" id="dataLoadBtn" data-i18n="loadJsonBtn"></button>
     <div id="dataMsg" class="data-msg"></div>
   </div>
 </div>
 
 <div id="view-coord" style="display:none">
   <div class="viewheader">
-    <button type="button" class="backbtn" id="coordBackBtn" aria-label="Tagasi">‹</button>
-    <div class="viewtitle">Koordinaatide teisendaja</div>
+    <button type="button" class="backbtn" id="coordBackBtn" data-i18n-aria-label="backAria">‹</button>
+    <div class="viewtitle" data-i18n="coordConverterTitle"></div>
   </div>
   <div class="cc-body">
     <div class="cc-card cc-input-card">
       <div class="cc-row-label">
-        <span class="cc-label-text">Sisend</span>
+        <span class="cc-label-text" data-i18n="inputLabel"></span>
         <span class="cc-badge" id="cc-badge" style="display:none"></span>
         <div style="margin-left:auto;display:flex;gap:6px">
-          <button type="button" class="cc-copy-btn" id="cc-paste-btn">Kleebi</button>
+          <button type="button" class="cc-copy-btn" id="cc-paste-btn" data-i18n="pasteBtn"></button>
           <button type="button" class="cc-copy-btn" id="cc-loc-btn" style="display:none">⌖</button>
         </div>
       </div>
-      <input id="cc-inp" type="text" placeholder="Kleebi mistahes koordinaadi formaat"
+      <input id="cc-inp" type="text" data-i18n-placeholder="coordInputPlaceholder"
              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <div class="cc-status" id="cc-status"></div>
     </div>
 
     <div class="cc-card">
       <div class="cc-row-label">
-        <span class="cc-label-text">Kraadid + detsimaalminutid</span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dmm-btn">Kopeeri</button>
+        <span class="cc-label-text" data-i18n="dmmLabel"></span>
+        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dmm-btn" data-i18n="copyBtn"></button>
       </div>
       <input id="cc-out-dmm" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
     </div>
 
     <div class="cc-card">
       <div class="cc-row-label">
-        <span class="cc-label-text">Kümnendkraadid</span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dd-btn">Kopeeri</button>
+        <span class="cc-label-text" data-i18n="ddLabel"></span>
+        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dd-btn" data-i18n="copyBtn"></button>
       </div>
       <input id="cc-out-dd" type="text" readonly placeholder="58.379217, 24.500100">
     </div>
 
     <div class="cc-card">
       <div class="cc-row-label">
-        <span class="cc-label-text">L-EST97 (EPSG:3301)</span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-lest-btn">Kopeeri</button>
+        <span class="cc-label-text" data-i18n="lestLabel"></span>
+        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-lest-btn" data-i18n="copyBtn"></button>
       </div>
       <input id="cc-out-lest" type="text" readonly placeholder="529257, 6471080">
     </div>
@@ -150,20 +150,20 @@
 
 <div id="view-proj" style="display:none">
   <div class="viewheader">
-    <button type="button" class="backbtn" id="projBackBtn" aria-label="Tagasi">‹</button>
-    <div class="viewtitle">Koordinaatide projektsioon</div>
+    <button type="button" class="backbtn" id="projBackBtn" data-i18n-aria-label="backAria">‹</button>
+    <div class="viewtitle" data-i18n="coordProjectionTitle"></div>
   </div>
   <div class="cc-body">
     <div class="cc-card cc-input-card">
       <div class="cc-row-label">
-        <span class="cc-label-text">Sisend</span>
+        <span class="cc-label-text" data-i18n="inputLabel"></span>
         <span class="cc-badge" id="pj-badge" style="display:none"></span>
         <div style="margin-left:auto;display:flex;gap:6px">
-          <button type="button" class="cc-copy-btn" id="pj-paste-btn">Kleebi</button>
+          <button type="button" class="cc-copy-btn" id="pj-paste-btn" data-i18n="pasteBtn"></button>
           <button type="button" class="cc-copy-btn" id="pj-loc-btn" style="display:none">⌖</button>
         </div>
       </div>
-      <input id="pj-inp" type="text" placeholder="Kleebi mistahes koordinaadi formaat"
+      <input id="pj-inp" type="text" data-i18n-placeholder="coordInputPlaceholder"
              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
       <div class="cc-status" id="pj-status"></div>
     </div>
@@ -171,20 +171,20 @@
     <div class="cc-card">
       <div class="cc-pair">
         <div>
-          <span class="cc-label-text">Nurk (°)</span>
+          <span class="cc-label-text" data-i18n="angleLabel"></span>
           <input id="pj-angle" type="number" inputmode="decimal" placeholder="0–360">
         </div>
         <div>
-          <span class="cc-label-text">Vahemaa (m)</span>
-          <input id="pj-dist" type="number" inputmode="decimal" placeholder="meetrites">
+          <span class="cc-label-text" data-i18n="distanceLabel"></span>
+          <input id="pj-dist" type="number" inputmode="decimal" data-i18n-placeholder="distancePlaceholder">
         </div>
       </div>
     </div>
 
     <div class="cc-card">
       <div class="cc-row-label">
-        <span class="cc-label-text">Kraadid + detsimaalminutid</span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="pj-copy-out-btn">Kopeeri</button>
+        <span class="cc-label-text" data-i18n="dmmLabel"></span>
+        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="pj-copy-out-btn" data-i18n="copyBtn"></button>
       </div>
       <input id="pj-out" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
     </div>
@@ -202,6 +202,7 @@
 <div class="navbackdrop" id="navBackdrop"></div>
 <div class="navmenu" id="navMenu"></div>
 
+<script src="./i18n.js"></script>
 <script src="./app.js"></script>
 </body>
 </html>
