@@ -47,6 +47,14 @@ function ensureLeaflet() {
   document.head.appendChild(script);
 }
 
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function escAttr(s) {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 // ─── App init — runs once cache data has loaded from data.json ────────────
 function initApp(CACHES) {
 let currentView = 'search';
@@ -330,14 +338,6 @@ function matchesToken(c, token) {
 function matches(c, q) {
   const tokens = q.split(/\s+/).filter(Boolean);
   return tokens.every(token => matchesToken(c, token));
-}
-
-function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function escAttr(s) {
-  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // iPadOS Safari reports navigator.platform as 'MacIntel' just like a real Mac —
