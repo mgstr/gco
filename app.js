@@ -1,5 +1,23 @@
 const ICONS = {"Tavaline": "icons/regular.png", "Mõistatus": "icons/mystery.png", "Multi": "icons/multi.png", "Virtuaalne": "icons/virtual.png", "KusMaLäen": "icons/wherigo.png", "Kirjakast": "icons/letterbox.png", "Asukohata": "icons/reverse.png", "Veebikaamera": "icons/webcam.png"};
 
+// Map-pin icons: mirrors geocaching.com's own cache-type artwork and colors
+// (glyph + per-type circle color extracted from geocaching.com's live icon
+// sprite, /app/ui-icons/sprites/cache-types.svg — Groundspeak-owned, kept
+// inline for personal offline use only) so pins look like the icons GC.com
+// users already know, instead of the list view's separate icon set above.
+// Found caches (see isFound()) get a flat yellow pin regardless of type.
+const GC_PIN_TYPES = {
+  "Tavaline": { color: "#02874d", glyph: "<path d=\"M37.43 16.444a.435.435 0 0 0-.429-.441c-.409-.01-11.518.006-11.518.006l-15.117 3.683s-.367.092-.367.736v1.919c0 .708.613.662.613.662l.237.049v6.693c0 1.659 1.138 3.017 2.561 3.017h8.58c.425 0 .819-.133 1.174-.345l.005.015 11.092-4.594c2.279-1.027 2.36-1.854 2.319-3.492 0-.193-.009-.404-.009-.635V18.63c.169-.06.601-.101.61-.11.006-.004.257-.092.257-.423 0-.401-.008-1.221-.008-1.653zM21.588 30.988h-7.749c-.696 0-1.259-.744-1.259-1.66v-6.269h10.268v6.269c0 .915-.564 1.66-1.26 1.66zm13.276-6.963c.03 1.31-.12 1.587-1.535 2.216l-8.814 3.707c.03-.193.049-.391.049-.593l.006-6.297s.658-.373.857-.441c1.846-.633 6.784-2.412 9.424-3.365v4.105c0 .244.005.466.013.668z\" fill=\"#fff\"/>" },
+  "Multi": { color: "#e98300", glyph: "<path d=\"M31.536 20.961a372.68 372.68 0 0 0-2.624-.005c-2.709 0-6.372.005-6.372.005l-12.061 2.285s-.294.07-.294.568v.918c0 .484.375.514.467.514h.02l.379.045v5.437c0 1.296.924 2.348 2.057 2.348h6.557c.339 0 .656-.105.937-.271l.005.013 8.463-3.065c1.822-.794 1.857-1.541 1.857-2.709l-.003-4.345c.137-.051.59-.064.596-.073.004-.005.226-.073.226-.328V21.21c.001-.177-.2-.249-.21-.249zM18.691 31.333h-4.92c-.55 0-.991-.56-.991-1.276v-4.766h6.912l.003 4.747c0 .717-.452 1.295-1.004 1.295zm10.517-4.883c-.011.569-.095 1.231-1.223 1.72l-6.616 2.264s.051-.231.051-.391v-4.752l7.776-2.121c.003.318.025 2.604.012 3.28zm8.325-10.293l-12.657-1.234s-8.969 1.323-9.291 1.361c-.01 0-.206.095-.21.28v1.416c0 .263.216.309.217.313.013.006.519.03.652.07l.238.016h-.247l.003 1.632 1.732-.232-.006-1.298 10.472.717s.766.035 1.225.035c.118 0 .215-.003.274-.009 2.237-.215 4.047-.436 5.319-.607l-.005 4.035c0 .725-.447.837-.995.888l-1.627.309c.001.162.003.211.009.353.005.218.007.905.001 1.092l2.293-.309c1.122-.102 2.032-1.253 2.032-2.561l.01-4.053.364-.057s.484-.01.484-.566c0-.274 0-.747.003-1.04-.001-.506-.29-.551-.29-.551z\" fill=\"#fff\"/>" },
+  "Mõistatus": { color: "#12508c", glyph: "<path d=\"M23.128 11.52c-6.949 0-8.254 4.578-8.251 6.659 0 2.497 1.737 3.329 3.909 3.329 2.268 0 3.04-1.628 3.04-2.497s-.434-2.497-2.606-2.497c0-.869 1.424-1.665 3.909-1.665 2.606 0 3.909 1.665 3.909 3.329 0 1.665-.469 2.456-2.606 4.162-2.606 2.081-3.474 3.329-3.474 4.994-.002.832 0 1.23 0 1.665 0 .416.869.832 1.737.832.869 0 1.737-.416 1.737-.832 0-1.739-.013-2.515 3.909-4.994 3.909-2.497 4.777-3.746 4.777-5.827-.001-2.496-1.304-6.658-9.99-6.658zm-.448 19.961c-1.441 0-2.608 1.119-2.608 2.499s1.168 2.5 2.608 2.5c1.44 0 2.608-1.119 2.608-2.5s-1.168-2.499-2.608-2.499z\" fill=\"#fff\"/>" },
+  "Virtuaalne": { color: "#009bbb", glyph: "<path d=\"M31.507 19.387c0 .104.005-.104 0 0zm.631 9.216c3.473-3.267 4.14-8.031 2.599-8.414-1.088-.27-1.667.708-3.201 2-.029-1.061-.029-1.932-.029-2.802 0-4.316-2.201-8.022-7.234-8.022s-7.333 3.55-7.333 8.241c.003.09-.111 1.392-.214 2.797-1.734-1.396-2.315-2.5-3.463-2.215-1.615.401-.807 5.616 3.116 8.875l.088.041c-.109 1.722-.323 3.37-.73 4.564-1.432 4.192 3.726 1.362 4.87 1.362 1.312 0 2.598 1.586 4.441 1.604 1.935.019 2.067-1.081 4.037-1.604 1.232-.327 5.606 3.122 4.037-2.407a52.134 52.134 0 0 1-.984-4.02zm-11.531-8.815c0-1.108.542-2.006 1.211-2.006s1.211.898 1.211 2.006c0 1.107-.542 2.006-1.211 2.006s-1.211-.898-1.211-2.006zm3.633 5.558c-.988 0-2.091-.84-2.091-1.504 0-.665 1.103.201 2.091.201s2.019-.908 2.019-.243-1.031 1.546-2.019 1.546zm2.422-3.552c-.669 0-1.211-.898-1.211-2.006 0-1.108.542-2.006 1.211-2.006s1.211.898 1.211 2.006c.001 1.108-.542 2.006-1.211 2.006z\" fill=\"#fff\"/>" },
+  "KusMaLäen": { color: "#12508c", glyph: "<g fill=\"#fff\"><path d=\"M24.571 12.192c-6.461 0-11.7 5.093-11.7 11.373 0 6.282 5.24 11.374 11.7 11.374 6.462 0 11.701-5.092 11.701-11.374-.001-6.28-5.239-11.373-11.701-11.373zm.417 15.812l-5.139-4.998 8.894-3.65-3.755 8.648z\"/><path d=\"M25.206 9.12l-.178 2.669c2.559.149 4.985.994 7.06 2.44l1.677-2.147a16.56 16.56 0 0 0-8.559-2.962zm10.306 4.372a21.778 21.778 0 0 0-.557-.493l-1.884 1.982c.17.143.345.279.51.43.132.123.247.256.372.382l2.057-1.792c-.168-.167-.321-.346-.498-.509zm-.735 3.205c1.61 1.942 2.568 4.221 2.847 6.556l.564-.039c-.338-2.584-1.397-4.572-3.097-6.282l-.314-.235zm3.516 7.793l-.582-.015c.007.399-.001.798-.032 1.196l.6.068c.024-.42.027-.835.014-1.249zM34.19 33.3l.582.549a12.802 12.802 0 0 0 3.367-6.835l-.616-.127A12.192 12.192 0 0 1 34.19 33.3zm-1.895 1.592l.489.672c.354-.247.695-.514 1.024-.799l-.538-.615a12.71 12.71 0 0 1-.975.742zm-7.373 2.332c-.3.004-.596-.014-.892-.028l-.054 1.108c2.696-.005 5.375-.694 7.679-2.02l-.425-.733a13.454 13.454 0 0 1-6.308 1.673zm-3.703.844c.45.08.901.138 1.354.176l.178-1.169a15.336 15.336 0 0 1-1.225-.224l-.307 1.217zm-7.021-5.674l-1.366 1.034a14.538 14.538 0 0 0 3.147 2.652 14.526 14.526 0 0 0 3.872 1.682l.453-1.255a13.61 13.61 0 0 1-4.995-2.938c-.403-.373-.766-.77-1.111-1.175zM12.802 30.4l-1.608.795c.232.389.483.77.752 1.138l1.497-.92a12.368 12.368 0 0 1-.641-1.013zm-1.466-8.12l-2.112-.373a14.684 14.684 0 0 0 1.312 8.057l1.713-.659a12.408 12.408 0 0 1-.913-7.025zm.628-2.341l-2.117-.798c-.148.447-.274.898-.377 1.352l2.123.587c.106-.385.23-.766.371-1.141zm2.845-4.381a13.056 13.056 0 0 1 6.479-3.491l-.576-2.439c-3.85.957-7.342 3.146-9.428 6.464a14.425 14.425 0 0 0-.91 1.705l2.084 1.017a12.365 12.365 0 0 1 2.351-3.256zm7.395-6.235l.336 2.536a13.87 13.87 0 0 1 1.231-.089l-.093-2.627c-.493.038-.984.098-1.474.18z\"/></g>" },
+  "Kirjakast": { color: "#12508c", glyph: "<path d=\"M12.48 16.32v.8l8.94 6 1.17.8L24.18 25l1.58-1.06 1.17-.8 8.94-6v-.8zm0 2.4v10.4L20.17 24l-7.69-5.26zm11.7 8l-2.84-1.94-8.86 5.94h23.4L27 24.78l-2.84 1.94zm11.7 2.4v-10.4L28.19 24l7.69 5.14z\" fill=\"#fff\"/>" },
+  "Veebikaamera": { color: "#009bbb", glyph: "<path d=\"M24.038 18.879c-1.997 0-3.616 1.593-3.616 3.559 0 1.966 1.619 3.559 3.616 3.559s3.616-1.593 3.616-3.559c0-1.965-1.619-3.559-3.616-3.559zm3.982 12.622c3.566-1.529 6.061-5.026 6.061-9.099 0-5.48-4.513-9.922-10.08-9.922s-10.08 4.442-10.08 9.922c0 4.073 2.495 7.572 6.062 9.1-2.444.908-4.377 2.433-4.377 3.583 0 .222.09.436.443.436h15.954a.428.428 0 0 0 .443-.436c-.001-1.151-1.963-2.677-4.426-3.584zm-4.007-3.916c-2.902 0-5.255-2.315-5.255-5.172s2.353-5.172 5.255-5.172 5.254 2.315 5.254 5.172-2.352 5.172-5.254 5.172z\" fill=\"#fff\"/>" },
+  "Asukohata": { color: "#87705a", glyph: "<path d=\"M25.204 17.157c-6.201-1.093-12.114 3.047-13.207 9.248s3.047 12.114 9.248 13.208c6.201 1.093 12.114-3.047 13.207-9.248 1.093-6.202-3.048-12.115-9.248-13.208zm-1.818 2.285l-2.116 1.504-.575-1.419-.223-1.182-.852 1.302-1.34-.045.619-.511-.27-.142-2.08 2.019.605 1.044.94-1.905 1.146.614.315 1.826.007-.001-.006.009.1.578-.331-.219.231-.359-.001-.008-.911.123s.227.694.162.686c-.26-.028-.863.15-.863.15-.614.399-1.757 1.758-1.757 1.758l-.172.873-.746-.749-.736.071-.515 1.374.462.279.589-.297.461.778-.022.693 1.037.112 1.949.597.995 2.088.766.555-1.552 1.807-.96 2.1-.78.663-.242.556-1.088-1.242.073-1.771-.708-2.319.002-1.542.933-.752-2.131-2.131-.893-1.565s.234-2.329 4.296-5.665c3.523-2.894 7.354-1.841 7.354-1.841l-.856 1.357-.316.149zm4.813 14.854l-1.041 1.383-1.652 1.036-.508-1.616.039-2.364-.324-2.416-1.475.051-.854-1.751.731-1.252 1.242-1.427.509-.22.735.177.629.062.396.77 1.885.341s.058-.017.719 1.041c.661 1.058.634 1.256.634 1.256l-.488.819-.294.048.849.274-1.732 3.788zm3.539-6.157l-.998-.049s-.156-.713-.625-1.078c-.469-.365-1.548-.913-1.548-.913L27.955 26l-.355-.661-.48.506-.066-.302-.534.027-.769-1.145-.78.12-.505.359-.446-.114.155-.586.72.012.308-.971-.488-.223.123-.714-.468.08.518-.239-.051-.432.135-.097.388 1.333.821-.258.092-.548.195.566.832.017.557-1.219-.195-.021-.076-.578-.706 1.446-.41-.641-.134.143-.339-.496 2.188-1.811 1.655 1.143 1.005.232s1.442 1.258 1.986 3.865c.545 2.607.843 4.081.843 4.081l-.915 2.045-1.021-2.78zm-3.62-18.991l-1.03 5.844 7.82-1.634-6.79-4.21zm-2.791 7.164c.241.042.557-.173.557-.173l1.352-7.665-.984-.173-1.352 7.665c.001 0 .187.304.427.346z\" fill=\"#fff\"/>" }
+};
+const FOUND_PIN_COLOR = "#ffd60a";
+
 // ─── Leaflet (shared by cache-detail maps and the coordinate converter) ────
 // Self-hosted (./vendor/leaflet) and precached by the service worker, so
 // repeat map opens work offline. Loaded lazily — only once the user actually
@@ -74,9 +92,10 @@ leafletReadyHandler = function() {
 if (leafletLoaded) leafletReadyHandler();
 
 const qEl = document.getElementById('q');
-const ownerChk = document.getElementById('ownerChk');
-const regionChk = document.getElementById('regionChk');
+const viewToggleBtn = document.getElementById('viewToggleBtn');
 const hideFoundBtn = document.getElementById('hideFoundBtn');
+const idToggleBtn = document.getElementById('idToggleBtn');
+const dtsToggleBtn = document.getElementById('dtsToggleBtn');
 const sortSel = document.getElementById('sortSel');
 const distOpt = document.getElementById('distOpt');
 const sortDirBtn = document.getElementById('sortDirBtn');
@@ -139,24 +158,29 @@ const FindsStore = (function() {
   return { save, getFinds, getCount, getUploadedAt, hasData };
 })();
 
-// Whether the "hide my finds" checkbox itself was last checked/unchecked —
-// separate from the finds data, so it survives independently of it.
-const HideFindsPref = (function() {
-  const KEY = 'gcHideFindsPrefV1';
+// Factory for a persisted on/off preference, defaulting to `def` until the
+// user has explicitly toggled it at least once.
+function boolPref(key, def) {
   function get() {
     let v;
     try {
-      v = localStorage.getItem(KEY);
+      v = localStorage.getItem(key);
     } catch (e) {
-      return true;
+      return def;
     }
-    return v === null ? true : v === '1';
+    return v === null ? def : v === '1';
   }
-  function set(checked) {
-    localStorage.setItem(KEY, checked ? '1' : '0');
+  function set(on) {
+    localStorage.setItem(key, on ? '1' : '0');
   }
   return { get, set };
-})();
+}
+
+// Whether the "hide my finds" checkbox itself was last checked/unchecked —
+// separate from the finds data, so it survives independently of it.
+const HideFindsPref = boolPref('gcHideFindsPrefV1', true);
+const ShowIdPref = boolPref('gcShowIdPrefV1', true);
+const ShowDtsPref = boolPref('gcShowDtsPrefV1', true);
 
 let FOUND_SET = new Set();
 let FOUND_IN_ESTONIA_COUNT = 0;
@@ -184,6 +208,17 @@ function refreshHideFoundVisibility() {
 }
 refreshHideFoundVisibility();
 
+// Showing/hiding the GC id and D/T/S columns only affects which CSS class is
+// on #list — the row markup itself always includes both, so no re-render is
+// needed when these are toggled.
+idToggleBtn.setAttribute('aria-pressed', String(ShowIdPref.get()));
+dtsToggleBtn.setAttribute('aria-pressed', String(ShowDtsPref.get()));
+function refreshFieldVisibility() {
+  listEl.classList.toggle('hide-id', idToggleBtn.getAttribute('aria-pressed') !== 'true');
+  listEl.classList.toggle('hide-dts', dtsToggleBtn.getAttribute('aria-pressed') !== 'true');
+}
+refreshFieldVisibility();
+
 const OWNER_COUNTS = {};
 for (let i = 0; i < CACHES.length; i++) {
   const o = CACHES[i].o;
@@ -195,29 +230,24 @@ for (let i = 0; i < CACHES.length; i++) {
 // sizeLabel() in i18n.js.
 const SIZE_LETTERS = { 0: 'o', 1: 'm', 2: 'v', 3: 'n', 4: 'l' };
 
-// Map-view pin color by cache type (c.ty holds the Estonian type_name — see
-// TYPE_NAME_TO_KEY in build_search.py). Only the three most common types get
-// their own color; everything else (virtual, wherigo, letterbox, reverse,
-// webcam) shares the "other" color.
-function cachePinColor(ty) {
-  if (ty === 'Tavaline') return 'green';   // traditional
-  if (ty === 'Mõistatus') return 'black';  // mystery
-  if (ty === 'Multi') return 'orange';     // multi-cache
-  return 'yellow';                         // everything else
-}
-
-function getCachePinIcon(color) {
-  if (!cachePinIcons) {
-    cachePinIcons = {};
-    ['green', 'black', 'orange', 'yellow'].forEach(function(c) {
-      cachePinIcons[c] = L.divIcon({
-        className: '',
-        html: '<div class="cache-pin-wrap"><div class="cache-pin ' + c + '"></div></div>',
-        iconSize: [22, 30], iconAnchor: [11, 30]
-      });
+// Map-view pin icon by cache type (c.ty holds the Estonian type_name — see
+// GC_PIN_TYPES above). Falls back to the traditional-cache glyph for any
+// type not in the map. Found caches always render as a flat yellow pin,
+// regardless of type, so found status reads at a glance on the map.
+function getCachePinIcon(ty, found) {
+  if (!cachePinIcons) cachePinIcons = {};
+  const key = ty + (found ? ':found' : '');
+  if (!cachePinIcons[key]) {
+    const type = GC_PIN_TYPES[ty] || GC_PIN_TYPES['Tavaline'];
+    const bg = found ? FOUND_PIN_COLOR : type.color;
+    cachePinIcons[key] = L.divIcon({
+      className: '',
+      html: '<div class="cache-pin-wrap"><div class="cache-pin" style="background:' + bg + '">' +
+        '<svg viewBox="0 0 48 48">' + type.glyph + '</svg></div></div>',
+      iconSize: [22, 30], iconAnchor: [11, 30]
     });
   }
-  return cachePinIcons[color];
+  return cachePinIcons[key];
 }
 
 function haversineKm(lat1, lon1, lat2, lon2) {
@@ -286,12 +316,10 @@ if (navigator.geolocation) {
   });
 }
 
-function matchesToken(c, token, searchOwner, searchRegion) {
+function matchesToken(c, token) {
   const qU = token.toUpperCase();
   const qNoGC = qU.startsWith('GC') ? qU.slice(2) : qU;
   if (c.n.toUpperCase().includes(qU)) return true;
-  if (searchOwner && c.o.toUpperCase().includes(qU)) return true;
-  if (searchRegion && c.r && c.r.toUpperCase().includes(qU)) return true;
   if (c.g) {
     if (c.g.includes(qU)) return true;
     if (c.g.slice(2).includes(qNoGC)) return true;
@@ -299,9 +327,9 @@ function matchesToken(c, token, searchOwner, searchRegion) {
   return false;
 }
 
-function matches(c, q, searchOwner, searchRegion) {
+function matches(c, q) {
   const tokens = q.split(/\s+/).filter(Boolean);
-  return tokens.every(token => matchesToken(c, token, searchOwner, searchRegion));
+  return tokens.every(token => matchesToken(c, token));
 }
 
 function esc(s) {
@@ -336,14 +364,40 @@ const IS_IOS = isIOSDevice();
 // of confidently showing the wrong place. The "show this point" fallback below
 // uses the https://omaps.app/map endpoint instead, since that one's web preview
 // was verified to render the correct location.
-function organicMapsUrl(c) {
-  const name = encodeURIComponent(c.n);
+function organicMapsUrl(lat, lon, name) {
+  const encName = encodeURIComponent(name);
   if (userLat != null) {
     return 'om://route?v=1&sll=' + userLat + ',' + userLon +
       '&saddr=' + encodeURIComponent(t('currentLocationOption')) +
-      '&dll=' + c.lat + ',' + c.lon + '&daddr=' + name + '&type=pedestrian';
+      '&dll=' + lat + ',' + lon + '&daddr=' + encName + '&type=pedestrian';
   }
-  return 'https://omaps.app/map?v=1&ll=' + c.lat + ',' + c.lon + '&n=' + name;
+  return 'https://omaps.app/map?v=1&ll=' + lat + ',' + lon + '&n=' + encName;
+}
+
+// Shared by the cache-list "Map" button and the standalone Maps buttons on
+// the coordinate converter/projection pages — builds the default tap target
+// plus the long-press alternative-apps menu for a given point.
+function mapNavData(lat, lon, name) {
+  const gmapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lon + '&travelmode=driving';
+  const maaametUrl = 'https://xgis.maaamet.ee/xgis2/page/app/maainfo?lat=' + lat + '&lon=' + lon + '&moot=2000';
+  const osmUrl = 'https://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + lon + '&zoom=15';
+  const rmkUrl = 'https://rmk-loodusegakoos-veebikaart.rmk.ee/?command=show#map=15/' + lat + '/' + lon;
+  // Organic Maps' om:// deep link only does anything on a device that has the
+  // app installed — on desktop it's just dead weight, so Google Maps takes
+  // over as the default there instead, and organic maps drops out of the menu.
+  if (IS_IOS) {
+    const omUrl = organicMapsUrl(lat, lon, name);
+    return {
+      default: omUrl,
+      alts: [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
+             {label:'google maps', url: gmapsUrl}, {label:'organic maps', url: omUrl}]
+    };
+  }
+  return {
+    default: gmapsUrl,
+    alts: [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
+           {label:'google maps', url: gmapsUrl}]
+  };
 }
 
 const NAV_LONG_PRESS_MS = 500;
@@ -379,9 +433,10 @@ navMenuEl.addEventListener('click', function(e) {
   if (e.target.closest('a')) setTimeout(closeNavMenu, 150);
 });
 
+// Reads data-default/data-alts off the button at press time (not bind time),
+// so callers can update those attributes later — e.g. the coordinate
+// converter's Maps button, which is bound once but repoints as the user types.
 function bindNavButton(btn) {
-  const defaultUrl = btn.dataset.default;
-  const alts = JSON.parse(btn.dataset.alts);
   let timer = null;
   let longPressed = false;
 
@@ -390,13 +445,13 @@ function bindNavButton(btn) {
     longPressed = false;
     timer = setTimeout(function() {
       longPressed = true;
-      openNavMenu(btn, alts);
+      openNavMenu(btn, JSON.parse(btn.dataset.alts));
     }, NAV_LONG_PRESS_MS);
   }
   function end(e) {
     e.stopPropagation();
     clearTimeout(timer);
-    if (!longPressed) window.open(defaultUrl, '_blank');
+    if (!longPressed) window.open(btn.dataset.default, '_blank');
   }
   function cancel() {
     clearTimeout(timer);
@@ -417,22 +472,18 @@ const RENDER_CAP = 200;
 function render(q) {
   openCacheMaps.forEach(function(m) { m.remove(); });
   openCacheMaps = [];
-  const searchOwner = ownerChk.checked;
-  const searchRegion = regionChk.checked;
   const hideFound = hideFoundActive();
   const source = sortSel.value === 'name' ? CACHES_BY_NAME
     : (sortSel.value === 'distance' && CACHES_BY_DISTANCE) ? CACHES_BY_DISTANCE
     : CACHES;
-  let results = q ? source.filter(c => matches(c, q, searchOwner, searchRegion)) : source.slice();
+  let results = q ? source.filter(c => matches(c, q)) : source.slice();
   if (hideFound) results = results.filter(c => !isFound(c));
   if (sortDir === 'desc') results.reverse();
 
   const totalCount = hideFound ? CACHES.length - FOUND_IN_ESTONIA_COUNT : CACHES.length;
 
-  const mapPrefix = mapViewActive ? '🗺️ ' : '';
-
   if (!results.length) {
-    countEl.textContent = mapPrefix + '0 / ' + totalCount;
+    countEl.textContent = '0 / ' + totalCount;
     listEl.innerHTML = '<div id="empty">' + esc(t('noResults')) + '</div>';
     lastShown = [];
     if (mapViewActive) updateMapMarkers(lastShown);
@@ -443,9 +494,9 @@ function render(q) {
   const shown = capped ? results.slice(0, RENDER_CAP) : results;
   lastShown = shown;
 
-  countEl.textContent = mapPrefix + (capped
-    ? shown.length + ' / ' + results.length + ' — ' + t('refineSearch')
-    : (q ? results.length + ' / ' + totalCount : totalCount + ' ' + t('cachesSuffix')));
+  countEl.innerHTML = capped
+    ? '<span class="cap-badge" title="' + escAttr(t('refineSearch')) + '">' + RENDER_CAP + '</span> / ' + results.length
+    : esc(q ? results.length + ' / ' + totalCount : totalCount + ' ' + t('cachesSuffix'));
 
   const rows = [];
   for (let i = 0; i < shown.length; i++) {
@@ -476,26 +527,10 @@ function render(q) {
             (c.lat != null ? (function() {
               const wazeUrl = 'https://waze.com/ul?ll=' + c.lat + ',' + c.lon + '&navigate=yes';
               const gmapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + c.lat + ',' + c.lon + '&travelmode=driving';
-              const maaametUrl = 'https://xgis.maaamet.ee/xgis2/page/app/maainfo?lat=' + c.lat + '&lon=' + c.lon + '&moot=2000';
-              const osmUrl = 'https://www.openstreetmap.org/?mlat=' + c.lat + '&mlon=' + c.lon + '&zoom=15';
-              const rmkUrl = 'https://rmk-loodusegakoos-veebikaart.rmk.ee/?command=show#map=15/' + c.lat + '/' + c.lon;
               const driveAlts = [{label:'google maps', url: gmapsUrl}, {label:'waze', url: wazeUrl}];
-              // Organic Maps' om:// deep link only does anything on a device that has the
-              // app installed — on desktop it's just dead weight, so Google Maps takes
-              // over as the default there instead, and organic maps drops out of the menu.
-              let mapDefault, mapAlts;
-              if (IS_IOS) {
-                const omUrl = organicMapsUrl(c);
-                mapDefault = omUrl;
-                mapAlts = [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
-                           {label:'google maps', url: gmapsUrl}, {label:'organic maps', url: omUrl}];
-              } else {
-                mapDefault = gmapsUrl;
-                mapAlts = [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
-                           {label:'google maps', url: gmapsUrl}];
-              }
+              const map = mapNavData(c.lat, c.lon, c.n);
               return ' <button type="button" class="navbtn" data-default="' + escAttr(wazeUrl) + '" data-alts="' + escAttr(JSON.stringify(driveAlts)) + '">' + esc(t('driveBtn')) + '</button>' +
-                     ' <button type="button" class="navbtn" data-default="' + escAttr(mapDefault) + '" data-alts="' + escAttr(JSON.stringify(mapAlts)) + '">' + esc(t('mapBtn')) + '</button>';
+                     ' <button type="button" class="navbtn" data-default="' + escAttr(map.default) + '" data-alts="' + escAttr(JSON.stringify(map.alts)) + '">' + esc(t('mapBtn')) + '</button>';
             })() : '') +
           '</div>' +
           (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '"></div>' : '') +
@@ -674,7 +709,7 @@ function updateMapMarkers(list) {
   const pts = [];
   list.forEach(function(c) {
     if (c.lat == null) return;
-    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(cachePinColor(c.ty)) }).addTo(searchMap);
+    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(c.ty, isFound(c)) }).addTo(searchMap);
     marker.bindTooltip(c.n);
     marker.on('click', function(e) {
       const alts = [];
@@ -695,10 +730,15 @@ function updateMapMarkers(list) {
   }
 }
 
+function updateViewToggleBtn() {
+  viewToggleBtn.textContent = mapViewActive ? '☰' : '🗺️';
+}
+
 function showMapView() {
   mapViewActive = true;
   listEl.style.display = 'none';
   mapviewEl.style.display = '';
+  updateViewToggleBtn();
   positionMapView();
   ensureLeaflet();
   ensureSearchMap();
@@ -709,12 +749,16 @@ function showListView() {
   mapViewActive = false;
   mapviewEl.style.display = 'none';
   listEl.style.display = '';
+  updateViewToggleBtn();
   render(qEl.value.trim());
 }
 
-bindDoubleTap(countEl, function() {
+function toggleMapView() {
   if (mapViewActive) showListView(); else showMapView();
-});
+}
+
+bindDoubleTap(countEl, toggleMapView);
+viewToggleBtn.addEventListener('click', toggleMapView);
 
 window.addEventListener('resize', function() {
   if (!mapViewActive) return;
@@ -746,13 +790,23 @@ qEl.addEventListener('input', function() {
   const val = qEl.value.trim();
   renderTimer = setTimeout(function() { render(val); }, 100);
 });
-ownerChk.addEventListener('change', function() { render(qEl.value.trim()); });
-regionChk.addEventListener('change', function() { render(qEl.value.trim()); });
 hideFoundBtn.addEventListener('click', function() {
   const pressed = hideFoundBtn.getAttribute('aria-pressed') === 'true';
   hideFoundBtn.setAttribute('aria-pressed', String(!pressed));
   HideFindsPref.set(!pressed);
   render(qEl.value.trim());
+});
+idToggleBtn.addEventListener('click', function() {
+  const pressed = idToggleBtn.getAttribute('aria-pressed') === 'true';
+  idToggleBtn.setAttribute('aria-pressed', String(!pressed));
+  ShowIdPref.set(!pressed);
+  refreshFieldVisibility();
+});
+dtsToggleBtn.addEventListener('click', function() {
+  const pressed = dtsToggleBtn.getAttribute('aria-pressed') === 'true';
+  dtsToggleBtn.setAttribute('aria-pressed', String(!pressed));
+  ShowDtsPref.set(!pressed);
+  refreshFieldVisibility();
 });
 sortSel.addEventListener('change', function() {
   userChangedSort = true;
@@ -1099,12 +1153,29 @@ const ccBadgeEl = document.getElementById('cc-badge');
 const ccDmmEl = document.getElementById('cc-out-dmm');
 const ccDdEl = document.getElementById('cc-out-dd');
 const ccLestEl = document.getElementById('cc-out-lest');
+const ccMapsRows = [
+  { row: document.getElementById('cc-maps-dmm-row'), btn: document.getElementById('cc-maps-dmm-btn') },
+  { row: document.getElementById('cc-maps-dd-row'), btn: document.getElementById('cc-maps-dd-btn') },
+  { row: document.getElementById('cc-maps-lest-row'), btn: document.getElementById('cc-maps-lest-btn') },
+];
+ccMapsRows.forEach(function(m) { bindNavButton(m.btn); });
+
+// Points the Maps button's tap/long-press targets at (lat, lon); hides the
+// row entirely when there's no coordinate to link to yet.
+function updateMapsBtn(row, btn, lat, lon) {
+  if (lat == null) { row.style.display = 'none'; return; }
+  const nav = mapNavData(lat, lon, t('pointLabel'));
+  btn.dataset.default = nav.default;
+  btn.dataset.alts = JSON.stringify(nav.alts);
+  row.style.display = '';
+}
 
 function ccClearOutputs() {
   ccDmmEl.value = ccDdEl.value = ccLestEl.value = '';
   ccStatusEl.textContent = '';
   ccStatusEl.className = 'cc-status';
   ccBadgeEl.style.display = 'none';
+  ccMapsRows.forEach(function(m) { updateMapsBtn(m.row, m.btn, null, null); });
 }
 
 ccInpEl.addEventListener('input', function() {
@@ -1117,6 +1188,7 @@ ccInpEl.addEventListener('input', function() {
     ccDdEl.value = ccFmtDD(result.lat, result.lon);
     ccLestEl.value = ccFmtLEST(xy.x, xy.y);
     ccMapUpdate(result.lat, result.lon);
+    ccMapsRows.forEach(function(m) { updateMapsBtn(m.row, m.btn, result.lat, result.lon); });
     ccStatusEl.textContent = t('detected', { fmt: result.fmt });
     ccStatusEl.className = 'cc-status ok';
     ccBadgeEl.textContent = result.fmt;
@@ -1231,6 +1303,9 @@ const pjDistEl = document.getElementById('pj-dist');
 const pjStatusEl = document.getElementById('pj-status');
 const pjBadgeEl = document.getElementById('pj-badge');
 const pjOutEl = document.getElementById('pj-out');
+const pjMapsRowEl = document.getElementById('pj-maps-row');
+const pjMapsBtnEl = document.getElementById('pj-maps-btn');
+bindNavButton(pjMapsBtnEl);
 
 function pjRecompute() {
   const val = pjInpEl.value;
@@ -1239,6 +1314,7 @@ function pjRecompute() {
     pjStatusEl.textContent = '';
     pjStatusEl.className = 'cc-status';
     pjBadgeEl.style.display = 'none';
+    updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, null, null);
     return;
   }
   const result = ccDetect(val);
@@ -1247,6 +1323,7 @@ function pjRecompute() {
     pjStatusEl.textContent = t('formatNotDetected');
     pjStatusEl.className = 'cc-status err';
     pjBadgeEl.style.display = 'none';
+    updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, null, null);
     return;
   }
   pjStatusEl.textContent = t('detected', { fmt: result.fmt });
@@ -1258,11 +1335,13 @@ function pjRecompute() {
   const dist = parseFloat(pjDistEl.value);
   if (isNaN(angle) || isNaN(dist)) {
     pjOutEl.value = '';
+    updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, null, null);
     return;
   }
   const dest = pjDestinationPoint(result.lat, result.lon, angle, dist);
   pjOutEl.value = ccFmtDMM(dest.lat, dest.lon);
   pjMapUpdate(result.lat, result.lon, dest.lat, dest.lon);
+  updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, dest.lat, dest.lon);
 }
 
 pjInpEl.addEventListener('input', pjRecompute);

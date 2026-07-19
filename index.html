@@ -20,25 +20,26 @@
 <div id="view-search">
 <div id="top">
   <div class="searchrow">
+    <button type="button" id="menuBtn" data-i18n-aria-label="menuAria">...</button>
     <input id="q" type="search" data-i18n-placeholder="searchPlaceholder" autofocus autocorrect="off" autocapitalize="none" spellcheck="false">
-    <div class="toggles">
-      <label class="ownertoggle"><input type="checkbox" id="ownerChk"> <span data-i18n="ownerLabel"></span></label>
-      <label class="ownertoggle"><input type="checkbox" id="regionChk"> <span data-i18n="regionLabel"></span></label>
-    </div>
   </div>
   <div class="statusrow">
-    <button type="button" id="menuBtn" data-i18n-aria-label="menuAria">...</button>
+    <button type="button" id="viewToggleBtn" data-i18n-aria-label="viewToggleAria">🗺️</button>
     <div id="count"></div>
-    <button type="button" class="findsToggleBtn" id="hideFoundBtn" style="display:none"
-            aria-pressed="false" data-i18n-aria-label="hideFoundAria">
-      <span class="hidefound-icon" aria-hidden="true">🙂</span>
-    </button>
+    <button type="button" class="fieldToggleBtn" id="idToggleBtn" aria-pressed="true" data-i18n-aria-label="idToggleAria">ID</button>
+    <button type="button" class="fieldToggleBtn" id="dtsToggleBtn" aria-pressed="true" data-i18n-aria-label="dtsToggleAria">D/T/S</button>
     <select id="sortSel">
       <option value="id" selected data-i18n="sortById"></option>
       <option value="name" data-i18n="sortByName"></option>
       <option value="distance" id="distOpt" disabled data-i18n="sortByDistance"></option>
     </select>
     <button type="button" id="sortDirBtn" data-i18n-aria-label="sortDirAria">⬇️</button>
+  </div>
+  <div class="filterrow">
+    <button type="button" class="findsToggleBtn" id="hideFoundBtn" style="display:none"
+            aria-pressed="false" data-i18n-aria-label="hideFoundAria">
+      <span class="hidefound-icon" aria-hidden="true">🙂</span>
+    </button>
   </div>
 </div>
 <div id="list"></div>
@@ -123,6 +124,9 @@
         <span class="cc-label-text" data-i18n="dmmLabel"></span>
         <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dmm-btn" data-i18n="copyBtn"></button>
       </div>
+      <div class="cc-maps-row" id="cc-maps-dmm-row" style="display:none">
+        <button type="button" class="navbtn" id="cc-maps-dmm-btn" data-i18n="mapBtn"></button>
+      </div>
       <input id="cc-out-dmm" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
     </div>
 
@@ -131,6 +135,9 @@
         <span class="cc-label-text" data-i18n="ddLabel"></span>
         <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dd-btn" data-i18n="copyBtn"></button>
       </div>
+      <div class="cc-maps-row" id="cc-maps-dd-row" style="display:none">
+        <button type="button" class="navbtn" id="cc-maps-dd-btn" data-i18n="mapBtn"></button>
+      </div>
       <input id="cc-out-dd" type="text" readonly placeholder="58.379217, 24.500100">
     </div>
 
@@ -138,6 +145,9 @@
       <div class="cc-row-label">
         <span class="cc-label-text" data-i18n="lestLabel"></span>
         <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-lest-btn" data-i18n="copyBtn"></button>
+      </div>
+      <div class="cc-maps-row" id="cc-maps-lest-row" style="display:none">
+        <button type="button" class="navbtn" id="cc-maps-lest-btn" data-i18n="mapBtn"></button>
       </div>
       <input id="cc-out-lest" type="text" readonly placeholder="529257, 6471080">
     </div>
@@ -185,6 +195,9 @@
       <div class="cc-row-label">
         <span class="cc-label-text" data-i18n="dmmLabel"></span>
         <button type="button" class="cc-copy-btn" style="margin-left:auto" id="pj-copy-out-btn" data-i18n="copyBtn"></button>
+      </div>
+      <div class="cc-maps-row" id="pj-maps-row" style="display:none">
+        <button type="button" class="navbtn" id="pj-maps-btn" data-i18n="mapBtn"></button>
       </div>
       <input id="pj-out" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
     </div>
