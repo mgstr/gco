@@ -533,7 +533,7 @@ function render(q) {
                      ' <button type="button" class="navbtn" data-default="' + escAttr(map.default) + '" data-alts="' + escAttr(JSON.stringify(map.alts)) + '">' + esc(t('mapBtn')) + '</button>';
             })() : '') +
           '</div>' +
-          (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '"></div>' : '') +
+          (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '"></div>' : '') +
           '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' ' + t('byLabel') + ' ' + esc(c.o) +
             (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
         '</div>' +
@@ -586,14 +586,16 @@ function ensureCacheMap(mapDiv) {
   if (!document.body.contains(mapDiv)) return;
   const lat = parseFloat(mapDiv.dataset.lat);
   const lon = parseFloat(mapDiv.dataset.lon);
+  const ty = mapDiv.dataset.ty;
+  const found = mapDiv.dataset.found === '1';
   const map = L.map(mapDiv, { zoomControl: false, doubleClickZoom: false });
   map.fitBounds(ESTONIA_BOUNDS); // whole-Estonia view, sized to the container; only the marker moves per cache
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
-  L.marker([lat, lon]).addTo(map);
-  bindDoubleTap(mapDiv, function() { openFullMap(lat, lon); });
+  L.marker([lat, lon], { icon: getCachePinIcon(ty, found) }).addTo(map);
+  bindDoubleTap(mapDiv, function() { openFullMap(lat, lon, ty, found); });
   mapDiv._map = map;
   openCacheMaps.push(map);
 }
@@ -606,11 +608,11 @@ function ensureFullMap() {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(fullMap);
-  fullMapMarker = L.marker([58.5, 25.0]).addTo(fullMap);
+  fullMapMarker = L.marker([58.5, 25.0], { icon: getCachePinIcon('Tavaline', false) }).addTo(fullMap);
   bindDoubleTap(fullMapEl, function() { showView(previousView); });
 }
 
-function openFullMap(lat, lon) {
+function openFullMap(lat, lon, ty, found) {
   if (!leafletLoaded) return; // no map to show while offline; nothing to do
   previousView = currentView;
   showView('fullmap');
@@ -618,6 +620,7 @@ function openFullMap(lat, lon) {
   fullMap.invalidateSize();
   fullMap.setView([lat, lon], FULLMAP_ZOOM);
   fullMapMarker.setLatLng([lat, lon]);
+  fullMapMarker.setIcon(getCachePinIcon(ty, found));
 }
 
 // ─── Map view (all currently matching results on one map) ─────────────────
@@ -896,7 +899,11 @@ document.getElementById('dataBackBtn').addEventListener('click', function() { sh
   if (initialView) applyView(initialView);
 })();
 
-// ─── Settings → Data (found-caches JSON upload) ─────────────────────────
+// ─── Settings → Data (found-caches import) ──────────────────────────────
+// Accepts either the simple finds.json map, or a geocaching.com pocket
+// query zip download (a "My Finds" query) — the latter is unzipped and its
+// GPX parsed client-side, mirroring get_my_finds/parse_my_finds.py, so
+// there's no manual unzip/convert step for the user.
 const dataStatusEl = document.getElementById('dataStatus');
 const dataMsgEl = document.getElementById('dataMsg');
 const dataFileInput = document.getElementById('dataFileInput');
@@ -929,40 +936,163 @@ function isValidFindsShape(obj) {
   return true;
 }
 
+function showDataError(msg) {
+  dataMsgEl.textContent = msg;
+  dataMsgEl.className = 'data-msg err';
+}
+
+function applyFinds(parsed) {
+  FindsStore.save(parsed);
+  rebuildFoundSet();
+  refreshHideFoundVisibility();
+  refreshDataView();
+  dataMsgEl.textContent = t('dataLoaded', { count: Object.keys(parsed).length });
+  dataMsgEl.className = 'data-msg ok';
+  render(qEl.value.trim());
+}
+
+// GPX_NS/GS_NS/FOUND_LOG_TYPES match get_my_finds/parse_my_finds.py exactly
+// so a pocket query zip and its manually-converted finds.json produce the
+// same result.
+const GPX_NS = 'http://www.topografix.com/GPX/1/0';
+const GS_NS = 'http://www.groundspeak.com/cache/1/0';
+const FOUND_LOG_TYPES = new Set(['Found it', 'Attended', 'Webcam Photo Taken']);
+
+function directChild(el, ns, localName) {
+  for (const child of el.children) {
+    if (child.namespaceURI === ns && child.localName === localName) return child;
+  }
+  return null;
+}
+
+function directChildren(el, ns, localName) {
+  const out = [];
+  for (const child of el.children) {
+    if (child.namespaceURI === ns && child.localName === localName) out.push(child);
+  }
+  return out;
+}
+
+function parseFindsGpx(gpxText) {
+  const doc = new DOMParser().parseFromString(gpxText, 'application/xml');
+  if (doc.querySelector('parsererror')) throw new Error('invalid GPX XML');
+  const finds = {};
+  for (const wpt of directChildren(doc.documentElement, GPX_NS, 'wpt')) {
+    const nameEl = directChild(wpt, GPX_NS, 'name');
+    const gcid = nameEl && nameEl.textContent.trim();
+    if (!gcid) continue;
+    const cache = directChild(wpt, GS_NS, 'cache');
+    if (!cache) continue;
+    const logsEl = directChild(cache, GS_NS, 'logs');
+    let foundLog = null;
+    for (const log of (logsEl ? directChildren(logsEl, GS_NS, 'log') : [])) {
+      const typeEl = directChild(log, GS_NS, 'type');
+      if (typeEl && FOUND_LOG_TYPES.has(typeEl.textContent)) { foundLog = log; break; }
+    }
+    if (!foundLog) continue;
+    const dateEl = directChild(foundLog, GS_NS, 'date');
+    const date = dateEl && dateEl.textContent;
+    if (!date) continue;
+    const textEl = directChild(foundLog, GS_NS, 'text');
+    finds[gcid] = [date.split('T')[0], (textEl ? textEl.textContent : '').trim()];
+  }
+  return finds;
+}
+
+// ─── Minimal ZIP reader ──────────────────────────────────────────────────
+// Just enough to pull the single .gpx entry out of a geocaching.com pocket
+// query download (store or deflate are the only methods it ever uses).
+function readUint32LE(view, off) { return view.getUint32(off, true); }
+function readUint16LE(view, off) { return view.getUint16(off, true); }
+
+async function inflateRaw(bytes) {
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+async function extractGpxFromZip(bytes) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const EOCD_SIG = 0x06054b50;
+  const searchFrom = Math.max(0, bytes.length - 22 - 65536);
+  let eocdOff = -1;
+  for (let i = bytes.length - 22; i >= searchFrom; i--) {
+    if (readUint32LE(view, i) === EOCD_SIG) { eocdOff = i; break; }
+  }
+  if (eocdOff < 0) throw new Error('not a valid zip file');
+
+  const entryCount = readUint16LE(view, eocdOff + 10);
+  let cdOff = readUint32LE(view, eocdOff + 16);
+
+  for (let i = 0; i < entryCount; i++) {
+    if (readUint32LE(view, cdOff) !== 0x02014b50) break;
+    const method = readUint16LE(view, cdOff + 10);
+    const compSize = readUint32LE(view, cdOff + 20);
+    const nameLen = readUint16LE(view, cdOff + 28);
+    const extraLen = readUint16LE(view, cdOff + 30);
+    const commentLen = readUint16LE(view, cdOff + 32);
+    const localOff = readUint32LE(view, cdOff + 42);
+    const name = new TextDecoder().decode(bytes.subarray(cdOff + 46, cdOff + 46 + nameLen));
+
+    if (/\.gpx$/i.test(name)) {
+      const localNameLen = readUint16LE(view, localOff + 26);
+      const localExtraLen = readUint16LE(view, localOff + 28);
+      const dataOff = localOff + 30 + localNameLen + localExtraLen;
+      const compressed = bytes.subarray(dataOff, dataOff + compSize);
+      const raw = method === 0 ? compressed : await inflateRaw(compressed);
+      return new TextDecoder('utf-8').decode(raw);
+    }
+    cdOff += 46 + nameLen + extraLen + commentLen;
+  }
+  return null;
+}
+
+async function importFindsFile(file) {
+  let bytes;
+  try {
+    bytes = new Uint8Array(await file.arrayBuffer());
+  } catch (e) {
+    showDataError(t('fileReadFailed'));
+    return;
+  }
+
+  const isZip = bytes.length >= 4 && bytes[0] === 0x50 && bytes[1] === 0x4B && bytes[2] === 0x03 && bytes[3] === 0x04;
+  let parsed;
+
+  if (isZip) {
+    let gpxText;
+    try {
+      gpxText = await extractGpxFromZip(bytes);
+    } catch (e) {
+      showDataError(t('fileReadFailed'));
+      return;
+    }
+    if (!gpxText) { showDataError(t('zipNoGpx')); return; }
+    try {
+      parsed = parseFindsGpx(gpxText);
+    } catch (e) {
+      showDataError(t('zipParseFailed'));
+      return;
+    }
+  } else {
+    try {
+      parsed = JSON.parse(new TextDecoder('utf-8').decode(bytes));
+    } catch (e) {
+      showDataError(t('fileNotJson'));
+      return;
+    }
+    if (!isValidFindsShape(parsed)) { showDataError(t('fileWrongFormat')); return; }
+  }
+
+  applyFinds(parsed);
+}
+
 dataLoadBtn.addEventListener('click', function() { dataFileInput.click(); });
 
 dataFileInput.addEventListener('change', function() {
   const file = dataFileInput.files[0];
   dataFileInput.value = '';
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function() {
-    let parsed;
-    try {
-      parsed = JSON.parse(reader.result);
-    } catch (e) {
-      dataMsgEl.textContent = t('fileNotJson');
-      dataMsgEl.className = 'data-msg err';
-      return;
-    }
-    if (!isValidFindsShape(parsed)) {
-      dataMsgEl.textContent = t('fileWrongFormat');
-      dataMsgEl.className = 'data-msg err';
-      return;
-    }
-    FindsStore.save(parsed);
-    rebuildFoundSet();
-    refreshHideFoundVisibility();
-    refreshDataView();
-    dataMsgEl.textContent = t('dataLoaded', { count: Object.keys(parsed).length });
-    dataMsgEl.className = 'data-msg ok';
-    render(qEl.value.trim());
-  };
-  reader.onerror = function() {
-    dataMsgEl.textContent = t('fileReadFailed');
-    dataMsgEl.className = 'data-msg err';
-  };
-  reader.readAsText(file);
+  importFindsFile(file);
 });
 
 // ─── Coordinate converter map (ported from coordinate-converter.html) ──────
