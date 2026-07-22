@@ -102,9 +102,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
 /* Tools menu + sub-pages */
 #view-menu, #view-coord, #view-settings, #view-origin, #view-data { min-height: 100vh; background: #fff; }
-#view-fullmap { background: #fff; }
-#fullmap-map { height: 100vh; width: 100%; cursor: pointer;
-               touch-action: manipulation !important; }
 .viewheader { display: flex; align-items: center; gap: 10px; padding: 10px 12px;
               background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 10; }
 .backbtn { font-size: 28px; line-height: 1; background: none; border: none; color: #007aff;

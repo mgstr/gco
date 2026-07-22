@@ -67,9 +67,6 @@ let ccPendingLatLon = null;
 let pjPendingPoints = null;
 let pendingCacheMapDivs = [];
 let openCacheMaps = [];
-let previousView = 'search';
-let fullMap = null;
-let fullMapMarker = null;
 let searchMap = null;
 let searchMapMarkers = [];
 let mapViewActive = false;
@@ -81,7 +78,7 @@ let lastMapClickAt = 0;
 let cachePinIcons = null;
 let userLocationMarker = null;
 const ESTONIA_BOUNDS = [[57.5, 21.5], [59.7, 28.3]]; // mainland + islands, incl. Narva/Saaremaa/Hiiumaa
-const FULLMAP_ZOOM = 17; // close enough for on-the-spot cache finding
+const MAP_FOCUS_ZOOM = 17; // close enough for on-the-spot cache finding
 
 leafletReadyHandler = function() {
   if (currentView === 'coord') {
@@ -529,7 +526,7 @@ function bindNavButton(btn) {
 
 const RENDER_CAP = 200;
 
-function render(q) {
+function render(q, focusLatLon) {
   openCacheMaps.forEach(function(m) { m.remove(); });
   openCacheMaps = [];
   const hideFound = hideFoundActive();
@@ -550,7 +547,7 @@ function render(q) {
     countEl.textContent = '0 / ' + totalCount;
     listEl.innerHTML = '<div id="empty">' + esc(t('noResults')) + '</div>';
     lastShown = [];
-    if (mapViewActive) updateMapMarkers(lastShown);
+    if (mapViewActive) updateMapMarkers(lastShown, focusLatLon);
     return;
   }
 
@@ -613,7 +610,7 @@ function render(q) {
   }
   listEl.innerHTML = rows.join('');
   listEl.querySelectorAll('.navbtn').forEach(bindNavButton);
-  if (mapViewActive) updateMapMarkers(lastShown);
+  if (mapViewActive) updateMapMarkers(lastShown, focusLatLon);
 }
 
 function toggle(row) {
@@ -671,32 +668,9 @@ function ensureCacheMap(mapDiv) {
     maxZoom: 19
   }).addTo(map);
   L.marker([lat, lon], { icon: getCachePinIcon(ty, found, disabled) }).addTo(map);
-  bindDoubleTap(mapDiv, function() { openFullMap(lat, lon, ty, found, disabled); });
+  bindDoubleTap(mapDiv, function() { focusCacheOnMap(lat, lon); });
   mapDiv._map = map;
   openCacheMaps.push(map);
-}
-
-function ensureFullMap() {
-  if (fullMap || !leafletLoaded) return;
-  const fullMapEl = document.getElementById('fullmap-map');
-  fullMap = L.map(fullMapEl, { doubleClickZoom: false });
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19
-  }).addTo(fullMap);
-  fullMapMarker = L.marker([58.5, 25.0], { icon: getCachePinIcon('traditional', false) }).addTo(fullMap);
-  bindDoubleTap(fullMapEl, function() { showView(previousView); });
-}
-
-function openFullMap(lat, lon, ty, found, disabled) {
-  if (!leafletLoaded) return; // no map to show while offline; nothing to do
-  previousView = currentView;
-  showView('fullmap');
-  ensureFullMap();
-  fullMap.invalidateSize();
-  fullMap.setView([lat, lon], FULLMAP_ZOOM);
-  fullMapMarker.setLatLng([lat, lon]);
-  fullMapMarker.setIcon(getCachePinIcon(ty, found, disabled));
 }
 
 // ─── Map view (all currently matching results on one map) ─────────────────
@@ -781,28 +755,29 @@ function setMapOrigin(lat, lon) {
   render(qEl.value.trim());
 }
 
-function updateMapMarkers(list) {
+function updateMapMarkers(list, focusLatLon) {
   if (!searchMap) return;
   searchMapMarkers.forEach(function(m) { m.remove(); });
   searchMapMarkers = [];
   const pts = [];
+  let focusMarker = null;
   list.forEach(function(c) {
     if (c.lat == null) return;
     const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(c.ty, isFound(c), c.disabled) }).addTo(searchMap);
     marker.bindTooltip(c.n);
-    marker.on('click', function(e) {
-      const alts = [];
-      if (c.g) alts.push({ label: t('openGcCom'), url: 'https://coord.info/' + c.g });
-      if (c.gp) alts.push({ label: t('openGeopeitus'), url: 'https://www.geopeitus.ee/aare/' + c.gp });
-      if (!alts.length) return;
-      const pt = searchMap.latLngToContainerPoint(e.latlng);
-      const mapRect = mapCanvasEl.getBoundingClientRect();
-      openNavMenuAt(mapRect.left + pt.x, mapRect.top + pt.y, alts);
+    marker.on('click', function() {
+      showListView();
+      const row = listEl.children[lastShown.indexOf(c)];
+      if (row) toggle(row);
     });
     searchMapMarkers.push(marker);
     pts.push([c.lat, c.lon]);
+    if (focusLatLon && c.lat === focusLatLon[0] && c.lon === focusLatLon[1]) focusMarker = marker;
   });
-  if (pts.length) {
+  if (focusLatLon) {
+    searchMap.setView(focusLatLon, MAP_FOCUS_ZOOM);
+    if (focusMarker) focusMarker.openTooltip();
+  } else if (pts.length) {
     searchMap.fitBounds(pts, { padding: [30, 30], maxZoom: 16 });
   } else {
     searchMap.fitBounds(ESTONIA_BOUNDS);
@@ -813,7 +788,9 @@ function updateViewToggleBtn() {
   viewToggleBtn.textContent = mapViewActive ? '☰' : '🗺️';
 }
 
-function showMapView() {
+// focusLatLon, when given, centers the map on that cache (e.g. from the
+// preview map's double-tap) instead of fitting to the whole result set.
+function showMapView(focusLatLon) {
   mapViewActive = true;
   listEl.style.display = 'none';
   mapviewEl.style.display = '';
@@ -821,7 +798,14 @@ function showMapView() {
   positionMapView();
   ensureLeaflet();
   ensureSearchMap();
-  render(qEl.value.trim());
+  render(qEl.value.trim(), focusLatLon);
+}
+
+// Switches to the map view and zooms straight to a specific cache, at the
+// same zoom level the old single-cache full map used.
+function focusCacheOnMap(lat, lon) {
+  if (!leafletLoaded) return; // no map to show while offline; nothing to do
+  showMapView([lat, lon]);
 }
 
 function showListView() {
@@ -909,14 +893,13 @@ sortDirBtn.addEventListener('click', function() {
 updateSortDirBtn();
 render('');
 
-// ─── Views (search / tools menu / coordinate converter / full map) ─────────
+// ─── Views (search / tools menu / coordinate converter) ────────────────────
 // Path-shaped hash routes, e.g. #/tools/coordinates/conversion — a real path
 // would need a server-side rewrite for the very first (pre-service-worker)
 // load of a deep link, which we can't rely on, so the routing lives entirely
 // in the fragment. The empty/root hash just redirects to /search for now —
 // kept separate so the root can be repurposed later without touching search's
-// own route. 'fullmap' needs a specific lat/lon so it stays a session-only
-// overlay, not deep-linkable, and never touches the hash.
+// own route.
 const VIEW_TO_PATH = {
   search: '/search',
   menu: '/tools',
@@ -939,7 +922,6 @@ function applyView(name) {
   document.getElementById('view-settings').style.display = name === 'settings' ? '' : 'none';
   document.getElementById('view-origin').style.display = name === 'origin' ? '' : 'none';
   document.getElementById('view-data').style.display = name === 'data' ? '' : 'none';
-  document.getElementById('view-fullmap').style.display = name === 'fullmap' ? '' : 'none';
   if (name === 'coord' || name === 'proj') ensureLeaflet();
   if (name === 'coord' && leafletLoaded) ccInitMap();
   if (name === 'proj' && leafletLoaded) pjInitMap();
@@ -949,7 +931,7 @@ function applyView(name) {
 function showView(name) {
   applyView(name);
   const path = VIEW_TO_PATH[name];
-  if (!path) return; // e.g. 'fullmap' — session-only, leave the URL alone
+  if (!path) return;
   const target = '#' + path;
   if (location.hash !== target) location.hash = target;
 }
