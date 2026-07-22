@@ -1,5 +1,3 @@
-const ICONS = {"traditional": "icons/regular.png", "mystery": "icons/mystery.png", "multi": "icons/multi.png", "virtual": "icons/virtual.png", "wherigo": "icons/wherigo.png", "letterbox": "icons/letterbox.png", "unknown": "icons/reverse.png", "webcam": "icons/webcam.png"};
-
 // Map-pin icons: mirrors geocaching.com's own cache-type artwork and colors
 // (glyph + per-type circle color extracted from geocaching.com's live icon
 // sprite, /app/ui-icons/sprites/cache-types.svg — Groundspeak-owned, kept
@@ -240,6 +238,63 @@ for (let i = 0; i < CACHES.length; i++) {
 // can be swapped for other locales later without touching the data — see
 // sizeLabel() in i18n.js.
 const SIZE_LETTERS = { 0: 'o', 1: 'm', 2: 'v', 3: 'n', 4: 'l' };
+
+// Difficulty/terrain rating thresholds for the flyout's colored badges.
+// Orange covers [orangeMin, redMin]; red is anything above redMin.
+const DIFFICULTY_ORANGE_MIN = 3.0;
+const DIFFICULTY_RED_MIN = 4.0;
+const TERRAIN_ORANGE_MIN = 3.5;
+const TERRAIN_RED_MIN = 4.0;
+
+function ratingBadgeClass(value, orangeMin, redMin) {
+  const v = parseFloat(value);
+  if (isNaN(v)) return '';
+  if (v > redMin) return 'rating-red';
+  if (v >= orangeMin) return 'rating-orange';
+  return '';
+}
+
+function ratingValueHtml(value, orangeMin, redMin) {
+  const cls = ratingBadgeClass(value, orangeMin, redMin);
+  return cls ? '<span class="rating-badge ' + cls + '">' + esc(value) + '</span>' : esc(value);
+}
+
+// Only micro (orange) and other (green) get a colored badge; small/regular/large are plain text.
+function sizeValueHtml(sz) {
+  const label = esc(sizeLabel(sz).toLowerCase());
+  if (sz === 1) return '<span class="size-badge size-orange">' + label + '</span>';
+  if (sz === 0) return '<span class="size-badge size-green">' + label + '</span>';
+  return label;
+}
+
+// Cache attribute icons (dogs allowed, kid friendly, etc.) for the detail
+// panel. Vendored locally under ./vendor/attributes/ (see that directory and
+// sw.js's precache list) from geocaching.com's own /images/attributes/
+// artwork so they work offline — fine for personal use but not meant to be
+// redistributed. c.at entries are slugs, negated ones ("no" icon variant)
+// prefixed with "!".
+function attrsRowHtml(at) {
+  if (!at || !at.length) return '';
+  return '<div class="attrs-row">' + at.map(function(a) {
+    const negated = a.charAt(0) === '!';
+    const slug = negated ? a.slice(1) : a;
+    const src = './vendor/attributes/' + slug + '-' + (negated ? 'no' : 'yes') + '.png';
+    const label = attributeLabel(slug, negated);
+    return '<img class="attr-icon' + (negated ? ' attr-no' : '') + '" loading="lazy" src="' + src + '" alt="" title="' + escAttr(label) + '">';
+  }).join('') + '</div>';
+}
+
+// Small round type icon for the search-results list row, using the same
+// glyph/color artwork as the map pins (GC_PIN_TYPES) instead of the old
+// separate icons/*.png set, so both views agree on what each type looks like.
+// Disabled caches render gray and found caches render yellow, same as their
+// map pin (disabled takes priority over found, same as getCachePinIcon).
+function cacheTypeIconHtml(ty, disabled, found) {
+  const type = GC_PIN_TYPES[ty] || GC_PIN_TYPES['traditional'];
+  const bg = disabled ? DISABLED_PIN_COLOR : (found ? FOUND_PIN_COLOR : type.color);
+  return '<span class="type-icon" style="background:' + bg + '">' +
+    '<svg viewBox="0 0 48 48">' + type.glyph + '</svg></span>';
+}
 
 // Map-view pin icon by cache type (c.ty holds the English type code — see
 // GC_PIN_TYPES above). Falls back to the traditional-cache glyph for any
@@ -510,7 +565,7 @@ function render(q) {
   const rows = [];
   for (let i = 0; i < shown.length; i++) {
     const c = shown[i];
-    const icon = ICONS[c.ty] ? '<img src="' + ICONS[c.ty] + '" alt="">' : '';
+    const icon = cacheTypeIconHtml(c.ty, c.disabled, isFound(c));
     const listDist = distanceFor(c);
     rows.push(
       '<div class="row" onclick="toggle(this)">' +
@@ -529,7 +584,13 @@ function render(q) {
               (c.gp ? '<a href="https://www.geopeitus.ee/aare/' + c.gp + '" target="_blank">GP</a>' : '') +
               '</span>' : '') + '</div>' +
           '<div><b>' + t('typeFieldLabel') + '</b> ' + esc(typeLabel(c.ty)) +
-            (c.sz != null ? ' · <b>' + t('sizeFieldLabel') + '</b> ' + esc(sizeLabel(c.sz).toLowerCase()) : '') + '</div>' +
+            (c.sz != null ? ' · <b>' + t('sizeFieldLabel') + '</b> ' + sizeValueHtml(c.sz) : '') + '</div>' +
+          (c.d || c.t ? '<div>' +
+            (c.d ? '<b>' + t('difficultyFieldLabel') + '</b> ' + ratingValueHtml(c.d, DIFFICULTY_ORANGE_MIN, DIFFICULTY_RED_MIN) : '') +
+            (c.d && c.t ? ' · ' : '') +
+            (c.t ? '<b>' + t('terrainFieldLabel') + '</b> ' + ratingValueHtml(c.t, TERRAIN_ORANGE_MIN, TERRAIN_RED_MIN) : '') +
+            '</div>' : '') +
+          attrsRowHtml(c.at) +
           (c.r ? '<div><b>' + t('addressLabel') + '</b> ' + esc(c.r) + '</div>' : '') +
           '<div class="coord"><b>' + t('coordinatesLabel') + '</b> ' +
             '<button type="button" class="coordbtn" data-coords="' + esc(c.la + ' ' + c.lo) + '" onclick="event.stopPropagation(); copyCoords(this)">' + c.la + ' · ' + c.lo + ' 📋</button>' +
