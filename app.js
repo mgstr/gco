@@ -1,4 +1,4 @@
-const ICONS = {"Tavaline": "icons/regular.png", "Mõistatus": "icons/mystery.png", "Multi": "icons/multi.png", "Virtuaalne": "icons/virtual.png", "KusMaLäen": "icons/wherigo.png", "Kirjakast": "icons/letterbox.png", "Asukohata": "icons/reverse.png", "Veebikaamera": "icons/webcam.png"};
+const ICONS = {"traditional": "icons/regular.png", "mystery": "icons/mystery.png", "multi": "icons/multi.png", "virtual": "icons/virtual.png", "wherigo": "icons/wherigo.png", "letterbox": "icons/letterbox.png", "unknown": "icons/reverse.png", "webcam": "icons/webcam.png"};
 
 // Map-pin icons: mirrors geocaching.com's own cache-type artwork and colors
 // (glyph + per-type circle color extracted from geocaching.com's live icon
@@ -7,16 +7,17 @@ const ICONS = {"Tavaline": "icons/regular.png", "Mõistatus": "icons/mystery.png
 // users already know, instead of the list view's separate icon set above.
 // Found caches (see isFound()) get a flat yellow pin regardless of type.
 const GC_PIN_TYPES = {
-  "Tavaline": { color: "#02874d", glyph: "<path d=\"M37.43 16.444a.435.435 0 0 0-.429-.441c-.409-.01-11.518.006-11.518.006l-15.117 3.683s-.367.092-.367.736v1.919c0 .708.613.662.613.662l.237.049v6.693c0 1.659 1.138 3.017 2.561 3.017h8.58c.425 0 .819-.133 1.174-.345l.005.015 11.092-4.594c2.279-1.027 2.36-1.854 2.319-3.492 0-.193-.009-.404-.009-.635V18.63c.169-.06.601-.101.61-.11.006-.004.257-.092.257-.423 0-.401-.008-1.221-.008-1.653zM21.588 30.988h-7.749c-.696 0-1.259-.744-1.259-1.66v-6.269h10.268v6.269c0 .915-.564 1.66-1.26 1.66zm13.276-6.963c.03 1.31-.12 1.587-1.535 2.216l-8.814 3.707c.03-.193.049-.391.049-.593l.006-6.297s.658-.373.857-.441c1.846-.633 6.784-2.412 9.424-3.365v4.105c0 .244.005.466.013.668z\" fill=\"#fff\"/>" },
-  "Multi": { color: "#e98300", glyph: "<path d=\"M31.536 20.961a372.68 372.68 0 0 0-2.624-.005c-2.709 0-6.372.005-6.372.005l-12.061 2.285s-.294.07-.294.568v.918c0 .484.375.514.467.514h.02l.379.045v5.437c0 1.296.924 2.348 2.057 2.348h6.557c.339 0 .656-.105.937-.271l.005.013 8.463-3.065c1.822-.794 1.857-1.541 1.857-2.709l-.003-4.345c.137-.051.59-.064.596-.073.004-.005.226-.073.226-.328V21.21c.001-.177-.2-.249-.21-.249zM18.691 31.333h-4.92c-.55 0-.991-.56-.991-1.276v-4.766h6.912l.003 4.747c0 .717-.452 1.295-1.004 1.295zm10.517-4.883c-.011.569-.095 1.231-1.223 1.72l-6.616 2.264s.051-.231.051-.391v-4.752l7.776-2.121c.003.318.025 2.604.012 3.28zm8.325-10.293l-12.657-1.234s-8.969 1.323-9.291 1.361c-.01 0-.206.095-.21.28v1.416c0 .263.216.309.217.313.013.006.519.03.652.07l.238.016h-.247l.003 1.632 1.732-.232-.006-1.298 10.472.717s.766.035 1.225.035c.118 0 .215-.003.274-.009 2.237-.215 4.047-.436 5.319-.607l-.005 4.035c0 .725-.447.837-.995.888l-1.627.309c.001.162.003.211.009.353.005.218.007.905.001 1.092l2.293-.309c1.122-.102 2.032-1.253 2.032-2.561l.01-4.053.364-.057s.484-.01.484-.566c0-.274 0-.747.003-1.04-.001-.506-.29-.551-.29-.551z\" fill=\"#fff\"/>" },
-  "Mõistatus": { color: "#12508c", glyph: "<path d=\"M23.128 11.52c-6.949 0-8.254 4.578-8.251 6.659 0 2.497 1.737 3.329 3.909 3.329 2.268 0 3.04-1.628 3.04-2.497s-.434-2.497-2.606-2.497c0-.869 1.424-1.665 3.909-1.665 2.606 0 3.909 1.665 3.909 3.329 0 1.665-.469 2.456-2.606 4.162-2.606 2.081-3.474 3.329-3.474 4.994-.002.832 0 1.23 0 1.665 0 .416.869.832 1.737.832.869 0 1.737-.416 1.737-.832 0-1.739-.013-2.515 3.909-4.994 3.909-2.497 4.777-3.746 4.777-5.827-.001-2.496-1.304-6.658-9.99-6.658zm-.448 19.961c-1.441 0-2.608 1.119-2.608 2.499s1.168 2.5 2.608 2.5c1.44 0 2.608-1.119 2.608-2.5s-1.168-2.499-2.608-2.499z\" fill=\"#fff\"/>" },
-  "Virtuaalne": { color: "#009bbb", glyph: "<path d=\"M31.507 19.387c0 .104.005-.104 0 0zm.631 9.216c3.473-3.267 4.14-8.031 2.599-8.414-1.088-.27-1.667.708-3.201 2-.029-1.061-.029-1.932-.029-2.802 0-4.316-2.201-8.022-7.234-8.022s-7.333 3.55-7.333 8.241c.003.09-.111 1.392-.214 2.797-1.734-1.396-2.315-2.5-3.463-2.215-1.615.401-.807 5.616 3.116 8.875l.088.041c-.109 1.722-.323 3.37-.73 4.564-1.432 4.192 3.726 1.362 4.87 1.362 1.312 0 2.598 1.586 4.441 1.604 1.935.019 2.067-1.081 4.037-1.604 1.232-.327 5.606 3.122 4.037-2.407a52.134 52.134 0 0 1-.984-4.02zm-11.531-8.815c0-1.108.542-2.006 1.211-2.006s1.211.898 1.211 2.006c0 1.107-.542 2.006-1.211 2.006s-1.211-.898-1.211-2.006zm3.633 5.558c-.988 0-2.091-.84-2.091-1.504 0-.665 1.103.201 2.091.201s2.019-.908 2.019-.243-1.031 1.546-2.019 1.546zm2.422-3.552c-.669 0-1.211-.898-1.211-2.006 0-1.108.542-2.006 1.211-2.006s1.211.898 1.211 2.006c.001 1.108-.542 2.006-1.211 2.006z\" fill=\"#fff\"/>" },
-  "KusMaLäen": { color: "#12508c", glyph: "<g fill=\"#fff\"><path d=\"M24.571 12.192c-6.461 0-11.7 5.093-11.7 11.373 0 6.282 5.24 11.374 11.7 11.374 6.462 0 11.701-5.092 11.701-11.374-.001-6.28-5.239-11.373-11.701-11.373zm.417 15.812l-5.139-4.998 8.894-3.65-3.755 8.648z\"/><path d=\"M25.206 9.12l-.178 2.669c2.559.149 4.985.994 7.06 2.44l1.677-2.147a16.56 16.56 0 0 0-8.559-2.962zm10.306 4.372a21.778 21.778 0 0 0-.557-.493l-1.884 1.982c.17.143.345.279.51.43.132.123.247.256.372.382l2.057-1.792c-.168-.167-.321-.346-.498-.509zm-.735 3.205c1.61 1.942 2.568 4.221 2.847 6.556l.564-.039c-.338-2.584-1.397-4.572-3.097-6.282l-.314-.235zm3.516 7.793l-.582-.015c.007.399-.001.798-.032 1.196l.6.068c.024-.42.027-.835.014-1.249zM34.19 33.3l.582.549a12.802 12.802 0 0 0 3.367-6.835l-.616-.127A12.192 12.192 0 0 1 34.19 33.3zm-1.895 1.592l.489.672c.354-.247.695-.514 1.024-.799l-.538-.615a12.71 12.71 0 0 1-.975.742zm-7.373 2.332c-.3.004-.596-.014-.892-.028l-.054 1.108c2.696-.005 5.375-.694 7.679-2.02l-.425-.733a13.454 13.454 0 0 1-6.308 1.673zm-3.703.844c.45.08.901.138 1.354.176l.178-1.169a15.336 15.336 0 0 1-1.225-.224l-.307 1.217zm-7.021-5.674l-1.366 1.034a14.538 14.538 0 0 0 3.147 2.652 14.526 14.526 0 0 0 3.872 1.682l.453-1.255a13.61 13.61 0 0 1-4.995-2.938c-.403-.373-.766-.77-1.111-1.175zM12.802 30.4l-1.608.795c.232.389.483.77.752 1.138l1.497-.92a12.368 12.368 0 0 1-.641-1.013zm-1.466-8.12l-2.112-.373a14.684 14.684 0 0 0 1.312 8.057l1.713-.659a12.408 12.408 0 0 1-.913-7.025zm.628-2.341l-2.117-.798c-.148.447-.274.898-.377 1.352l2.123.587c.106-.385.23-.766.371-1.141zm2.845-4.381a13.056 13.056 0 0 1 6.479-3.491l-.576-2.439c-3.85.957-7.342 3.146-9.428 6.464a14.425 14.425 0 0 0-.91 1.705l2.084 1.017a12.365 12.365 0 0 1 2.351-3.256zm7.395-6.235l.336 2.536a13.87 13.87 0 0 1 1.231-.089l-.093-2.627c-.493.038-.984.098-1.474.18z\"/></g>" },
-  "Kirjakast": { color: "#12508c", glyph: "<path d=\"M12.48 16.32v.8l8.94 6 1.17.8L24.18 25l1.58-1.06 1.17-.8 8.94-6v-.8zm0 2.4v10.4L20.17 24l-7.69-5.26zm11.7 8l-2.84-1.94-8.86 5.94h23.4L27 24.78l-2.84 1.94zm11.7 2.4v-10.4L28.19 24l7.69 5.14z\" fill=\"#fff\"/>" },
-  "Veebikaamera": { color: "#009bbb", glyph: "<path d=\"M24.038 18.879c-1.997 0-3.616 1.593-3.616 3.559 0 1.966 1.619 3.559 3.616 3.559s3.616-1.593 3.616-3.559c0-1.965-1.619-3.559-3.616-3.559zm3.982 12.622c3.566-1.529 6.061-5.026 6.061-9.099 0-5.48-4.513-9.922-10.08-9.922s-10.08 4.442-10.08 9.922c0 4.073 2.495 7.572 6.062 9.1-2.444.908-4.377 2.433-4.377 3.583 0 .222.09.436.443.436h15.954a.428.428 0 0 0 .443-.436c-.001-1.151-1.963-2.677-4.426-3.584zm-4.007-3.916c-2.902 0-5.255-2.315-5.255-5.172s2.353-5.172 5.255-5.172 5.254 2.315 5.254 5.172-2.352 5.172-5.254 5.172z\" fill=\"#fff\"/>" },
-  "Asukohata": { color: "#87705a", glyph: "<path d=\"M25.204 17.157c-6.201-1.093-12.114 3.047-13.207 9.248s3.047 12.114 9.248 13.208c6.201 1.093 12.114-3.047 13.207-9.248 1.093-6.202-3.048-12.115-9.248-13.208zm-1.818 2.285l-2.116 1.504-.575-1.419-.223-1.182-.852 1.302-1.34-.045.619-.511-.27-.142-2.08 2.019.605 1.044.94-1.905 1.146.614.315 1.826.007-.001-.006.009.1.578-.331-.219.231-.359-.001-.008-.911.123s.227.694.162.686c-.26-.028-.863.15-.863.15-.614.399-1.757 1.758-1.757 1.758l-.172.873-.746-.749-.736.071-.515 1.374.462.279.589-.297.461.778-.022.693 1.037.112 1.949.597.995 2.088.766.555-1.552 1.807-.96 2.1-.78.663-.242.556-1.088-1.242.073-1.771-.708-2.319.002-1.542.933-.752-2.131-2.131-.893-1.565s.234-2.329 4.296-5.665c3.523-2.894 7.354-1.841 7.354-1.841l-.856 1.357-.316.149zm4.813 14.854l-1.041 1.383-1.652 1.036-.508-1.616.039-2.364-.324-2.416-1.475.051-.854-1.751.731-1.252 1.242-1.427.509-.22.735.177.629.062.396.77 1.885.341s.058-.017.719 1.041c.661 1.058.634 1.256.634 1.256l-.488.819-.294.048.849.274-1.732 3.788zm3.539-6.157l-.998-.049s-.156-.713-.625-1.078c-.469-.365-1.548-.913-1.548-.913L27.955 26l-.355-.661-.48.506-.066-.302-.534.027-.769-1.145-.78.12-.505.359-.446-.114.155-.586.72.012.308-.971-.488-.223.123-.714-.468.08.518-.239-.051-.432.135-.097.388 1.333.821-.258.092-.548.195.566.832.017.557-1.219-.195-.021-.076-.578-.706 1.446-.41-.641-.134.143-.339-.496 2.188-1.811 1.655 1.143 1.005.232s1.442 1.258 1.986 3.865c.545 2.607.843 4.081.843 4.081l-.915 2.045-1.021-2.78zm-3.62-18.991l-1.03 5.844 7.82-1.634-6.79-4.21zm-2.791 7.164c.241.042.557-.173.557-.173l1.352-7.665-.984-.173-1.352 7.665c.001 0 .187.304.427.346z\" fill=\"#fff\"/>" }
+  "traditional": { color: "#02874d", glyph: "<path d=\"M37.43 16.444a.435.435 0 0 0-.429-.441c-.409-.01-11.518.006-11.518.006l-15.117 3.683s-.367.092-.367.736v1.919c0 .708.613.662.613.662l.237.049v6.693c0 1.659 1.138 3.017 2.561 3.017h8.58c.425 0 .819-.133 1.174-.345l.005.015 11.092-4.594c2.279-1.027 2.36-1.854 2.319-3.492 0-.193-.009-.404-.009-.635V18.63c.169-.06.601-.101.61-.11.006-.004.257-.092.257-.423 0-.401-.008-1.221-.008-1.653zM21.588 30.988h-7.749c-.696 0-1.259-.744-1.259-1.66v-6.269h10.268v6.269c0 .915-.564 1.66-1.26 1.66zm13.276-6.963c.03 1.31-.12 1.587-1.535 2.216l-8.814 3.707c.03-.193.049-.391.049-.593l.006-6.297s.658-.373.857-.441c1.846-.633 6.784-2.412 9.424-3.365v4.105c0 .244.005.466.013.668z\" fill=\"#fff\"/>" },
+  "multi": { color: "#e98300", glyph: "<path d=\"M31.536 20.961a372.68 372.68 0 0 0-2.624-.005c-2.709 0-6.372.005-6.372.005l-12.061 2.285s-.294.07-.294.568v.918c0 .484.375.514.467.514h.02l.379.045v5.437c0 1.296.924 2.348 2.057 2.348h6.557c.339 0 .656-.105.937-.271l.005.013 8.463-3.065c1.822-.794 1.857-1.541 1.857-2.709l-.003-4.345c.137-.051.59-.064.596-.073.004-.005.226-.073.226-.328V21.21c.001-.177-.2-.249-.21-.249zM18.691 31.333h-4.92c-.55 0-.991-.56-.991-1.276v-4.766h6.912l.003 4.747c0 .717-.452 1.295-1.004 1.295zm10.517-4.883c-.011.569-.095 1.231-1.223 1.72l-6.616 2.264s.051-.231.051-.391v-4.752l7.776-2.121c.003.318.025 2.604.012 3.28zm8.325-10.293l-12.657-1.234s-8.969 1.323-9.291 1.361c-.01 0-.206.095-.21.28v1.416c0 .263.216.309.217.313.013.006.519.03.652.07l.238.016h-.247l.003 1.632 1.732-.232-.006-1.298 10.472.717s.766.035 1.225.035c.118 0 .215-.003.274-.009 2.237-.215 4.047-.436 5.319-.607l-.005 4.035c0 .725-.447.837-.995.888l-1.627.309c.001.162.003.211.009.353.005.218.007.905.001 1.092l2.293-.309c1.122-.102 2.032-1.253 2.032-2.561l.01-4.053.364-.057s.484-.01.484-.566c0-.274 0-.747.003-1.04-.001-.506-.29-.551-.29-.551z\" fill=\"#fff\"/>" },
+  "mystery": { color: "#12508c", glyph: "<path d=\"M23.128 11.52c-6.949 0-8.254 4.578-8.251 6.659 0 2.497 1.737 3.329 3.909 3.329 2.268 0 3.04-1.628 3.04-2.497s-.434-2.497-2.606-2.497c0-.869 1.424-1.665 3.909-1.665 2.606 0 3.909 1.665 3.909 3.329 0 1.665-.469 2.456-2.606 4.162-2.606 2.081-3.474 3.329-3.474 4.994-.002.832 0 1.23 0 1.665 0 .416.869.832 1.737.832.869 0 1.737-.416 1.737-.832 0-1.739-.013-2.515 3.909-4.994 3.909-2.497 4.777-3.746 4.777-5.827-.001-2.496-1.304-6.658-9.99-6.658zm-.448 19.961c-1.441 0-2.608 1.119-2.608 2.499s1.168 2.5 2.608 2.5c1.44 0 2.608-1.119 2.608-2.5s-1.168-2.499-2.608-2.499z\" fill=\"#fff\"/>" },
+  "virtual": { color: "#009bbb", glyph: "<path d=\"M31.507 19.387c0 .104.005-.104 0 0zm.631 9.216c3.473-3.267 4.14-8.031 2.599-8.414-1.088-.27-1.667.708-3.201 2-.029-1.061-.029-1.932-.029-2.802 0-4.316-2.201-8.022-7.234-8.022s-7.333 3.55-7.333 8.241c.003.09-.111 1.392-.214 2.797-1.734-1.396-2.315-2.5-3.463-2.215-1.615.401-.807 5.616 3.116 8.875l.088.041c-.109 1.722-.323 3.37-.73 4.564-1.432 4.192 3.726 1.362 4.87 1.362 1.312 0 2.598 1.586 4.441 1.604 1.935.019 2.067-1.081 4.037-1.604 1.232-.327 5.606 3.122 4.037-2.407a52.134 52.134 0 0 1-.984-4.02zm-11.531-8.815c0-1.108.542-2.006 1.211-2.006s1.211.898 1.211 2.006c0 1.107-.542 2.006-1.211 2.006s-1.211-.898-1.211-2.006zm3.633 5.558c-.988 0-2.091-.84-2.091-1.504 0-.665 1.103.201 2.091.201s2.019-.908 2.019-.243-1.031 1.546-2.019 1.546zm2.422-3.552c-.669 0-1.211-.898-1.211-2.006 0-1.108.542-2.006 1.211-2.006s1.211.898 1.211 2.006c.001 1.108-.542 2.006-1.211 2.006z\" fill=\"#fff\"/>" },
+  "wherigo": { color: "#12508c", glyph: "<g fill=\"#fff\"><path d=\"M24.571 12.192c-6.461 0-11.7 5.093-11.7 11.373 0 6.282 5.24 11.374 11.7 11.374 6.462 0 11.701-5.092 11.701-11.374-.001-6.28-5.239-11.373-11.701-11.373zm.417 15.812l-5.139-4.998 8.894-3.65-3.755 8.648z\"/><path d=\"M25.206 9.12l-.178 2.669c2.559.149 4.985.994 7.06 2.44l1.677-2.147a16.56 16.56 0 0 0-8.559-2.962zm10.306 4.372a21.778 21.778 0 0 0-.557-.493l-1.884 1.982c.17.143.345.279.51.43.132.123.247.256.372.382l2.057-1.792c-.168-.167-.321-.346-.498-.509zm-.735 3.205c1.61 1.942 2.568 4.221 2.847 6.556l.564-.039c-.338-2.584-1.397-4.572-3.097-6.282l-.314-.235zm3.516 7.793l-.582-.015c.007.399-.001.798-.032 1.196l.6.068c.024-.42.027-.835.014-1.249zM34.19 33.3l.582.549a12.802 12.802 0 0 0 3.367-6.835l-.616-.127A12.192 12.192 0 0 1 34.19 33.3zm-1.895 1.592l.489.672c.354-.247.695-.514 1.024-.799l-.538-.615a12.71 12.71 0 0 1-.975.742zm-7.373 2.332c-.3.004-.596-.014-.892-.028l-.054 1.108c2.696-.005 5.375-.694 7.679-2.02l-.425-.733a13.454 13.454 0 0 1-6.308 1.673zm-3.703.844c.45.08.901.138 1.354.176l.178-1.169a15.336 15.336 0 0 1-1.225-.224l-.307 1.217zm-7.021-5.674l-1.366 1.034a14.538 14.538 0 0 0 3.147 2.652 14.526 14.526 0 0 0 3.872 1.682l.453-1.255a13.61 13.61 0 0 1-4.995-2.938c-.403-.373-.766-.77-1.111-1.175zM12.802 30.4l-1.608.795c.232.389.483.77.752 1.138l1.497-.92a12.368 12.368 0 0 1-.641-1.013zm-1.466-8.12l-2.112-.373a14.684 14.684 0 0 0 1.312 8.057l1.713-.659a12.408 12.408 0 0 1-.913-7.025zm.628-2.341l-2.117-.798c-.148.447-.274.898-.377 1.352l2.123.587c.106-.385.23-.766.371-1.141zm2.845-4.381a13.056 13.056 0 0 1 6.479-3.491l-.576-2.439c-3.85.957-7.342 3.146-9.428 6.464a14.425 14.425 0 0 0-.91 1.705l2.084 1.017a12.365 12.365 0 0 1 2.351-3.256zm7.395-6.235l.336 2.536a13.87 13.87 0 0 1 1.231-.089l-.093-2.627c-.493.038-.984.098-1.474.18z\"/></g>" },
+  "letterbox": { color: "#12508c", glyph: "<path d=\"M12.48 16.32v.8l8.94 6 1.17.8L24.18 25l1.58-1.06 1.17-.8 8.94-6v-.8zm0 2.4v10.4L20.17 24l-7.69-5.26zm11.7 8l-2.84-1.94-8.86 5.94h23.4L27 24.78l-2.84 1.94zm11.7 2.4v-10.4L28.19 24l7.69 5.14z\" fill=\"#fff\"/>" },
+  "webcam": { color: "#009bbb", glyph: "<path d=\"M24.038 18.879c-1.997 0-3.616 1.593-3.616 3.559 0 1.966 1.619 3.559 3.616 3.559s3.616-1.593 3.616-3.559c0-1.965-1.619-3.559-3.616-3.559zm3.982 12.622c3.566-1.529 6.061-5.026 6.061-9.099 0-5.48-4.513-9.922-10.08-9.922s-10.08 4.442-10.08 9.922c0 4.073 2.495 7.572 6.062 9.1-2.444.908-4.377 2.433-4.377 3.583 0 .222.09.436.443.436h15.954a.428.428 0 0 0 .443-.436c-.001-1.151-1.963-2.677-4.426-3.584zm-4.007-3.916c-2.902 0-5.255-2.315-5.255-5.172s2.353-5.172 5.255-5.172 5.254 2.315 5.254 5.172-2.352 5.172-5.254 5.172z\" fill=\"#fff\"/>" },
+  "unknown": { color: "#87705a", glyph: "<path d=\"M25.204 17.157c-6.201-1.093-12.114 3.047-13.207 9.248s3.047 12.114 9.248 13.208c6.201 1.093 12.114-3.047 13.207-9.248 1.093-6.202-3.048-12.115-9.248-13.208zm-1.818 2.285l-2.116 1.504-.575-1.419-.223-1.182-.852 1.302-1.34-.045.619-.511-.27-.142-2.08 2.019.605 1.044.94-1.905 1.146.614.315 1.826.007-.001-.006.009.1.578-.331-.219.231-.359-.001-.008-.911.123s.227.694.162.686c-.26-.028-.863.15-.863.15-.614.399-1.757 1.758-1.757 1.758l-.172.873-.746-.749-.736.071-.515 1.374.462.279.589-.297.461.778-.022.693 1.037.112 1.949.597.995 2.088.766.555-1.552 1.807-.96 2.1-.78.663-.242.556-1.088-1.242.073-1.771-.708-2.319.002-1.542.933-.752-2.131-2.131-.893-1.565s.234-2.329 4.296-5.665c3.523-2.894 7.354-1.841 7.354-1.841l-.856 1.357-.316.149zm4.813 14.854l-1.041 1.383-1.652 1.036-.508-1.616.039-2.364-.324-2.416-1.475.051-.854-1.751.731-1.252 1.242-1.427.509-.22.735.177.629.062.396.77 1.885.341s.058-.017.719 1.041c.661 1.058.634 1.256.634 1.256l-.488.819-.294.048.849.274-1.732 3.788zm3.539-6.157l-.998-.049s-.156-.713-.625-1.078c-.469-.365-1.548-.913-1.548-.913L27.955 26l-.355-.661-.48.506-.066-.302-.534.027-.769-1.145-.78.12-.505.359-.446-.114.155-.586.72.012.308-.971-.488-.223.123-.714-.468.08.518-.239-.051-.432.135-.097.388 1.333.821-.258.092-.548.195.566.832.017.557-1.219-.195-.021-.076-.578-.706 1.446-.41-.641-.134.143-.339-.496 2.188-1.811 1.655 1.143 1.005.232s1.442 1.258 1.986 3.865c.545 2.607.843 4.081.843 4.081l-.915 2.045-1.021-2.78zm-3.62-18.991l-1.03 5.844 7.82-1.634-6.79-4.21zm-2.791 7.164c.241.042.557-.173.557-.173l1.352-7.665-.984-.173-1.352 7.665c.001 0 .187.304.427.346z\" fill=\"#fff\"/>" }
 };
 const FOUND_PIN_COLOR = "#ffd60a";
+const DISABLED_PIN_COLOR = "#b8b8b8";
 
 // ─── Leaflet (shared by cache-detail maps and the coordinate converter) ────
 // Self-hosted (./vendor/leaflet) and precached by the service worker, so
@@ -102,6 +103,7 @@ if (leafletLoaded) leafletReadyHandler();
 const qEl = document.getElementById('q');
 const viewToggleBtn = document.getElementById('viewToggleBtn');
 const hideFoundBtn = document.getElementById('hideFoundBtn');
+const hideDisabledBtn = document.getElementById('hideDisabledBtn');
 const idToggleBtn = document.getElementById('idToggleBtn');
 const dtsToggleBtn = document.getElementById('dtsToggleBtn');
 const sortSel = document.getElementById('sortSel');
@@ -187,17 +189,13 @@ function boolPref(key, def) {
 // Whether the "hide my finds" checkbox itself was last checked/unchecked —
 // separate from the finds data, so it survives independently of it.
 const HideFindsPref = boolPref('gcHideFindsPrefV1', true);
+const HideDisabledPref = boolPref('gcHideDisabledPrefV1', false);
 const ShowIdPref = boolPref('gcShowIdPrefV1', true);
 const ShowDtsPref = boolPref('gcShowDtsPrefV1', true);
 
 let FOUND_SET = new Set();
-let FOUND_IN_ESTONIA_COUNT = 0;
 function rebuildFoundSet() {
   FOUND_SET = new Set(Object.keys(FindsStore.getFinds()));
-  FOUND_IN_ESTONIA_COUNT = 0;
-  for (let i = 0; i < CACHES.length; i++) {
-    if (FOUND_SET.has(CACHES[i].g)) FOUND_IN_ESTONIA_COUNT++;
-  }
 }
 rebuildFoundSet();
 
@@ -215,6 +213,11 @@ function refreshHideFoundVisibility() {
   hideFoundBtn.setAttribute('aria-pressed', String(has && HideFindsPref.get()));
 }
 refreshHideFoundVisibility();
+
+function hideDisabledActive() {
+  return hideDisabledBtn.getAttribute('aria-pressed') === 'true';
+}
+hideDisabledBtn.setAttribute('aria-pressed', String(HideDisabledPref.get()));
 
 // Showing/hiding the GC id and D/T/S columns only affects which CSS class is
 // on #list — the row markup itself always includes both, so no re-render is
@@ -238,16 +241,18 @@ for (let i = 0; i < CACHES.length; i++) {
 // sizeLabel() in i18n.js.
 const SIZE_LETTERS = { 0: 'o', 1: 'm', 2: 'v', 3: 'n', 4: 'l' };
 
-// Map-view pin icon by cache type (c.ty holds the Estonian type_name — see
+// Map-view pin icon by cache type (c.ty holds the English type code — see
 // GC_PIN_TYPES above). Falls back to the traditional-cache glyph for any
 // type not in the map. Found caches always render as a flat yellow pin,
 // regardless of type, so found status reads at a glance on the map.
-function getCachePinIcon(ty, found) {
+// Disabled caches take priority over found and always render as a flat
+// gray pin instead.
+function getCachePinIcon(ty, found, disabled) {
   if (!cachePinIcons) cachePinIcons = {};
-  const key = ty + (found ? ':found' : '');
+  const key = ty + (disabled ? ':disabled' : (found ? ':found' : ''));
   if (!cachePinIcons[key]) {
-    const type = GC_PIN_TYPES[ty] || GC_PIN_TYPES['Tavaline'];
-    const bg = found ? FOUND_PIN_COLOR : type.color;
+    const type = GC_PIN_TYPES[ty] || GC_PIN_TYPES['traditional'];
+    const bg = disabled ? DISABLED_PIN_COLOR : (found ? FOUND_PIN_COLOR : type.color);
     cachePinIcons[key] = L.divIcon({
       className: '',
       html: '<div class="cache-pin-wrap"><div class="cache-pin" style="background:' + bg + '">' +
@@ -473,14 +478,18 @@ function render(q) {
   openCacheMaps.forEach(function(m) { m.remove(); });
   openCacheMaps = [];
   const hideFound = hideFoundActive();
+  const hideDisabled = hideDisabledActive();
   const source = sortSel.value === 'name' ? CACHES_BY_NAME
     : (sortSel.value === 'distance' && CACHES_BY_DISTANCE) ? CACHES_BY_DISTANCE
     : CACHES;
   let results = q ? source.filter(c => matches(c, q)) : source.slice();
   if (hideFound) results = results.filter(c => !isFound(c));
+  if (hideDisabled) results = results.filter(c => !c.disabled);
   if (sortDir === 'desc') results.reverse();
 
-  const totalCount = hideFound ? CACHES.length - FOUND_IN_ESTONIA_COUNT : CACHES.length;
+  const totalCount = CACHES.filter(c =>
+    (!hideFound || !isFound(c)) && (!hideDisabled || !c.disabled)
+  ).length;
 
   if (!results.length) {
     countEl.textContent = '0 / ' + totalCount;
@@ -513,6 +522,7 @@ function render(q) {
           '<span class="dt">' + c.d + '/' + c.t + (c.sz != null ? '/' + SIZE_LETTERS[c.sz] : '') + '</span>' +
         '</div>' +
         '<div class="detail">' +
+          (c.disabled ? '<div class="disabled-badge">⚠️ ' + esc(t('disabledLabel')) + '</div>' : '') +
           '<div class="title-row"><b>' + esc(c.n) + '</b>' +
             (c.g || c.gp ? '<span class="title-links">' +
               (c.g ? '<a href="https://coord.info/' + c.g + '" target="_blank">GC</a>' : '') +
@@ -533,9 +543,9 @@ function render(q) {
                      ' <button type="button" class="navbtn" data-default="' + escAttr(map.default) + '" data-alts="' + escAttr(JSON.stringify(map.alts)) + '">' + esc(t('mapBtn')) + '</button>';
             })() : '') +
           '</div>' +
-          (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '"></div>' : '') +
           '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' ' + t('byLabel') + ' ' + esc(c.o) +
             (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
+          (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '" data-disabled="' + (c.disabled ? '1' : '0') + '"></div>' : '') +
         '</div>' +
       '</div>'
     );
@@ -547,10 +557,14 @@ function render(q) {
 
 function toggle(row) {
   const opening = !row.classList.contains('open');
+  if (opening) {
+    listEl.querySelectorAll('.row.open').forEach(function(r) { r.classList.remove('open'); });
+  }
   row.classList.toggle('open');
   if (opening) {
     const mapDiv = row.querySelector('.cachemap');
     if (mapDiv) { ensureLeaflet(); ensureCacheMap(mapDiv); }
+    window.scrollTo({ top: window.scrollY + row.getBoundingClientRect().top - topEl.offsetHeight });
   }
 }
 // Rows use inline onclick="toggle(this)" (see esc()-built row markup below),
@@ -588,14 +602,15 @@ function ensureCacheMap(mapDiv) {
   const lon = parseFloat(mapDiv.dataset.lon);
   const ty = mapDiv.dataset.ty;
   const found = mapDiv.dataset.found === '1';
+  const disabled = mapDiv.dataset.disabled === '1';
   const map = L.map(mapDiv, { zoomControl: false, doubleClickZoom: false });
   map.fitBounds(ESTONIA_BOUNDS); // whole-Estonia view, sized to the container; only the marker moves per cache
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
-  L.marker([lat, lon], { icon: getCachePinIcon(ty, found) }).addTo(map);
-  bindDoubleTap(mapDiv, function() { openFullMap(lat, lon, ty, found); });
+  L.marker([lat, lon], { icon: getCachePinIcon(ty, found, disabled) }).addTo(map);
+  bindDoubleTap(mapDiv, function() { openFullMap(lat, lon, ty, found, disabled); });
   mapDiv._map = map;
   openCacheMaps.push(map);
 }
@@ -608,11 +623,11 @@ function ensureFullMap() {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(fullMap);
-  fullMapMarker = L.marker([58.5, 25.0], { icon: getCachePinIcon('Tavaline', false) }).addTo(fullMap);
+  fullMapMarker = L.marker([58.5, 25.0], { icon: getCachePinIcon('traditional', false) }).addTo(fullMap);
   bindDoubleTap(fullMapEl, function() { showView(previousView); });
 }
 
-function openFullMap(lat, lon, ty, found) {
+function openFullMap(lat, lon, ty, found, disabled) {
   if (!leafletLoaded) return; // no map to show while offline; nothing to do
   previousView = currentView;
   showView('fullmap');
@@ -620,7 +635,7 @@ function openFullMap(lat, lon, ty, found) {
   fullMap.invalidateSize();
   fullMap.setView([lat, lon], FULLMAP_ZOOM);
   fullMapMarker.setLatLng([lat, lon]);
-  fullMapMarker.setIcon(getCachePinIcon(ty, found));
+  fullMapMarker.setIcon(getCachePinIcon(ty, found, disabled));
 }
 
 // ─── Map view (all currently matching results on one map) ─────────────────
@@ -712,7 +727,7 @@ function updateMapMarkers(list) {
   const pts = [];
   list.forEach(function(c) {
     if (c.lat == null) return;
-    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(c.ty, isFound(c)) }).addTo(searchMap);
+    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(c.ty, isFound(c), c.disabled) }).addTo(searchMap);
     marker.bindTooltip(c.n);
     marker.on('click', function(e) {
       const alts = [];
@@ -797,6 +812,12 @@ hideFoundBtn.addEventListener('click', function() {
   const pressed = hideFoundBtn.getAttribute('aria-pressed') === 'true';
   hideFoundBtn.setAttribute('aria-pressed', String(!pressed));
   HideFindsPref.set(!pressed);
+  render(qEl.value.trim());
+});
+hideDisabledBtn.addEventListener('click', function() {
+  const pressed = hideDisabledBtn.getAttribute('aria-pressed') === 'true';
+  hideDisabledBtn.setAttribute('aria-pressed', String(!pressed));
+  HideDisabledPref.set(!pressed);
   render(qEl.value.trim());
 });
 idToggleBtn.addEventListener('click', function() {

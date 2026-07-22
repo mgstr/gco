@@ -9,6 +9,7 @@ const STRINGS = {
     menuAria: 'Menu',
     viewToggleAria: 'Toggle map view',
     hideFoundAria: 'Hide my finds',
+    hideDisabledAria: 'Hide disabled caches',
     idToggleAria: 'Show/hide geocaching ID',
     dtsToggleAria: 'Show/hide difficulty/terrain/size',
     sortById: 'By ID',
@@ -52,6 +53,7 @@ const STRINGS = {
     coordinatesLabel: 'Coordinates:',
     hiddenLabel: 'Hidden:',
     byLabel: 'by',
+    disabledLabel: 'Disabled',
     driveBtn: '🚗 Drive',
     mapBtn: '🗺️ Map',
     pointLabel: 'Point',
@@ -95,6 +97,7 @@ const STRINGS = {
     menuAria: 'Menüü',
     viewToggleAria: 'Lülita kaardivaade',
     hideFoundAria: 'Peida minu leiud',
+    hideDisabledAria: 'Peida mitteaktiivsed peidud',
     idToggleAria: 'Näita/peida geopeitmise ID',
     dtsToggleAria: 'Näita/peida raskusaste/maastik/suurus',
     sortById: 'ID järgi',
@@ -138,6 +141,7 @@ const STRINGS = {
     coordinatesLabel: 'Koordinaadid:',
     hiddenLabel: 'Peidetud:',
     byLabel: 'by',
+    disabledLabel: 'Mitteaktiivne',
     driveBtn: '🚗 Sõida',
     mapBtn: '🗺️ Kaart',
     pointLabel: 'Punkt',
@@ -181,19 +185,19 @@ const STRINGS = {
 const I18N_DEFAULT_LANG = 'en';
 let I18N_LANG = I18N_DEFAULT_LANG;
 
-// Raw cache-type/size values in data.json are still Estonian words (the data
-// pipeline that produces them lives outside this repo) — these map those
-// fixed, known values onto translation keys so they render in whatever
-// language is active without touching the data file itself.
+// Raw cache-type values in data.json are English type codes (see
+// scripts/sync_caches.py's TYPE_NAME_MAP) — these map those fixed, known
+// codes onto translation keys so they render in whatever language is active
+// without touching the data file itself.
 const CACHE_TYPE_KEYS = {
-  'Tavaline': 'typeTraditional',
-  'Mõistatus': 'typeMystery',
-  'Multi': 'typeMulti',
-  'Virtuaalne': 'typeVirtual',
-  'KusMaLäen': 'typeWherigo',
-  'Kirjakast': 'typeLetterbox',
-  'Asukohata': 'typeUnknown',
-  'Veebikaamera': 'typeWebcam',
+  'traditional': 'typeTraditional',
+  'mystery': 'typeMystery',
+  'multi': 'typeMulti',
+  'virtual': 'typeVirtual',
+  'wherigo': 'typeWherigo',
+  'letterbox': 'typeLetterbox',
+  'unknown': 'typeUnknown',
+  'webcam': 'typeWebcam',
 };
 const CACHE_SIZE_KEYS = { 0: 'sizeOther', 1: 'sizeMicro', 2: 'sizeSmall', 3: 'sizeRegular', 4: 'sizeLarge' };
 
