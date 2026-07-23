@@ -54,6 +54,17 @@ function escAttr(s) {
   return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+function agoText(dateStr) {
+  const days = Math.floor((Date.now() - Date.parse(dateStr + 'T00:00:00')) / 86400000);
+  if (days < 31) return t(days === 1 ? 'agoDay' : 'agoDays', { n: days });
+  if (days < 365) {
+    const m = Math.floor(days / 30);
+    return t(m === 1 ? 'agoMonth' : 'agoMonths', { n: m });
+  }
+  const y = Math.floor(days / 365);
+  return t(y === 1 ? 'agoYear' : 'agoYears', { n: y });
+}
+
 // ─── App init — runs once cache data has loaded from data.json ────────────
 function initApp(CACHES) {
 let currentView = 'search';
@@ -242,6 +253,16 @@ const DIFFICULTY_ORANGE_MIN = 3.0;
 const DIFFICULTY_RED_MIN = 4.0;
 const TERRAIN_ORANGE_MIN = 3.5;
 const TERRAIN_RED_MIN = 4.0;
+
+// Log messages that are just a generic thank-you (matched case-insensitively,
+// after trimming whitespace) start with their quote section collapsed —
+// there's nothing worth reading. Anything else starts expanded.
+const LOW_INFO_LOG_PHRASES = ['tftc', 'found it'];
+
+function isLowInfoLog(text) {
+  const norm = text.trim().toLowerCase();
+  return LOW_INFO_LOG_PHRASES.some(function(p) { return p.toLowerCase() === norm; });
+}
 
 function ratingBadgeClass(value, orangeMin, redMin) {
   const v = parseFloat(value);
@@ -589,6 +610,17 @@ function render(q, focusLatLon) {
             '</div>' : '') +
           attrsRowHtml(c.at) +
           (c.r ? '<div><b>' + t('addressLabel') + '</b> ' + esc(c.r) + '</div>' : '') +
+          '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' <span class="agotext">(' + agoText(c.h) + ')</span> ' + t('byLabel') + ' ' + esc(c.o) +
+            (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
+          (function() {
+            const find = c.g ? FindsStore.getFinds()[c.g] : null;
+            if (!find) return '';
+            const openClass = isLowInfoLog(find[1]) ? '' : ' open';
+            return '<div class="loggedline' + openClass + '" onclick="event.stopPropagation(); toggleLog(this)">' +
+              '<span class="chev">▸</span> <b>' + t('loggedLabel') + '</b> ' + find[0] + ' <span class="agotext">(' + agoText(find[0]) + ')</span>' +
+              '</div>' +
+              '<div class="logquote">' + esc(find[1]) + '</div>';
+          })() +
           '<div class="coord"><b>' + t('coordinatesLabel') + '</b> ' +
             '<button type="button" class="coordbtn" data-coords="' + esc(c.la + ' ' + c.lo) + '" onclick="event.stopPropagation(); copyCoords(this)">' + c.la + ' · ' + c.lo + ' 📋</button>' +
             (listDist ? ' <span class="dist">' + listDist + '</span>' : '') +
@@ -601,8 +633,6 @@ function render(q, focusLatLon) {
                      ' <button type="button" class="navbtn" data-default="' + escAttr(map.default) + '" data-alts="' + escAttr(JSON.stringify(map.alts)) + '">' + esc(t('mapBtn')) + '</button>';
             })() : '') +
           '</div>' +
-          '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' ' + t('byLabel') + ' ' + esc(c.o) +
-            (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
           (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '" data-disabled="' + (c.disabled ? '1' : '0') + '"></div>' : '') +
         '</div>' +
       '</div>'
@@ -629,6 +659,11 @@ function toggle(row) {
 // which resolves names from global scope — expose it since it's declared
 // inside initApp()'s function scope now.
 window.toggle = toggle;
+
+function toggleLog(el) {
+  el.classList.toggle('open');
+}
+window.toggleLog = toggleLog;
 
 // Native/Leaflet 'dblclick' doesn't reliably fire from a real double-tap on
 // iOS Safari (a double-tap is usually consumed by the browser's own

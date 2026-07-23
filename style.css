@@ -68,6 +68,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .ownercount { display: inline-block; background: #007aff; color: #fff;
               border-radius: 9px; padding: 1px 7px; font-size: 11px;
               font-weight: 600; line-height: 15px; vertical-align: middle; }
+.agotext { color: #888; font-size: 12px; }
+.loggedline { cursor: pointer; -webkit-touch-callout: none; user-select: none;
+              touch-action: manipulation; }
+.loggedline .chev { display: inline-block; font-size: 10px; color: #007aff;
+                     transition: transform .12s ease-out; }
+.loggedline.open .chev { transform: rotate(90deg); }
+.logquote { display: none; margin: 4px 0 2px; padding: 8px 10px; background: #f7f8fa;
+            border-left: 3px solid #007aff; border-radius: 0 6px 6px 0;
+            font-style: italic; color: #333; }
+.loggedline.open + .logquote { display: block; }
 .cachemap { height: 240px; border-radius: 10px; margin-top: 8px;
             overflow: hidden; background: #e5e5e5; cursor: pointer;
             touch-action: manipulation !important; }
