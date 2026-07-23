@@ -602,7 +602,8 @@ function render(q, focusLatLon) {
               (c.gp ? '<a href="https://www.geopeitus.ee/aare/' + c.gp + '" target="_blank">GP</a>' : '') +
               '</span>' : '') + '</div>' +
           '<div><b>' + t('typeFieldLabel') + '</b> ' + esc(typeLabel(c.ty)) +
-            (c.sz != null ? ' · <b>' + t('sizeFieldLabel') + '</b> ' + sizeValueHtml(c.sz) : '') + '</div>' +
+            (c.sz != null ? ' · <b>' + t('sizeFieldLabel') + '</b> ' + sizeValueHtml(c.sz) : '') +
+            (c.fp != null ? ' · <b>' + t('fpFieldLabel') + '</b> ' + c.fp : '') + '</div>' +
           (c.d || c.t ? '<div>' +
             (c.d ? '<b>' + t('difficultyFieldLabel') + '</b> ' + ratingValueHtml(c.d, DIFFICULTY_ORANGE_MIN, DIFFICULTY_RED_MIN) : '') +
             (c.d && c.t ? ' · ' : '') +
@@ -634,6 +635,13 @@ function render(q, focusLatLon) {
             })() : '') +
           '</div>' +
           (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '" data-disabled="' + (c.disabled ? '1' : '0') + '"></div>' : '') +
+          (c.desc ? (function() {
+            const openClass = isFound(c) ? '' : ' open';
+            return '<div class="detail-section-header' + openClass + '" onclick="event.stopPropagation(); toggleSection(this)">' +
+              '<span class="chev">▸</span> <b>' + t('descriptionLabel') + '</b>' +
+              '</div>' +
+              '<div class="detail-section-body">' + esc(c.desc) + '</div>';
+          })() : '') +
         '</div>' +
       '</div>'
     );
@@ -663,6 +671,12 @@ window.toggle = toggle;
 function toggleLog(el) {
   el.classList.toggle('open');
 }
+window.toggleLog = toggleLog;
+
+function toggleSection(el) {
+  el.classList.toggle('open');
+}
+window.toggleSection = toggleSection;
 window.toggleLog = toggleLog;
 
 // Native/Leaflet 'dblclick' doesn't reliably fire from a real double-tap on
