@@ -700,6 +700,37 @@ function bindDoubleTap(el, handler) {
   });
 }
 
+// Touch equivalent of a modifier+click: there's no modifier key on touch, so
+// a tap using a specific number of fingers at once stands in for it instead
+// (two fingers ~ shift, three ~ ctrl/alt). Leaflet's own touch handling
+// (pinch-zoom, pan) only reacts to touchmove, so a quick same-finger-count
+// touchstart/touchend with no resulting zoom change is unambiguously a tap
+// rather than a pinch/pan gesture.
+function bindMultiFingerTap(map, fingerCount, handler) {
+  const el = map.getContainer();
+  let start = null;
+  el.addEventListener('touchstart', function(e) {
+    if (e.touches.length !== fingerCount) { start = null; return; }
+    const rect = el.getBoundingClientRect();
+    let x = 0, y = 0;
+    for (const touch of e.touches) { x += touch.clientX; y += touch.clientY; }
+    start = {
+      time: Date.now(),
+      point: L.point(x / fingerCount - rect.left, y / fingerCount - rect.top),
+      zoom: map.getZoom()
+    };
+  }, { passive: true });
+  el.addEventListener('touchend', function(e) {
+    if (!start) return;
+    const wasTap = e.touches.length === 0 && Date.now() - start.time < 300 && map.getZoom() === start.zoom;
+    if (wasTap) {
+      const latlng = map.containerPointToLatLng(start.point);
+      handler(latlng.lat, latlng.lng);
+    }
+    start = null;
+  });
+}
+
 function ensureCacheMap(mapDiv) {
   if (!mapDiv) return;
   if (mapDiv._map) { mapDiv._map.invalidateSize(); return; }
@@ -743,15 +774,30 @@ function ensureSearchMap() {
   // Same click-timing double-tap detection as bindDoubleTap (see there for why
   // Leaflet's own 'dblclick' isn't used) — but bound to the map itself, since
   // we need the actual click's latlng, not just "was the map double-tapped".
+  // A plain double-click/double-tap zooms in (mirroring Leaflet's native
+  // doubleClickZoom, which we keep disabled so it doesn't fire twice);
+  // shift+double-click zooms out; ctrl/alt+double-click sets the origin
+  // point. Touch has no modifier keys, so finger count on the tap stands in
+  // for the modifier instead: two fingers ~ shift, three ~ ctrl/alt (see
+  // bindMultiFingerTap below).
   searchMap.on('click', function(e) {
     const now = Date.now();
-    if (now - lastMapClickAt < 400) {
-      lastMapClickAt = 0;
+    const isDoubleClick = now - lastMapClickAt < 400;
+    lastMapClickAt = isDoubleClick ? 0 : now;
+    if (!isDoubleClick) return;
+    const orig = e.originalEvent;
+    if (orig.ctrlKey || orig.altKey) {
       setMapOrigin(e.latlng.lat, e.latlng.lng);
+    } else if (orig.shiftKey) {
+      searchMap.setZoomAround(e.latlng, searchMap.getZoom() - 1);
     } else {
-      lastMapClickAt = now;
+      searchMap.setZoomAround(e.latlng, searchMap.getZoom() + 1);
     }
   });
+  bindMultiFingerTap(searchMap, 2, function(lat, lon) {
+    searchMap.setZoomAround([lat, lon], searchMap.getZoom() - 1);
+  });
+  bindMultiFingerTap(searchMap, 3, setMapOrigin);
   updateUserLocationMarker(); // geolocation may have already resolved before the map existed
 }
 
@@ -778,10 +824,11 @@ function updateUserLocationMarker() {
   }
 }
 
-// Double-clicking the map picks a new distance-calculation origin, reflected
-// in the Settings → "Kauguse arvutamine" selector as a 'map' option labeled
-// with the clicked coordinates. Uses Leaflet's default (blue) marker icon,
-// left un-styled so it stays visually distinct from the colored cache pins.
+// Ctrl/alt+double-click (or a three-finger tap on touch) picks a new
+// distance-calculation origin, reflected in the Settings → "Kauguse
+// arvutamine" selector as a 'map' option labeled with the clicked
+// coordinates. Uses Leaflet's default (blue) marker icon, left un-styled so
+// it stays visually distinct from the colored cache pins.
 function setMapOrigin(lat, lon) {
   customOriginLat = lat;
   customOriginLon = lon;
