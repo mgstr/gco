@@ -107,6 +107,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           padding: 2px 7px; font-size: 11px; font-weight: 600; cursor: pointer;
           -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
 .navbtn:active { background: #005ecb; }
+.navbtn:disabled { background: #2c2c2e; color: #636366; }
 .navbackdrop { display: none; position: fixed; inset: 0; z-index: 999; }
 .navbackdrop.visible { display: block; }
 .navmenu { display: none; position: fixed; background: #fff; border-radius: 14px;
@@ -118,7 +119,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .navmenu a:active { background: #f2f2f7; }
 
 /* Tools menu + sub-pages */
-#view-menu, #view-coord, #view-settings, #view-origin, #view-data { min-height: 100vh; background: #fff; }
+#view-menu, #view-settings, #view-origin, #view-data { min-height: 100vh; background: #fff; }
 .viewheader { display: flex; align-items: center; gap: 10px; padding: 10px 12px;
               background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 10; }
 .backbtn { font-size: 28px; line-height: 1; background: none; border: none; color: #007aff;
@@ -162,13 +163,22 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .data-msg.err { color: #ff3b30; }
 .data-msg.ok { color: #248a3d; }
 
-/* Coordinate converter (ported from coordinate-converter.html) */
-#view-coord { background: #000; color: #fff; color-scheme: dark; }
-#view-coord .viewheader { background: #000; border-bottom: 1px solid #333; }
+/* Coordinate tools: Converter / Projector / Circle, merged into one view
+   selected via mode tabs built into the viewheader title. */
+#view-coord { display: flex; flex-direction: column; height: 100dvh; overflow: hidden;
+              background: #000; color: #fff; color-scheme: dark; }
+#view-coord .viewheader { background: #000; border-bottom: 1px solid #333; flex-shrink: 0; }
 #view-coord .viewtitle { color: #fff; }
 #view-coord .backbtn { color: #0a84ff; }
-.cc-body { padding: 16px 16px calc(env(safe-area-inset-bottom, 16px) + 16px) 16px;
+
+.cc-mode-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+.cc-mode-tab { background: none; border: none; padding: 0; font: inherit; font-weight: 600;
+               color: #48484a; cursor: pointer; }
+.cc-mode-tab.active { color: #0a84ff; }
+
+.cc-body { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
+.cc-top { flex-shrink: 0; padding: 16px 16px 0 16px; }
 .cc-card { background: #1c1c1e; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
            position: relative; }
 .cc-input-card { border: 1.5px solid #0a84ff55; background: #0d1a2a; }
@@ -177,6 +187,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
                   letter-spacing: 0.7px; color: #636366; }
 .cc-badge { font-size: 11px; font-weight: 500; background: #0a84ff22; color: #0a84ff;
             border-radius: 5px; padding: 2px 7px; }
+.cc-badge.unknown { background: #ff453a22; color: #ff453a; }
 .cc-card input { width: 100%; background: transparent; border: none; outline: none;
                  font-size: 17px; font-family: "Menlo", "Courier New", monospace;
                  color: #fff; caret-color: #0a84ff; letter-spacing: 0.2px; }
@@ -186,19 +197,48 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .cc-copy-btn { background: #2c2c2e; border: none; border-radius: 5px; padding: 2px 8px;
                font-size: 11px; font-weight: 600; color: #0a84ff; cursor: pointer; flex-shrink: 0; }
 .cc-copy-btn.copied { color: #30d158; }
-.cc-maps-row { display: flex; justify-content: flex-end; margin: -4px 0 8px; }
+.cc-copy-btn:disabled { color: #48484a; cursor: default; }
 .cc-status { font-size: 13px; margin-top: 8px; min-height: 18px; color: #636366; }
 .cc-status.ok { color: #30d158; }
 .cc-status.err { color: #ff453a; }
+input[type="number"] { -moz-appearance: textfield; }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-/* Coordinates projection (angle + distance from a start point) */
-#view-proj { background: #000; color: #fff; color-scheme: dark; }
-#view-proj .viewheader { background: #000; border-bottom: 1px solid #333; }
-#view-proj .viewtitle { color: #fff; }
-#view-proj .backbtn { color: #0a84ff; }
-.cc-pair { display: flex; gap: 12px; }
+/* Output card: format tabs (D/DM/DMS/L-EST97) + Copy/Map share one row */
+.cc-tabs { flex: 1; min-width: 0; display: flex; gap: 2px; background: #2c2c2e;
+           border-radius: 9px; padding: 2px; }
+.cc-tab { flex: 1; min-width: 0; border: none; background: transparent; color: #8e8e93;
+          font-size: 11px; font-weight: 600; padding: 7px 2px; border-radius: 7px;
+          cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cc-tab.active { background: #0a84ff; color: #fff; }
+.cc-output-value { min-height: 26px; display: flex; align-items: center; }
+
+/* DM tab: degrees as plain text, minutes as individually-copyable chips —
+   the GC app expects minutes pasted into their own field, separately from
+   degrees, so these copy just the bare number. */
+.cc-dm-row { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 0;
+             font-family: "Menlo", "Courier New", monospace; font-size: 17px;
+             letter-spacing: 0.2px; width: 100%; }
+.cc-dm-txt { color: #fff; white-space: pre; }
+.cc-dm-gap { width: 14px; flex-shrink: 0; }
+.cc-dm-min-btn { background: #0a84ff26; border: 1px solid #0a84ff55; border-radius: 6px;
+                 color: #6cb6ff; font-family: inherit; font-size: 15px; font-weight: 600;
+                 padding: 1px 6px; margin: 0 2px; cursor: pointer; }
+.cc-dm-min-btn.copied { background: #30d15833; border-color: #30d158aa; color: #30d158; }
+.cc-dm-min-btn.copied::after { content: ' \2713'; }
+.cc-dm-row.empty .cc-dm-txt { color: #3a3a3c; }
+.cc-dm-row.empty .cc-dm-min-btn { background: transparent; border-color: #2c2c2e;
+                                   color: #3a3a3c; cursor: default; pointer-events: none; }
+
+/* Input card's 3rd line, mode-dependent: Projector's angle+distance pair,
+   Circle's single radius field */
+.cc-pair { display: flex; gap: 12px; margin-top: 8px; }
 .cc-pair > div { flex: 1; }
-.cc-pair .cc-label-text { display: block; margin-bottom: 6px; }
+.cc-field { margin-top: 8px; }
+.cc-pair .cc-label-text, .cc-field .cc-label-text { display: block; margin-bottom: 6px; }
+
+/* Projector map pins (S = start, P = projected point) */
 .sp-pin-wrap { position: relative; width: 30px; height: 40px; }
 .sp-pin-shape { position: absolute; left: 3px; top: 0; width: 24px; height: 24px;
                  border: 2px solid #fff; border-radius: 50% 50% 50% 0;
@@ -207,3 +247,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .sp-pin-shape.p { background: #ff453a; }
 .sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
                   font-size: 12px; font-weight: 700; color: #fff; }
+
+/* Map preview fills the rest of the screen below the cards */
+.cc-map-wrap { flex: 1; min-height: 0; position: relative;
+               margin: 4px 16px calc(env(safe-area-inset-bottom, 10px) + 10px) 16px;
+               border-radius: 14px; overflow: hidden; }
+#cc-map { position: absolute; inset: 0; }

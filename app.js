@@ -68,14 +68,21 @@ function agoText(dateStr) {
 // ─── App init — runs once cache data has loaded from data.json ────────────
 function initApp(CACHES) {
 let currentView = 'search';
+// Coordinate tools (Converter/Projector/Circle) — one Leaflet map shared by
+// all three modes, with mode-specific overlays created lazily on first use.
 let ccLeafMap = null;
-let ccLeafMarker = null;
-let pjLeafMap = null;
-let pjSMarker = null;
-let pjPMarker = null;
-let pjLine = null;
-let ccPendingLatLon = null;
-let pjPendingPoints = null;
+let ccMarker = null;
+let ccCircleLayer = null;
+let ccProjSIcon = null;
+let ccProjPIcon = null;
+let ccProjSMarker = null;
+let ccProjPMarker = null;
+let ccProjLine = null;
+let ccMode = 'converter';
+let ccParsed = null;   // { lat, lon } parsed from the main input, or null
+let ccDest = null;     // { lat, lon } Projector's destination, or null
+let ccCurrent = null;  // point Output/Copy/Map act on: ccDest in Projector mode, ccParsed otherwise
+let ccActiveFmt = 'DMM';
 let pendingCacheMapDivs = [];
 let openCacheMaps = [];
 let searchMap = null;
@@ -94,11 +101,7 @@ const MAP_FOCUS_ZOOM = 17; // close enough for on-the-spot cache finding
 leafletReadyHandler = function() {
   if (currentView === 'coord') {
     ccInitMap();
-    if (ccPendingLatLon) ccMapUpdate(ccPendingLatLon.lat, ccPendingLatLon.lon);
-  }
-  if (currentView === 'proj') {
-    pjInitMap();
-    if (pjPendingPoints) pjMapUpdate(pjPendingPoints.sLat, pjPendingPoints.sLon, pjPendingPoints.pLat, pjPendingPoints.pLon);
+    ccSyncMap();
   }
   pendingCacheMapDivs.forEach(ensureCacheMap);
   pendingCacheMapDivs = [];
@@ -1000,12 +1003,22 @@ const VIEW_TO_PATH = {
   search: '/search',
   menu: '/tools',
   coord: '/tools/coordinates/conversion',
-  proj: '/tools/coordinates/projection',
   settings: '/settings',
   origin: '/settings/distance',
   data: '/settings/data',
 };
 const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(function(e) { return [e[1], e[0]]; }));
+
+// The coord view has 3 selectable modes (Converter/Projector/Circle), each
+// addressable by its own path — preserves the two original tools' separate
+// deep links now that they're merged into one view.
+const COORD_MODE_TO_PATH = {
+  converter: '/tools/coordinates/conversion',
+  projector: '/tools/coordinates/projection',
+  circle: '/tools/coordinates/circle',
+};
+const PATH_TO_COORD_MODE = Object.fromEntries(Object.entries(COORD_MODE_TO_PATH).map(function(e) { return [e[1], e[0]]; }));
+Object.keys(PATH_TO_COORD_MODE).forEach(function(p) { PATH_TO_VIEW[p] = 'coord'; });
 
 function isRootPath(path) { return path === '' || path === '/'; }
 
@@ -1014,19 +1027,20 @@ function applyView(name) {
   document.getElementById('view-search').style.display = name === 'search' ? '' : 'none';
   document.getElementById('view-menu').style.display = name === 'menu' ? '' : 'none';
   document.getElementById('view-coord').style.display = name === 'coord' ? '' : 'none';
-  document.getElementById('view-proj').style.display = name === 'proj' ? '' : 'none';
   document.getElementById('view-settings').style.display = name === 'settings' ? '' : 'none';
   document.getElementById('view-origin').style.display = name === 'origin' ? '' : 'none';
   document.getElementById('view-data').style.display = name === 'data' ? '' : 'none';
-  if (name === 'coord' || name === 'proj') ensureLeaflet();
-  if (name === 'coord' && leafletLoaded) ccInitMap();
-  if (name === 'proj' && leafletLoaded) pjInitMap();
+  if (name === 'coord') {
+    ensureLeaflet();
+    if (leafletLoaded) ccInitMap();
+  }
   if (name === 'data') refreshDataView();
 }
 
-function showView(name) {
+function showView(name, coordMode) {
   applyView(name);
-  const path = VIEW_TO_PATH[name];
+  if (name === 'coord') ccSetMode(coordMode || 'converter');
+  const path = name === 'coord' ? COORD_MODE_TO_PATH[coordMode || 'converter'] : VIEW_TO_PATH[name];
   if (!path) return;
   const target = '#' + path;
   if (location.hash !== target) location.hash = target;
@@ -1035,15 +1049,15 @@ function showView(name) {
 window.addEventListener('hashchange', function() {
   const path = location.hash.slice(1);
   if (isRootPath(path)) { location.hash = '#' + VIEW_TO_PATH.search; return; }
-  applyView(PATH_TO_VIEW[path] || 'search');
+  const view = PATH_TO_VIEW[path] || 'search';
+  applyView(view);
+  if (view === 'coord') ccSetMode(PATH_TO_COORD_MODE[path] || 'converter');
 });
 
 document.getElementById('menuBtn').addEventListener('click', function() { showView('menu'); });
 document.getElementById('menuBackBtn').addEventListener('click', function() { showView('search'); });
-document.getElementById('coordMenuItem').addEventListener('click', function() { showView('coord'); });
+document.getElementById('coordMenuItem').addEventListener('click', function() { showView('coord', 'converter'); });
 document.getElementById('coordBackBtn').addEventListener('click', function() { showView('search'); });
-document.getElementById('projMenuItem').addEventListener('click', function() { showView('proj'); });
-document.getElementById('projBackBtn').addEventListener('click', function() { showView('search'); });
 document.getElementById('settingsMenuItem').addEventListener('click', function() { showView('settings'); });
 document.getElementById('settingsBackBtn').addEventListener('click', function() { showView('search'); });
 document.getElementById('originMenuItem').addEventListener('click', function() { showView('origin'); });
@@ -1051,13 +1065,6 @@ document.getElementById('originBackBtn').addEventListener('click', function() { 
 document.getElementById('dataMenuItem').addEventListener('click', function() { showView('data'); });
 document.getElementById('dataBackBtn').addEventListener('click', function() { showView('settings'); });
 
-// Honor a deep link on initial load instead of always defaulting to search.
-(function() {
-  const initialPath = location.hash.slice(1);
-  if (isRootPath(initialPath)) { location.hash = '#' + VIEW_TO_PATH.search; return; }
-  const initialView = PATH_TO_VIEW[initialPath];
-  if (initialView) applyView(initialView);
-})();
 
 // ─── Settings → Data (found-caches import) ──────────────────────────────
 // Accepts either the simple finds.json map, or a geocaching.com pocket
@@ -1255,27 +1262,129 @@ dataFileInput.addEventListener('change', function() {
   importFindsFile(file);
 });
 
-// ─── Coordinate converter map (ported from coordinate-converter.html) ──────
+// ─── Coordinate tools: Converter / Projector / Circle ──────────────────────
+// One shared Leaflet map + input field; mode only changes the input card's
+// 3rd line and what's drawn on the map. `ccCurrent` (parsed input point, or
+// Projector's destination point) is what Output/Copy/Map act on.
 function ccInitMap() {
   if (ccLeafMap) return;
-  ccLeafMap = L.map('cc-map', { zoomControl: true }).setView([58.5, 25.0], 7);
+  ccLeafMap = L.map('cc-map', { zoomControl: true, doubleClickZoom: true }).setView([58.5, 25.0], 7);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(ccLeafMap);
-  ccLeafMarker = L.marker([58.5, 25.0]).addTo(ccLeafMap);
+  ccProjSIcon = L.divIcon({
+    className: '',
+    html: '<div class="sp-pin-wrap"><div class="sp-pin-shape s"></div><div class="sp-pin-letter">S</div></div>',
+    iconSize: [30, 40], iconAnchor: [15, 40]
+  });
+  ccProjPIcon = L.divIcon({
+    className: '',
+    html: '<div class="sp-pin-wrap"><div class="sp-pin-shape p"></div><div class="sp-pin-letter">P</div></div>',
+    iconSize: [30, 40], iconAnchor: [15, 40]
+  });
+
+  // Two-finger tap = zoom out, the touch-device equivalent of shift+double-
+  // click (no shift key on a touchscreen). Leaflet has no built-in gesture
+  // for this, so it's tracked by hand: two touches down, both staying within
+  // a small radius (i.e. not a pinch — Map.TouchZoom handles that on its
+  // own, untouched by this), released quickly.
+  (function() {
+    const TAP_MAX_MS = 300, TAP_MAX_MOVE_PX = 12;
+    let start = null;
+    const dist = function(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); };
+    const pointsOf = function(touchList) { return [0, 1].map(function(i) { return { x: touchList[i].clientX, y: touchList[i].clientY }; }); };
+    const mapEl = ccLeafMap.getContainer();
+    mapEl.addEventListener('touchstart', function(e) {
+      start = e.touches.length === 2 ? { time: Date.now(), points: pointsOf(e.touches) } : null;
+    }, { passive: true });
+    mapEl.addEventListener('touchmove', function(e) {
+      if (!start || e.touches.length !== 2) { start = null; return; }
+      const points = pointsOf(e.touches);
+      if (points.some(function(p, i) { return dist(p, start.points[i]) > TAP_MAX_MOVE_PX; })) start = null;
+    }, { passive: true });
+    mapEl.addEventListener('touchend', function(e) {
+      if (start && e.touches.length === 0 && Date.now() - start.time < TAP_MAX_MS) ccLeafMap.zoomOut();
+      start = null;
+    }, { passive: true });
+    mapEl.addEventListener('touchcancel', function() { start = null; }, { passive: true });
+  })();
+}
+window.addEventListener('resize', function() { if (ccLeafMap) ccLeafMap.invalidateSize(); });
+
+// Single point (Converter / Circle center)
+function ccShowPoint(lat, lon) {
+  if (!ccMarker) ccMarker = L.marker([lat, lon]).addTo(ccLeafMap);
+  else ccMarker.setLatLng([lat, lon]);
+}
+function ccHidePoint() {
+  if (ccMarker) { ccLeafMap.removeLayer(ccMarker); ccMarker = null; }
 }
 
-function ccMapUpdate(lat, lon) {
-  ccPendingLatLon = { lat: lat, lon: lon };
-  if (!ccLeafMap) return;
-  const wrap = document.getElementById('cc-map-wrap');
-  if (wrap.style.display === 'none') {
-    wrap.style.display = '';
-    ccLeafMap.invalidateSize();
+// Circle overlay (Circle mode)
+function ccShowCircle(lat, lon, radiusM) {
+  if (!ccCircleLayer) {
+    ccCircleLayer = L.circle([lat, lon], {
+      radius: radiusM, color: '#0a84ff', weight: 2, fillColor: '#0a84ff', fillOpacity: 0.12
+    }).addTo(ccLeafMap);
+  } else {
+    ccCircleLayer.setLatLng([lat, lon]);
+    ccCircleLayer.setRadius(radiusM);
   }
-  ccLeafMap.setView([lat, lon], 15);
-  ccLeafMarker.setLatLng([lat, lon]);
+}
+function ccHideCircle() {
+  if (ccCircleLayer) { ccLeafMap.removeLayer(ccCircleLayer); ccCircleLayer = null; }
+}
+
+// Start (S) + projected (P) points + dashed line (Projector mode)
+function ccShowProjPoints(sLat, sLon, pLat, pLon) {
+  if (!ccProjSMarker) {
+    ccProjSMarker = L.marker([sLat, sLon], { icon: ccProjSIcon }).addTo(ccLeafMap);
+    ccProjPMarker = L.marker([pLat, pLon], { icon: ccProjPIcon }).addTo(ccLeafMap);
+    ccProjLine = L.polyline([[sLat, sLon], [pLat, pLon]], { color: '#0a84ff', weight: 2, dashArray: '4,6' }).addTo(ccLeafMap);
+  } else {
+    ccProjSMarker.setLatLng([sLat, sLon]);
+    ccProjPMarker.setLatLng([pLat, pLon]);
+    ccProjLine.setLatLngs([[sLat, sLon], [pLat, pLon]]);
+  }
+  ccLeafMap.fitBounds([[sLat, sLon], [pLat, pLon]], { padding: [40, 40], maxZoom: 17, animate: false });
+}
+function ccHideProjPoints() {
+  if (ccProjSMarker) { ccLeafMap.removeLayer(ccProjSMarker); ccProjSMarker = null; }
+  if (ccProjPMarker) { ccLeafMap.removeLayer(ccProjPMarker); ccProjPMarker = null; }
+  if (ccProjLine) { ccLeafMap.removeLayer(ccProjLine); ccProjLine = null; }
+}
+
+// Renders whichever mode is active onto the shared map. No-ops until
+// ccInitMap() has run (Leaflet loads lazily) — leafletReadyHandler calls
+// this again once it's ready, re-syncing to whatever state accumulated
+// while the script was still loading.
+function ccSyncMap() {
+  if (!ccLeafMap) return;
+  if (ccMode === 'projector') {
+    ccHidePoint();
+    ccHideCircle();
+    if (ccParsed && ccDest) ccShowProjPoints(ccParsed.lat, ccParsed.lon, ccDest.lat, ccDest.lon);
+    else ccHideProjPoints();
+    return;
+  }
+  ccHideProjPoints();
+  if (ccMode === 'circle') {
+    if (!ccParsed) { ccHidePoint(); ccHideCircle(); return; }
+    ccShowPoint(ccParsed.lat, ccParsed.lon);
+    const r = parseFloat(ccRadiusEl.value);
+    if (!isNaN(r) && r > 0) {
+      ccShowCircle(ccParsed.lat, ccParsed.lon, r);
+      ccLeafMap.fitBounds(ccCircleLayer.getBounds(), { padding: [40, 40], maxZoom: 17, animate: false });
+    } else {
+      ccHideCircle();
+      ccLeafMap.setView([ccParsed.lat, ccParsed.lon], 15);
+    }
+    return;
+  }
+  ccHideCircle();
+  if (ccParsed) { ccShowPoint(ccParsed.lat, ccParsed.lon); ccLeafMap.setView([ccParsed.lat, ccParsed.lon], 15); }
+  else ccHidePoint();
 }
 
 // L-EST97 projection (Lambert Conformal Conic, EPSG:3301)
@@ -1332,8 +1441,40 @@ function ccFmtDMM(lat, lon) {
 }
 function ccFmtDD(lat, lon) { return lat.toFixed(6) + ', ' + lon.toFixed(6); }
 function ccFmtLEST(x, y) { return x + ', ' + y; }
+function ccFmtDMS(lat, lon) {
+  const ns = lat >= 0 ? 'N' : 'S', ew = lon >= 0 ? 'E' : 'W';
+  const la = Math.abs(lat), lo = Math.abs(lon);
+  const ld = Math.floor(la), lmFull = (la - ld) * 60, lm = Math.floor(lmFull), ls = (lmFull - lm) * 60;
+  const od = Math.floor(lo), omFull = (lo - od) * 60, om = Math.floor(omFull), os = (omFull - om) * 60;
+  return ns + ccPad2(ld) + '° ' + ccPad2(lm) + "' " + ls.toFixed(3) + '" ' + ew + ccPad3(od) + '° ' + ccPad2(om) + "' " + os.toFixed(3) + '"';
+}
+// Structured breakdown for the DM tab's individually-copyable minute chips
+// (ccFmtDMM above returns the same numbers as one opaque string).
+function ccDmParts(lat, lon) {
+  const ns = lat >= 0 ? 'N' : 'S', ew = lon >= 0 ? 'E' : 'W';
+  const la = Math.abs(lat), lo = Math.abs(lon);
+  const ld = Math.floor(la), lm = (la - ld) * 60;
+  const od = Math.floor(lo), om = (lo - od) * 60;
+  return { ns: ns, ld: ccPad2(ld), lm: lm.toFixed(3), ew: ew, od: ccPad3(od), om: om.toFixed(3) };
+}
 function ccPad2(n) { return String(n).padStart(2, '0'); }
 function ccPad3(n) { return String(n).padStart(3, '0'); }
+
+// Destination point given a start point, compass bearing (0-360°, clockwise
+// from true north) and distance in metres — Projector mode. Spherical
+// approximation, same model haversineKm already uses elsewhere in this app.
+function pjDestinationPoint(lat, lon, bearingDeg, distM) {
+  const R = 6371000;
+  const brng = bearingDeg * Math.PI / 180;
+  const lat1 = lat * Math.PI / 180, lon1 = lon * Math.PI / 180;
+  const dR = distM / R;
+  const lat2 = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(brng));
+  const lon2 = lon1 + Math.atan2(
+    Math.sin(brng) * Math.sin(dR) * Math.cos(lat1),
+    Math.cos(dR) - Math.sin(lat1) * Math.sin(lat2)
+  );
+  return { lat: lat2 * 180 / Math.PI, lon: ((lon2 * 180 / Math.PI) + 540) % 360 - 180 };
+}
 
 function ccValidLL(lat, lon) { return lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180; }
 function ccValidLEST(x, y) { return x >= 300000 && x <= 800000 && y >= 6300000 && y <= 6800000; }
@@ -1440,75 +1581,171 @@ function ccDetect(raw) {
 const ccInpEl = document.getElementById('cc-inp');
 const ccStatusEl = document.getElementById('cc-status');
 const ccBadgeEl = document.getElementById('cc-badge');
-const ccDmmEl = document.getElementById('cc-out-dmm');
-const ccDdEl = document.getElementById('cc-out-dd');
-const ccLestEl = document.getElementById('cc-out-lest');
-const ccMapsRows = [
-  { row: document.getElementById('cc-maps-dmm-row'), btn: document.getElementById('cc-maps-dmm-btn') },
-  { row: document.getElementById('cc-maps-dd-row'), btn: document.getElementById('cc-maps-dd-btn') },
-  { row: document.getElementById('cc-maps-lest-row'), btn: document.getElementById('cc-maps-lest-btn') },
-];
-ccMapsRows.forEach(function(m) { bindNavButton(m.btn); });
+const ccModeTabs = [].slice.call(document.querySelectorAll('.cc-mode-tab'));
+const ccProjFieldsEl = document.getElementById('cc-proj-fields');
+const ccCircleFieldsEl = document.getElementById('cc-circle-fields');
+const ccAngleEl = document.getElementById('cc-angle');
+const ccDistEl = document.getElementById('cc-dist');
+const ccRadiusEl = document.getElementById('cc-radius');
+const ccTabs = [].slice.call(document.querySelectorAll('.cc-tab'));
+const ccOutInputEl = document.getElementById('cc-out-input');
+const ccOutDmEl = document.getElementById('cc-out-dm');
+const ccCopyBtn = document.getElementById('cc-copy-btn');
+const ccMapBtn = document.getElementById('cc-map-btn');
+bindNavButton(ccMapBtn);
 
-// Points the Maps button's tap/long-press targets at (lat, lon); hides the
-// row entirely when there's no coordinate to link to yet.
-function updateMapsBtn(row, btn, lat, lon) {
-  if (lat == null) { row.style.display = 'none'; return; }
-  const nav = mapNavData(lat, lon, t('pointLabel'));
-  btn.dataset.default = nav.default;
-  btn.dataset.alts = JSON.stringify(nav.alts);
-  row.style.display = '';
+const CC_PLACEHOLDER = {
+  DD: '58.379217, 24.500100',
+  DMM: { ns: 'N', ld: '58', lm: '22.753', ew: 'E', od: '024', om: '30.006' },
+  DMS: 'N58° 22\' 45.180" E024° 30\' 0.360"',
+  'L-EST97': '529257, 6471080',
+};
+
+function ccFullValueFor(fmt, res) {
+  if (!res) return null;
+  if (fmt === 'DD') return ccFmtDD(res.lat, res.lon);
+  if (fmt === 'DMM') return ccFmtDMM(res.lat, res.lon);
+  if (fmt === 'DMS') return ccFmtDMS(res.lat, res.lon);
+  if (fmt === 'L-EST97') { const xy = ccLcc.toXY(res.lat, res.lon); return ccFmtLEST(xy.x, xy.y); }
+  return null;
 }
 
-function ccClearOutputs() {
-  ccDmmEl.value = ccDdEl.value = ccLestEl.value = '';
+function ccRenderDmRow(parts, live) {
+  ccOutDmEl.classList.toggle('empty', !live);
+  ccOutDmEl.innerHTML =
+    '<span class="cc-dm-txt">' + parts.ns + ' ' + parts.ld + '°</span>' +
+    '<button type="button" class="cc-dm-min-btn" data-val="' + parts.lm + '">' + parts.lm + '′</button>' +
+    '<span class="cc-dm-gap"></span>' +
+    '<span class="cc-dm-txt">' + parts.ew + ' ' + parts.od + '°</span>' +
+    '<button type="button" class="cc-dm-min-btn" data-val="' + parts.om + '">' + parts.om + '′</button>';
+}
+
+function ccRenderOutput() {
+  ccTabs.forEach(function(tb) { tb.classList.toggle('active', tb.dataset.fmt === ccActiveFmt); });
+
+  // Keep both output elements in sync with ccCurrent regardless of which one
+  // is actually shown, so a hidden format never holds a stale leftover value.
+  ccRenderDmRow(ccCurrent ? ccDmParts(ccCurrent.lat, ccCurrent.lon) : CC_PLACEHOLDER.DMM, !!ccCurrent);
+  ccOutInputEl.placeholder = CC_PLACEHOLDER[ccActiveFmt];
+  ccOutInputEl.value = ccCurrent ? ccFullValueFor(ccActiveFmt, ccCurrent) : '';
+
+  const showDm = ccActiveFmt === 'DMM';
+  ccOutDmEl.style.display = showDm ? '' : 'none';
+  ccOutInputEl.style.display = showDm ? 'none' : '';
+
+  const full = ccFullValueFor(ccActiveFmt, ccCurrent);
+  ccCopyBtn.disabled = !full;
+
+  if (ccCurrent) {
+    const nav = mapNavData(ccCurrent.lat, ccCurrent.lon, t('pointLabel'));
+    ccMapBtn.dataset.default = nav.default;
+    ccMapBtn.dataset.alts = JSON.stringify(nav.alts);
+    ccMapBtn.disabled = false;
+  } else {
+    ccMapBtn.disabled = true;
+  }
+}
+
+function ccRefreshAll() {
+  const val = ccInpEl.value;
   ccStatusEl.textContent = '';
   ccStatusEl.className = 'cc-status';
-  ccBadgeEl.style.display = 'none';
-  ccMapsRows.forEach(function(m) { updateMapsBtn(m.row, m.btn, null, null); });
+
+  if (!val.trim()) {
+    ccParsed = null;
+    ccBadgeEl.className = 'cc-badge';
+    ccBadgeEl.style.display = 'none';
+  } else {
+    const result = ccDetect(val);
+    if (result) {
+      ccParsed = { lat: result.lat, lon: result.lon };
+      ccBadgeEl.textContent = result.fmt;
+      ccBadgeEl.className = 'cc-badge';
+      ccBadgeEl.style.display = '';
+    } else {
+      ccParsed = null;
+      ccBadgeEl.textContent = t('unknownFormat');
+      ccBadgeEl.className = 'cc-badge unknown';
+      ccBadgeEl.style.display = '';
+    }
+  }
+
+  if (ccMode === 'projector' && ccParsed) {
+    const angle = parseFloat(ccAngleEl.value);
+    const dist = parseFloat(ccDistEl.value);
+    ccDest = (!isNaN(angle) && !isNaN(dist)) ? pjDestinationPoint(ccParsed.lat, ccParsed.lon, angle, dist) : null;
+  } else {
+    ccDest = null;
+  }
+
+  ccCurrent = (ccMode === 'projector') ? ccDest : ccParsed;
+
+  ccRenderOutput();
+  ccSyncMap();
 }
 
-ccInpEl.addEventListener('input', function() {
-  const val = ccInpEl.value;
-  if (!val.trim()) { ccClearOutputs(); return; }
-  const result = ccDetect(val);
-  if (result) {
-    const xy = ccLcc.toXY(result.lat, result.lon);
-    ccDmmEl.value = ccFmtDMM(result.lat, result.lon);
-    ccDdEl.value = ccFmtDD(result.lat, result.lon);
-    ccLestEl.value = ccFmtLEST(xy.x, xy.y);
-    ccMapUpdate(result.lat, result.lon);
-    ccMapsRows.forEach(function(m) { updateMapsBtn(m.row, m.btn, result.lat, result.lon); });
-    ccStatusEl.textContent = t('detected', { fmt: result.fmt });
-    ccStatusEl.className = 'cc-status ok';
-    ccBadgeEl.textContent = result.fmt;
-    ccBadgeEl.style.display = '';
-  } else {
-    ccClearOutputs();
-    ccStatusEl.textContent = t('formatNotDetected');
-    ccStatusEl.className = 'cc-status err';
-  }
-});
+function ccSetMode(m) {
+  ccMode = m;
+  ccModeTabs.forEach(function(tb) { tb.classList.toggle('active', tb.dataset.mode === m); });
+  ccStatusEl.style.display = m === 'converter' ? '' : 'none';
+  ccProjFieldsEl.style.display = m === 'projector' ? '' : 'none';
+  ccCircleFieldsEl.style.display = m === 'circle' ? '' : 'none';
+  // The input card's 3rd line changes height between modes, which resizes
+  // the map below it (flex: 1) — Leaflet needs telling or its cached
+  // container size goes stale and fitBounds/setView math comes out wrong.
+  if (ccLeafMap) ccLeafMap.invalidateSize();
+  ccRefreshAll();
+}
 
-function ccCopyField(id, btn) {
-  const val = document.getElementById(id).value;
+// Mode-tab taps switch in place without touching the URL — only entry points
+// (menu items, deep links) route through showView()/the hash.
+ccModeTabs.forEach(function(tb) { tb.addEventListener('click', function() { ccSetMode(tb.dataset.mode); }); });
+ccTabs.forEach(function(tb) { tb.addEventListener('click', function() { ccActiveFmt = tb.dataset.fmt; ccRenderOutput(); }); });
+
+ccInpEl.addEventListener('input', ccRefreshAll);
+ccAngleEl.addEventListener('input', ccRefreshAll);
+ccDistEl.addEventListener('input', ccRefreshAll);
+ccRadiusEl.addEventListener('input', ccSyncMap);
+
+function ccFlashCopied(el) {
+  el.classList.add('copied');
+  clearTimeout(el._ccCopyTimer);
+  el._ccCopyTimer = setTimeout(function() { el.classList.remove('copied'); }, 1500);
+}
+
+ccCopyBtn.addEventListener('click', function() {
+  const val = ccFullValueFor(ccActiveFmt, ccCurrent);
   if (!val) return;
   navigator.clipboard.writeText(val).then(function() {
-    const orig = btn.textContent;
-    btn.textContent = t('copied');
-    btn.classList.add('copied');
-    setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+    const orig = ccCopyBtn.textContent;
+    ccCopyBtn.textContent = t('copied');
+    ccFlashCopied(ccCopyBtn);
+    setTimeout(function() { ccCopyBtn.textContent = orig; }, 1500);
   });
-}
-document.getElementById('cc-copy-dmm-btn').addEventListener('click', function() { ccCopyField('cc-out-dmm', this); });
-document.getElementById('cc-copy-dd-btn').addEventListener('click', function() { ccCopyField('cc-out-dd', this); });
-document.getElementById('cc-copy-lest-btn').addEventListener('click', function() { ccCopyField('cc-out-lest', this); });
+});
+
+// DM tab minutes are individually copyable — the GC app expects them pasted
+// into a separate minutes field, so this copies just the bare number.
+ccOutDmEl.addEventListener('click', function(e) {
+  const btn = e.target.closest('.cc-dm-min-btn');
+  if (!btn || ccOutDmEl.classList.contains('empty')) return;
+  navigator.clipboard.writeText(btn.dataset.val).then(function() { ccFlashCopied(btn); });
+});
 
 document.getElementById('cc-paste-btn').addEventListener('click', function() {
-  navigator.clipboard.readText().then(function(t) {
-    ccInpEl.value = t;
-    ccInpEl.dispatchEvent(new Event('input'));
+  navigator.clipboard.readText().then(function(text) {
+    ccInpEl.value = text;
+    ccRefreshAll();
   });
+});
+
+document.getElementById('cc-clear-btn').addEventListener('click', function() {
+  ccInpEl.value = '';
+  ccAngleEl.value = '';
+  ccDistEl.value = '';
+  ccRadiusEl.value = '';
+  ccRefreshAll();
+  ccInpEl.focus();
 });
 
 const ccLocBtn = document.getElementById('cc-loc-btn');
@@ -1520,7 +1757,7 @@ ccLocBtn.addEventListener('click', function() {
   navigator.geolocation.getCurrentPosition(
     function(pos) {
       ccInpEl.value = ccFmtDD(pos.coords.latitude, pos.coords.longitude);
-      ccInpEl.dispatchEvent(new Event('input'));
+      ccRefreshAll();
       ccLocBtn.textContent = '⌖';
       ccLocBtn.disabled = false;
     },
@@ -1534,142 +1771,20 @@ ccLocBtn.addEventListener('click', function() {
   );
 });
 
-// ─── Coordinates projection (start point + bearing/distance → destination) ─
-function pjInitMap() {
-  if (pjLeafMap) return;
-  pjLeafMap = L.map('pj-map', { zoomControl: true }).setView([58.5, 25.0], 7);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19
-  }).addTo(pjLeafMap);
-  const sIcon = L.divIcon({
-    className: '',
-    html: '<div class="sp-pin-wrap"><div class="sp-pin-shape s"></div><div class="sp-pin-letter">S</div></div>',
-    iconSize: [30, 40], iconAnchor: [15, 40]
-  });
-  const pIcon = L.divIcon({
-    className: '',
-    html: '<div class="sp-pin-wrap"><div class="sp-pin-shape p"></div><div class="sp-pin-letter">P</div></div>',
-    iconSize: [30, 40], iconAnchor: [15, 40]
-  });
-  pjSMarker = L.marker([58.5, 25.0], { icon: sIcon }).addTo(pjLeafMap);
-  pjPMarker = L.marker([58.5, 25.0], { icon: pIcon }).addTo(pjLeafMap);
-  pjLine = L.polyline([[58.5, 25.0], [58.5, 25.0]], { color: '#0a84ff', weight: 2, dashArray: '4,6' }).addTo(pjLeafMap);
-}
-
-function pjMapUpdate(sLat, sLon, pLat, pLon) {
-  pjPendingPoints = { sLat: sLat, sLon: sLon, pLat: pLat, pLon: pLon };
-  if (!pjLeafMap) return;
-  const wrap = document.getElementById('pj-map-wrap');
-  if (wrap.style.display === 'none') {
-    wrap.style.display = '';
-    pjLeafMap.invalidateSize();
+// Honor a deep link on initial load instead of always defaulting to search.
+// Deferred to the end of initApp (rather than living alongside the rest of
+// the routing setup above) because it can call ccSetMode(), which closes
+// over the coordinate-tools consts (ccModeTabs etc.) declared further down
+// this same function — calling it before those run would hit their TDZ.
+(function() {
+  const initialPath = location.hash.slice(1);
+  if (isRootPath(initialPath)) { location.hash = '#' + VIEW_TO_PATH.search; return; }
+  const initialView = PATH_TO_VIEW[initialPath];
+  if (initialView) {
+    applyView(initialView);
+    if (initialView === 'coord') ccSetMode(PATH_TO_COORD_MODE[initialPath] || 'converter');
   }
-  pjSMarker.setLatLng([sLat, sLon]);
-  pjPMarker.setLatLng([pLat, pLon]);
-  pjLine.setLatLngs([[sLat, sLon], [pLat, pLon]]);
-  pjLeafMap.fitBounds([[sLat, sLon], [pLat, pLon]], { padding: [40, 40], maxZoom: 17 });
-}
-
-// Destination point given a start point, compass bearing (0-360°, clockwise
-// from true north) and distance in metres. Spherical approximation — same
-// model haversineKm already uses elsewhere in this app.
-function pjDestinationPoint(lat, lon, bearingDeg, distM) {
-  const R = 6371000;
-  const brng = bearingDeg * Math.PI / 180;
-  const lat1 = lat * Math.PI / 180, lon1 = lon * Math.PI / 180;
-  const dR = distM / R;
-  const lat2 = Math.asin(Math.sin(lat1) * Math.cos(dR) + Math.cos(lat1) * Math.sin(dR) * Math.cos(brng));
-  const lon2 = lon1 + Math.atan2(
-    Math.sin(brng) * Math.sin(dR) * Math.cos(lat1),
-    Math.cos(dR) - Math.sin(lat1) * Math.sin(lat2)
-  );
-  return { lat: lat2 * 180 / Math.PI, lon: ((lon2 * 180 / Math.PI) + 540) % 360 - 180 };
-}
-
-const pjInpEl = document.getElementById('pj-inp');
-const pjAngleEl = document.getElementById('pj-angle');
-const pjDistEl = document.getElementById('pj-dist');
-const pjStatusEl = document.getElementById('pj-status');
-const pjBadgeEl = document.getElementById('pj-badge');
-const pjOutEl = document.getElementById('pj-out');
-const pjMapsRowEl = document.getElementById('pj-maps-row');
-const pjMapsBtnEl = document.getElementById('pj-maps-btn');
-bindNavButton(pjMapsBtnEl);
-
-function pjRecompute() {
-  const val = pjInpEl.value;
-  if (!val.trim()) {
-    pjOutEl.value = '';
-    pjStatusEl.textContent = '';
-    pjStatusEl.className = 'cc-status';
-    pjBadgeEl.style.display = 'none';
-    updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, null, null);
-    return;
-  }
-  const result = ccDetect(val);
-  if (!result) {
-    pjOutEl.value = '';
-    pjStatusEl.textContent = t('formatNotDetected');
-    pjStatusEl.className = 'cc-status err';
-    pjBadgeEl.style.display = 'none';
-    updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, null, null);
-    return;
-  }
-  pjStatusEl.textContent = t('detected', { fmt: result.fmt });
-  pjStatusEl.className = 'cc-status ok';
-  pjBadgeEl.textContent = result.fmt;
-  pjBadgeEl.style.display = '';
-
-  const angle = parseFloat(pjAngleEl.value);
-  const dist = parseFloat(pjDistEl.value);
-  if (isNaN(angle) || isNaN(dist)) {
-    pjOutEl.value = '';
-    updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, null, null);
-    return;
-  }
-  const dest = pjDestinationPoint(result.lat, result.lon, angle, dist);
-  pjOutEl.value = ccFmtDMM(dest.lat, dest.lon);
-  pjMapUpdate(result.lat, result.lon, dest.lat, dest.lon);
-  updateMapsBtn(pjMapsRowEl, pjMapsBtnEl, dest.lat, dest.lon);
-}
-
-pjInpEl.addEventListener('input', pjRecompute);
-pjAngleEl.addEventListener('input', pjRecompute);
-pjDistEl.addEventListener('input', pjRecompute);
-
-document.getElementById('pj-copy-out-btn').addEventListener('click', function() { ccCopyField('pj-out', this); });
-
-document.getElementById('pj-paste-btn').addEventListener('click', function() {
-  navigator.clipboard.readText().then(function(t) {
-    pjInpEl.value = t;
-    pjRecompute();
-  });
-});
-
-const pjLocBtn = document.getElementById('pj-loc-btn');
-if ('geolocation' in navigator) pjLocBtn.style.display = '';
-
-pjLocBtn.addEventListener('click', function() {
-  pjLocBtn.textContent = '…';
-  pjLocBtn.disabled = true;
-  navigator.geolocation.getCurrentPosition(
-    function(pos) {
-      pjInpEl.value = ccFmtDD(pos.coords.latitude, pos.coords.longitude);
-      pjRecompute();
-      pjLocBtn.textContent = '⌖';
-      pjLocBtn.disabled = false;
-    },
-    function(err) {
-      pjStatusEl.textContent = t('locationUnavailable');
-      pjStatusEl.className = 'cc-status err';
-      pjLocBtn.textContent = '⌖';
-      pjLocBtn.disabled = false;
-    },
-    { enableHighAccuracy: true, timeout: 10000 }
-  );
-});
-
+})();
 } // end initApp
 
 const countEl0 = document.getElementById('count');

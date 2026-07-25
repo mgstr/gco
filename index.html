@@ -56,8 +56,7 @@
     <div class="viewtitle" data-i18n="toolsTitle"></div>
   </div>
   <div id="menuList">
-    <button type="button" class="menuitem" id="coordMenuItem" data-i18n="coordConverterItem"></button>
-    <button type="button" class="menuitem" id="projMenuItem" data-i18n="coordProjectionItem"></button>
+    <button type="button" class="menuitem" id="coordMenuItem" data-i18n="coordToolsItem"></button>
     <button type="button" class="menuitem" id="settingsMenuItem" data-i18n="settingsItem"></button>
   </div>
 </div>
@@ -107,108 +106,66 @@
 <div id="view-coord" style="display:none">
   <div class="viewheader">
     <button type="button" class="backbtn" id="coordBackBtn" data-i18n-aria-label="backAria">‹</button>
-    <div class="viewtitle" data-i18n="coordConverterTitle"></div>
+    <div class="viewtitle cc-mode-title">
+      <span data-i18n="coordToolsPrefix"></span>
+      <button type="button" class="cc-mode-tab active" data-mode="converter" data-i18n="modeConverter"></button>
+      <button type="button" class="cc-mode-tab" data-mode="projector" data-i18n="modeProjector"></button>
+      <button type="button" class="cc-mode-tab" data-mode="circle" data-i18n="modeCircle"></button>
+    </div>
   </div>
   <div class="cc-body">
-    <div class="cc-card cc-input-card">
-      <div class="cc-row-label">
-        <span class="cc-label-text" data-i18n="inputLabel"></span>
-        <span class="cc-badge" id="cc-badge" style="display:none"></span>
-        <div style="margin-left:auto;display:flex;gap:6px">
-          <button type="button" class="cc-copy-btn" id="cc-paste-btn" data-i18n="pasteBtn"></button>
-          <button type="button" class="cc-copy-btn" id="cc-loc-btn" style="display:none">⌖</button>
+    <div class="cc-top">
+      <div class="cc-card cc-input-card">
+        <div class="cc-row-label">
+          <span class="cc-label-text" data-i18n="inputLabel"></span>
+          <span class="cc-badge" id="cc-badge" style="display:none"></span>
+          <div style="margin-left:auto;display:flex;gap:6px">
+            <button type="button" class="cc-copy-btn" id="cc-paste-btn" data-i18n="pasteBtn"></button>
+            <button type="button" class="cc-copy-btn" id="cc-loc-btn" style="display:none">⌖</button>
+            <button type="button" class="cc-copy-btn" id="cc-clear-btn" data-i18n="clearBtn"></button>
+          </div>
+        </div>
+        <input id="cc-inp" type="text" data-i18n-placeholder="coordInputPlaceholder"
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+        <!-- 3rd line: empty for Converter, angle+distance for Projector, radius for Circle -->
+        <div class="cc-status" id="cc-status"></div>
+        <div class="cc-pair" id="cc-proj-fields" style="display:none">
+          <div>
+            <span class="cc-label-text" data-i18n="angleLabel"></span>
+            <input id="cc-angle" type="number" inputmode="decimal" placeholder="0–360">
+          </div>
+          <div>
+            <span class="cc-label-text" data-i18n="distanceLabel"></span>
+            <input id="cc-dist" type="number" inputmode="decimal" data-i18n-placeholder="distancePlaceholder">
+          </div>
+        </div>
+        <div class="cc-field" id="cc-circle-fields" style="display:none">
+          <span class="cc-label-text" data-i18n="radiusLabel"></span>
+          <input id="cc-radius" type="number" inputmode="decimal" data-i18n-placeholder="distancePlaceholder">
         </div>
       </div>
-      <input id="cc-inp" type="text" data-i18n-placeholder="coordInputPlaceholder"
-             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <div class="cc-status" id="cc-status"></div>
-    </div>
 
-    <div class="cc-card">
-      <div class="cc-row-label">
-        <span class="cc-label-text" data-i18n="dmmLabel"></span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dmm-btn" data-i18n="copyBtn"></button>
-      </div>
-      <div class="cc-maps-row" id="cc-maps-dmm-row" style="display:none">
-        <button type="button" class="navbtn" id="cc-maps-dmm-btn" data-i18n="mapBtn"></button>
-      </div>
-      <input id="cc-out-dmm" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
-    </div>
-
-    <div class="cc-card">
-      <div class="cc-row-label">
-        <span class="cc-label-text" data-i18n="ddLabel"></span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-dd-btn" data-i18n="copyBtn"></button>
-      </div>
-      <div class="cc-maps-row" id="cc-maps-dd-row" style="display:none">
-        <button type="button" class="navbtn" id="cc-maps-dd-btn" data-i18n="mapBtn"></button>
-      </div>
-      <input id="cc-out-dd" type="text" readonly placeholder="58.379217, 24.500100">
-    </div>
-
-    <div class="cc-card">
-      <div class="cc-row-label">
-        <span class="cc-label-text" data-i18n="lestLabel"></span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="cc-copy-lest-btn" data-i18n="copyBtn"></button>
-      </div>
-      <div class="cc-maps-row" id="cc-maps-lest-row" style="display:none">
-        <button type="button" class="navbtn" id="cc-maps-lest-btn" data-i18n="mapBtn"></button>
-      </div>
-      <input id="cc-out-lest" type="text" readonly placeholder="529257, 6471080">
-    </div>
-
-    <div id="cc-map-wrap" style="display:none;margin-top:10px">
-      <div id="cc-map" style="height:300px;border-radius:14px;overflow:hidden"></div>
-    </div>
-  </div>
-</div>
-
-<div id="view-proj" style="display:none">
-  <div class="viewheader">
-    <button type="button" class="backbtn" id="projBackBtn" data-i18n-aria-label="backAria">‹</button>
-    <div class="viewtitle" data-i18n="coordProjectionTitle"></div>
-  </div>
-  <div class="cc-body">
-    <div class="cc-card cc-input-card">
-      <div class="cc-row-label">
-        <span class="cc-label-text" data-i18n="inputLabel"></span>
-        <span class="cc-badge" id="pj-badge" style="display:none"></span>
-        <div style="margin-left:auto;display:flex;gap:6px">
-          <button type="button" class="cc-copy-btn" id="pj-paste-btn" data-i18n="pasteBtn"></button>
-          <button type="button" class="cc-copy-btn" id="pj-loc-btn" style="display:none">⌖</button>
+      <div class="cc-card">
+        <div class="cc-row-label">
+          <div class="cc-tabs" role="tablist">
+            <button type="button" class="cc-tab" data-fmt="DD">D</button>
+            <button type="button" class="cc-tab active" data-fmt="DMM">DM</button>
+            <button type="button" class="cc-tab" data-fmt="DMS">DMS</button>
+            <button type="button" class="cc-tab" data-fmt="L-EST97">L-EST97</button>
+          </div>
+          <button type="button" class="cc-copy-btn" id="cc-copy-btn" data-i18n="copyBtn"></button>
+          <button type="button" class="navbtn" id="cc-map-btn" disabled data-i18n="mapBtn"></button>
         </div>
-      </div>
-      <input id="pj-inp" type="text" data-i18n-placeholder="coordInputPlaceholder"
-             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-      <div class="cc-status" id="pj-status"></div>
-    </div>
-
-    <div class="cc-card">
-      <div class="cc-pair">
-        <div>
-          <span class="cc-label-text" data-i18n="angleLabel"></span>
-          <input id="pj-angle" type="number" inputmode="decimal" placeholder="0–360">
-        </div>
-        <div>
-          <span class="cc-label-text" data-i18n="distanceLabel"></span>
-          <input id="pj-dist" type="number" inputmode="decimal" data-i18n-placeholder="distancePlaceholder">
+        <div class="cc-output-value">
+          <input id="cc-out-input" type="text" readonly>
+          <div id="cc-out-dm" class="cc-dm-row"></div>
         </div>
       </div>
     </div>
 
-    <div class="cc-card">
-      <div class="cc-row-label">
-        <span class="cc-label-text" data-i18n="dmmLabel"></span>
-        <button type="button" class="cc-copy-btn" style="margin-left:auto" id="pj-copy-out-btn" data-i18n="copyBtn"></button>
-      </div>
-      <div class="cc-maps-row" id="pj-maps-row" style="display:none">
-        <button type="button" class="navbtn" id="pj-maps-btn" data-i18n="mapBtn"></button>
-      </div>
-      <input id="pj-out" type="text" readonly placeholder="N 58° 22.753′  E 024° 30.006′">
-    </div>
-
-    <div id="pj-map-wrap" style="display:none;margin-top:10px">
-      <div id="pj-map" style="height:300px;border-radius:14px;overflow:hidden"></div>
+    <div class="cc-map-wrap">
+      <div id="cc-map"></div>
     </div>
   </div>
 </div>
