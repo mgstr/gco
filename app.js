@@ -66,7 +66,7 @@ function agoText(dateStr) {
 }
 
 // ─── App init — runs once cache data has loaded from data.json ────────────
-function initApp(CACHES) {
+function initApp(CACHES, OWNERSHIP) {
 let currentView = 'search';
 // Coordinate tools (Converter/Projector/Circle) — one Leaflet map shared by
 // all three modes, with mode-specific overlays created lazily on first use.
@@ -303,6 +303,13 @@ function attrsRowHtml(at) {
     const label = attributeLabel(slug, negated);
     return '<img class="attr-icon' + (negated ? ' attr-no' : '') + '" loading="lazy" src="' + src + '" alt="" title="' + escAttr(label) + '">';
   }).join('') + '</div>';
+}
+
+// c.own is a numeric land ownership code (see ownership.json / scripts/
+// enrich_land_ownership.py); looks up its localized description.
+function ownershipLabel(code) {
+  const entry = OWNERSHIP[code];
+  return entry ? (entry[I18N_LANG] || entry.en) : null;
 }
 
 // Small round type icon for the search-results list row, using the same
@@ -669,7 +676,11 @@ function render(q, focusLatLon) {
             (c.t ? '<b>' + t('terrainFieldLabel') + '</b> ' + ratingValueHtml(c.t, TERRAIN_ORANGE_MIN, TERRAIN_RED_MIN) : '') +
             '</div>' : '') +
           attrsRowHtml(c.at) +
-          (c.r ? '<div><b>' + t('addressLabel') + '</b> ' + esc(c.r) + '</div>' : '') +
+          ((c.r || c.own != null) ? '<div>' +
+            (c.r ? '<b>' + t('addressLabel') + '</b> ' + esc(c.r) : '') +
+            (c.r && c.own != null ? ' · ' : '') +
+            (c.own != null ? '<b>' + t('landLabel') + '</b> ' + esc(ownershipLabel(c.own) || c.own) : '') +
+            '</div>' : '') +
           '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' <span class="agotext">(' + agoText(c.h) + ')</span> ' + t('byLabel') + ' ' + esc(c.o) +
             (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
           (function() {
@@ -1665,6 +1676,7 @@ const ccCopyBtn = document.getElementById('cc-copy-btn');
 const ccMapBtn = document.getElementById('cc-map-btn');
 const ccAddressEl = document.getElementById('cc-address');
 const ccAddressMetaEl = document.getElementById('cc-address-meta');
+const ccOwnershipEl = document.getElementById('cc-ownership');
 bindNavButton(ccMapBtn);
 
 // Reverse geocoding (OpenStreetMap Nominatim) for the current output point.
@@ -1730,6 +1742,79 @@ function ccScheduleAddressLookup(point) {
 
   ccSetAddressText(t('addressLookingUp'), 'loading');
   ccAddressTimer = setTimeout(function() { ccFetchAddress(point.lat, point.lon, key); }, 600);
+}
+
+// Live land ownership lookup for the current output point, queried straight
+// from Maa-ameti's public cadastral map service (ky_kehtiv = valid cadastral
+// units) rather than the bulk dataset scripts/enrich_land_ownership.py uses
+// for data.json — a single WMS GetFeatureInfo call is far cheaper than a
+// ~180MB nightly extract for a one-off coordinate. OMVORM_TO_CODE mirrors
+// that script's OWNERSHIP_CODES so the resulting text/language matches the
+// cache list's "Land:" field exactly (via ownershipLabel(), fed by the same
+// ownership.json fetched at startup).
+let ccOwnershipTimer = null;
+let ccOwnershipAbort = null;
+const ccOwnershipCache = new Map();
+
+const OMVORM_TO_CODE = {
+  '': 8,
+  'Eraomand': 1,
+  'Riigiomand': 2,
+  'Munitsipaalomand': 3,
+  'Avalik-õiguslik omand': 4,
+  'Segaomand': 5,
+  'Omandi ulatus selgitamisel': 6,
+  'Kinnistamata eraomand': 7,
+};
+
+function ccSetOwnershipText(html, cls) {
+  ccOwnershipEl.innerHTML = html || '';
+  ccOwnershipEl.className = 'cc-ownership' + (cls ? ' ' + cls : '');
+  ccOwnershipEl.style.display = html ? '' : 'none';
+}
+
+function ccFetchOwnership(lat, lon, key) {
+  const ctrl = new AbortController();
+  ccOwnershipAbort = ctrl;
+  const d = 0.0005; // ~50-70m half-width bbox around the point, in degrees
+  const bbox = (lon - d) + ',' + (lat - d) + ',' + (lon + d) + ',' + (lat + d);
+  const url = 'https://gsavalik.envir.ee/geoserver/kataster/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo' +
+    '&LAYERS=ky_kehtiv&QUERY_LAYERS=ky_kehtiv&SRS=EPSG:4326&BBOX=' + bbox +
+    '&WIDTH=101&HEIGHT=101&X=50&Y=50&INFO_FORMAT=application/json&FEATURE_COUNT=1&PROPERTYNAME=omvorm';
+  fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'application/json' } })
+    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function(data) {
+      const feature = data && data.features && data.features[0];
+      // No feature at all (0 in ownership.json) means the point isn't inside
+      // any cadastral unit (sea, lakes, data gaps) — distinct from a
+      // cadastral unit whose omvorm attribute itself is blank (8).
+      let code = 0;
+      if (feature) {
+        const omvorm = feature.properties.omvorm;
+        code = OMVORM_TO_CODE[omvorm] != null ? OMVORM_TO_CODE[omvorm] : 0;
+      }
+      const html = '<b>' + esc(t('landLabel')) + '</b> ' + esc(ownershipLabel(code) || t('ownershipUnknown'));
+      ccOwnershipCache.set(key, html);
+      ccSetOwnershipText(html);
+    })
+    .catch(function(err) {
+      if (err.name === 'AbortError') return;
+      ccSetOwnershipText(esc(t('ownershipLookupFailed')), 'err');
+    });
+}
+
+function ccScheduleOwnershipLookup(point) {
+  clearTimeout(ccOwnershipTimer);
+  if (ccOwnershipAbort) { ccOwnershipAbort.abort(); ccOwnershipAbort = null; }
+
+  if (!point) { ccSetOwnershipText(''); return; }
+
+  const key = ccAddressCacheKey(point.lat, point.lon);
+  const cached = ccOwnershipCache.get(key);
+  if (cached) { ccSetOwnershipText(cached); return; }
+
+  ccSetOwnershipText(esc(t('ownershipLookingUp')), 'loading');
+  ccOwnershipTimer = setTimeout(function() { ccFetchOwnership(point.lat, point.lon, key); }, 600);
 }
 
 // ─── Weather (Open-Meteo) for the current output point ────────────────────
@@ -1989,6 +2074,7 @@ function ccRefreshAll() {
   } else {
     ccSyncMap();
     ccScheduleAddressLookup(ccCurrent);
+    ccScheduleOwnershipLookup(ccCurrent);
   }
 }
 
@@ -2005,7 +2091,7 @@ function ccSetMode(m) {
   ccOutputCardEl.style.display = isWeather ? 'none' : '';
   ccMapWrapEl.style.display = isWeather ? 'none' : '';
   ccWeatherEl.style.display = isWeather ? '' : 'none';
-  if (isWeather) { ccWxDay = 'today'; ccSetAddressText(''); }
+  if (isWeather) { ccWxDay = 'today'; ccSetAddressText(''); ccSetOwnershipText(''); }
 
   // The input card's 3rd line changes height between modes, which resizes
   // the map below it (flex: 1) — Leaflet needs telling or its cached
@@ -2116,10 +2202,13 @@ const countEl0 = document.getElementById('count');
 if (countEl0) countEl0.textContent = t('loadingData');
 
 function loadData() {
-  fetch('./data.json')
-    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-    .then(function(data) {
-      initApp(data.caches);
+  Promise.all([
+    fetch('./data.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
+    fetch('./ownership.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+  ])
+    .then(function(results) {
+      const data = results[0];
+      initApp(data.caches, results[1]);
       const versionEl = document.getElementById('settingsVersion');
       if (versionEl) versionEl.textContent = data.version;
     })
