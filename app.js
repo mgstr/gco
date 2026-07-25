@@ -199,8 +199,8 @@ function boolPref(key, def) {
 // separate from the finds data, so it survives independently of it.
 const HideFindsPref = boolPref('gcHideFindsPrefV1', true);
 const HideDisabledPref = boolPref('gcHideDisabledPrefV1', false);
-const ShowIdPref = boolPref('gcShowIdPrefV1', true);
-const ShowDtsPref = boolPref('gcShowDtsPrefV1', true);
+const ShowIdPref = boolPref('gcShowIdPrefV1', false);
+const ShowDtsPref = boolPref('gcShowDtsPrefV1', false);
 
 let FOUND_SET = new Set();
 function rebuildFoundSet() {
@@ -402,6 +402,7 @@ if (navigator.geolocation) {
       updateSortDirBtn();
     }
     render(qEl.value.trim());
+    if (currentView === 'coord') ccRefreshAll();
   });
 }
 
@@ -852,6 +853,7 @@ function setMapOrigin(lat, lon) {
   originSel.value = 'map';
   rebuildDistanceSort();
   render(qEl.value.trim());
+  if (currentView === 'coord') ccRefreshAll();
 }
 
 function updateMapMarkers(list, focusLatLon) {
@@ -982,7 +984,11 @@ sortSel.addEventListener('change', function() {
   updateSortDirBtn();
   render(qEl.value.trim());
 });
-originSel.addEventListener('change', function() { rebuildDistanceSort(); render(qEl.value.trim()); });
+originSel.addEventListener('change', function() {
+  rebuildDistanceSort();
+  render(qEl.value.trim());
+  if (currentView === 'coord') ccRefreshAll();
+});
 sortDirBtn.addEventListener('click', function() {
   userChangedSort = true;
   sortDir = sortDir === 'desc' ? 'asc' : 'desc';
@@ -1747,6 +1753,15 @@ function ccRefreshAll() {
 
   ccCurrent = (ccMode === 'projector') ? ccDest : ccParsed;
 
+  // Converter mode's 3rd line otherwise sits empty (Projector/Circle use it
+  // for their own fields) — show distance from the same origin the search
+  // list uses (distanceFor()/currentOrigin()), so it stays in sync with the
+  // "Kauguse arvutamine" setting.
+  if (ccMode === 'converter') {
+    const dist = ccCurrent ? distanceFor(ccCurrent) : null;
+    if (dist) ccStatusEl.textContent = t('distanceAwayLabel', { d: dist });
+  }
+
   ccRenderOutput();
   ccSyncMap();
   ccScheduleAddressLookup(ccCurrent);
@@ -1801,9 +1816,17 @@ ccOutDmEl.addEventListener('click', function(e) {
 });
 
 document.getElementById('cc-paste-btn').addEventListener('click', function() {
+  if (!navigator.clipboard || !navigator.clipboard.readText) {
+    ccStatusEl.textContent = t('pasteUnavailable');
+    ccStatusEl.className = 'cc-status err';
+    return;
+  }
   navigator.clipboard.readText().then(function(text) {
     ccInpEl.value = text;
     ccRefreshAll();
+  }).catch(function() {
+    ccStatusEl.textContent = t('pasteFailed');
+    ccStatusEl.className = 'cc-status err';
   });
 });
 

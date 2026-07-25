@@ -46,6 +46,7 @@ const STRINGS = {
     addressLookingUp: 'Looking up address…',
     addressNotFound: 'No address found',
     addressLookupFailed: 'Could not look up address',
+    distanceAwayLabel: '{d} away',
 
     noResults: 'No results found',
     refineSearch: 'refine your search',
@@ -85,6 +86,8 @@ const STRINGS = {
     loadedAt: 'Loaded: {date}',
     copied: 'Copied!',
     locationUnavailable: 'Location not available',
+    pasteFailed: 'Could not read clipboard. Check the browser permission and try again.',
+    pasteUnavailable: 'Clipboard paste is not supported in this browser.',
     loadingData: 'Loading data…',
     loadFailed: 'Failed to load data.<br>Check your internet connection and try again.',
     retryBtn: 'Try again',
@@ -219,6 +222,7 @@ const STRINGS = {
     addressLookingUp: 'Aadressi otsimine…',
     addressNotFound: 'Aadressi ei leitud',
     addressLookupFailed: 'Aadressi otsimine ebaõnnestus',
+    distanceAwayLabel: '{d} eemal',
 
     noResults: 'Tulemusi ei leitud',
     refineSearch: 'täpsusta otsingut',
@@ -258,6 +262,8 @@ const STRINGS = {
     loadedAt: 'Laaditud: {date}',
     copied: 'Kopeeritud!',
     locationUnavailable: 'Asukoht pole saadaval',
+    pasteFailed: 'Lõikelaualt lugemine ebaõnnestus. Kontrolli brauseri õigusi ja proovi uuesti.',
+    pasteUnavailable: 'Lõikelaualt kleepimine ei ole selles brauseris toetatud.',
     loadingData: 'Laen andmeid…',
     loadFailed: 'Andmete laadimine ebaõnnestus.<br>Kontrolli internetiühendust ja proovi uuesti.',
     retryBtn: 'Proovi uuesti',
