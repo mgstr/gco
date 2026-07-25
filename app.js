@@ -1592,7 +1592,74 @@ const ccOutInputEl = document.getElementById('cc-out-input');
 const ccOutDmEl = document.getElementById('cc-out-dm');
 const ccCopyBtn = document.getElementById('cc-copy-btn');
 const ccMapBtn = document.getElementById('cc-map-btn');
+const ccAddressEl = document.getElementById('cc-address');
+const ccAddressMetaEl = document.getElementById('cc-address-meta');
 bindNavButton(ccMapBtn);
+
+// Reverse geocoding (OpenStreetMap Nominatim) for the current output point.
+// Debounced so rapid input edits don't hammer the public API (1 req/s
+// limit), and cached by rounded coordinates so switching format tabs or
+// re-parsing the same point never re-fetches.
+let ccAddressTimer = null;
+let ccAddressAbort = null;
+const ccAddressCache = new Map();
+
+function ccAddressCacheKey(lat, lon) { return lat.toFixed(4) + ',' + lon.toFixed(4); }
+
+function ccSetAddressMeta(text) {
+  ccAddressMetaEl.textContent = text || '';
+  ccAddressMetaEl.style.display = text ? '' : 'none';
+}
+
+function ccSetAddressText(text, cls, meta) {
+  ccAddressEl.textContent = text || '';
+  ccAddressEl.className = 'cc-address' + (cls ? ' ' + cls : '');
+  ccAddressEl.style.display = text ? '' : 'none';
+  ccSetAddressMeta(meta);
+}
+
+// Nominatim's OSM feature classification for the matched point — e.g.
+// class=amenity/type=bench/addresstype=amenity. addresstype usually mirrors
+// class, so it's only shown when it actually adds information.
+function ccAddressMetaText(data) {
+  if (!data) return '';
+  const parts = [data.class, data.type].filter(Boolean);
+  if (!parts.length) return '';
+  let meta = parts.join('/');
+  if (data.addresstype && data.addresstype !== data.class) meta += ' · ' + data.addresstype;
+  return meta;
+}
+
+function ccFetchAddress(lat, lon, key) {
+  const ctrl = new AbortController();
+  ccAddressAbort = ctrl;
+  const url = 'https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&lat=' + lat + '&lon=' + lon;
+  fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'application/json' } })
+    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function(data) {
+      const result = { text: data && data.display_name ? data.display_name : t('addressNotFound'), meta: ccAddressMetaText(data) };
+      ccAddressCache.set(key, result);
+      ccSetAddressText(result.text, null, result.meta);
+    })
+    .catch(function(err) {
+      if (err.name === 'AbortError') return;
+      ccSetAddressText(t('addressLookupFailed'), 'err');
+    });
+}
+
+function ccScheduleAddressLookup(point) {
+  clearTimeout(ccAddressTimer);
+  if (ccAddressAbort) { ccAddressAbort.abort(); ccAddressAbort = null; }
+
+  if (!point) { ccSetAddressText(''); return; }
+
+  const key = ccAddressCacheKey(point.lat, point.lon);
+  const cached = ccAddressCache.get(key);
+  if (cached) { ccSetAddressText(cached.text, null, cached.meta); return; }
+
+  ccSetAddressText(t('addressLookingUp'), 'loading');
+  ccAddressTimer = setTimeout(function() { ccFetchAddress(point.lat, point.lon, key); }, 600);
+}
 
 const CC_PLACEHOLDER = {
   DD: '58.379217, 24.500100',
@@ -1682,6 +1749,7 @@ function ccRefreshAll() {
 
   ccRenderOutput();
   ccSyncMap();
+  ccScheduleAddressLookup(ccCurrent);
 }
 
 function ccSetMode(m) {

@@ -213,6 +213,13 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; marg
           cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cc-tab.active { background: #0a84ff; color: #fff; }
 .cc-output-value { min-height: 26px; display: flex; align-items: center; }
+.cc-output-value input {
+  /* DMS ("N58° 22' 45.180" E024° 30' 0.360"") is the longest output string
+     and doesn't wrap like the DM chip row does — shrink just this field so
+     it stays on one line on a 390px-wide phone (iPhone 13). */
+  font-size: 15px;
+  letter-spacing: 0;
+}
 
 /* DM tab: degrees as plain text, minutes as individually-copyable chips —
    the GC app expects minutes pasted into their own field, separately from
@@ -247,6 +254,15 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; marg
 .sp-pin-shape.p { background: #ff453a; }
 .sp-pin-letter { position: absolute; top: 3px; left: 0; width: 30px; text-align: center;
                   font-size: 12px; font-weight: 700; color: #fff; }
+
+/* Reverse-geocoded address for the current output point, between the
+   output card and the map preview */
+.cc-address { flex-shrink: 0; padding: 0 16px 10px 16px; font-size: 13px;
+               color: #8e8e93; line-height: 1.3; }
+.cc-address.loading { color: #636366; font-style: italic; }
+.cc-address.err { color: #ff453a; }
+.cc-address-meta { flex-shrink: 0; padding: 0 16px 10px 16px; margin-top: -6px;
+                    font-size: 11px; color: #48484a; font-family: "Menlo", "Courier New", monospace; }
 
 /* Map preview fills the rest of the screen below the cards */
 .cc-map-wrap { flex: 1; min-height: 0; position: relative;
