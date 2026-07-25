@@ -705,6 +705,13 @@ function render(q, focusLatLon) {
             })() : '') +
           '</div>' +
           (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '" data-disabled="' + (c.disabled ? '1' : '0') + '"></div>' : '') +
+          (c.hint ? (function() {
+            const openClass = isFound(c) ? '' : ' open';
+            return '<div class="detail-section-header' + openClass + '" onclick="event.stopPropagation(); toggleSection(this)">' +
+              '<span class="chev">▸</span> <b>' + t('hintLabel') + '</b>' +
+              '</div>' +
+              '<div class="detail-section-body">' + esc(c.hint) + '</div>';
+          })() : '') +
           (c.desc ? (function() {
             const openClass = isFound(c) ? '' : ' open';
             return '<div class="detail-section-header' + openClass + '" onclick="event.stopPropagation(); toggleSection(this)">' +
