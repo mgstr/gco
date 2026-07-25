@@ -456,30 +456,48 @@ function organicMapsUrl(lat, lon, name) {
   return 'https://omaps.app/map?v=1&ll=' + lat + ',' + lon + '&n=' + encName;
 }
 
+// Destinations offered by the Map button's long-press menu, in menu order.
+// Each entry's `url` builds that provider's link for a given point; `iosOnly`
+// restricts an entry to iOS; `isDefault` ('ios' | 'non-ios') marks which
+// entry the plain tap (as opposed to the long-press menu) opens on that
+// platform. Add, remove, or reorder providers here — mapNavData() itself
+// doesn't need to change.
+const MAP_PROVIDERS = [
+  {label: 'maaamet', url: function(lat, lon) {
+    return 'https://xgis.maaamet.ee/xgis2/page/app/maainfo?lat=' + lat + '&lon=' + lon + '&moot=2000';
+  }},
+  {label: 'rmk', url: function(lat, lon) {
+    return 'https://rmk-loodusegakoos-veebikaart.rmk.ee/?command=show#map=15/' + lat + '/' + lon;
+  }},
+  {label: 'osm', url: function(lat, lon) {
+    return 'https://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + lon + '&zoom=15';
+  }},
+  {label: 'street view', url: function(lat, lon) {
+    return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + lat + ',' + lon;
+  }},
+  {label: 'google maps', isDefault: 'non-ios', url: function(lat, lon) {
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lon + '&travelmode=driving';
+  }},
+  // Organic Maps' om:// deep link only does anything on a device that has the
+  // app installed — on desktop it's just dead weight, so Google Maps takes
+  // over as the default there instead, and organic maps drops out of the menu.
+  {label: 'organic maps', iosOnly: true, isDefault: 'ios', url: organicMapsUrl}
+];
+
 // Shared by the cache-list "Map" button and the standalone Maps buttons on
 // the coordinate converter/projection pages — builds the default tap target
 // plus the long-press alternative-apps menu for a given point.
 function mapNavData(lat, lon, name) {
-  const gmapsUrl = 'https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lon + '&travelmode=driving';
-  const maaametUrl = 'https://xgis.maaamet.ee/xgis2/page/app/maainfo?lat=' + lat + '&lon=' + lon + '&moot=2000';
-  const osmUrl = 'https://www.openstreetmap.org/?mlat=' + lat + '&mlon=' + lon + '&zoom=15';
-  const rmkUrl = 'https://rmk-loodusegakoos-veebikaart.rmk.ee/?command=show#map=15/' + lat + '/' + lon;
-  // Organic Maps' om:// deep link only does anything on a device that has the
-  // app installed — on desktop it's just dead weight, so Google Maps takes
-  // over as the default there instead, and organic maps drops out of the menu.
-  if (IS_IOS) {
-    const omUrl = organicMapsUrl(lat, lon, name);
-    return {
-      default: omUrl,
-      alts: [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
-             {label:'google maps', url: gmapsUrl}, {label:'organic maps', url: omUrl}]
-    };
-  }
-  return {
-    default: gmapsUrl,
-    alts: [{label:'maaamet', url: maaametUrl}, {label:'rmk', url: rmkUrl}, {label:'osm', url: osmUrl},
-           {label:'google maps', url: gmapsUrl}]
-  };
+  const platform = IS_IOS ? 'ios' : 'non-ios';
+  const alts = [];
+  let defaultUrl = null;
+  MAP_PROVIDERS.forEach(function(p) {
+    if (p.iosOnly && !IS_IOS) return;
+    const url = p.url(lat, lon, name);
+    alts.push({label: p.label, url: url});
+    if (p.isDefault === platform) defaultUrl = url;
+  });
+  return {default: defaultUrl, alts: alts};
 }
 
 const NAV_LONG_PRESS_MS = 500;
@@ -547,6 +565,43 @@ function bindNavButton(btn) {
   btn.addEventListener('touchend', function(e) { e.preventDefault(); end(e); }, { passive: false });
   btn.addEventListener('touchcancel', cancel);
   btn.addEventListener('click', function(e) { e.stopPropagation(); e.preventDefault(); });
+}
+
+// Coordinates button: short press copies to clipboard (copyCoords), long
+// press opens the coordinate tools page with the value already filled in.
+function bindCoordButton(btn) {
+  let timer = null;
+  let longPressed = false;
+
+  function start(e) {
+    e.stopPropagation();
+    longPressed = false;
+    timer = setTimeout(function() {
+      longPressed = true;
+      openCoordToolsWithCoords(btn.dataset.coords);
+    }, NAV_LONG_PRESS_MS);
+  }
+  function end(e) {
+    e.stopPropagation();
+    clearTimeout(timer);
+    if (!longPressed) copyCoords(btn);
+  }
+  function cancel() {
+    clearTimeout(timer);
+    longPressed = false;
+  }
+
+  btn.addEventListener('mousedown', start);
+  btn.addEventListener('mouseup', end);
+  btn.addEventListener('mouseleave', cancel);
+  btn.addEventListener('touchstart', function(e) { e.preventDefault(); start(e); }, { passive: false });
+  btn.addEventListener('touchend', function(e) { e.preventDefault(); end(e); }, { passive: false });
+  btn.addEventListener('touchcancel', cancel);
+  btn.addEventListener('click', function(e) { e.stopPropagation(); e.preventDefault(); });
+  // Belt-and-suspenders: on some iOS Safari versions the CSS user-select:none
+  // above doesn't stop the native long-press-to-select-word gesture on a
+  // <button>'s text, so also veto the selection directly.
+  btn.addEventListener('selectstart', function(e) { e.preventDefault(); });
 }
 
 const RENDER_CAP = 200;
@@ -627,7 +682,7 @@ function render(q, focusLatLon) {
               '<div class="logquote">' + esc(find[1]) + '</div>';
           })() +
           '<div class="coord"><b>' + t('coordinatesLabel') + '</b> ' +
-            '<button type="button" class="coordbtn" data-coords="' + esc(c.la + ' ' + c.lo) + '" onclick="event.stopPropagation(); copyCoords(this)">' + c.la + ' · ' + c.lo + ' 📋</button>' +
+            '<button type="button" class="coordbtn" data-coords="' + esc(c.la + ' ' + c.lo) + '">' + c.la + ' · ' + c.lo + ' 📋</button>' +
             (listDist ? ' <span class="dist">' + listDist + '</span>' : '') +
             (c.lat != null ? (function() {
               const wazeUrl = 'https://waze.com/ul?ll=' + c.lat + ',' + c.lon + '&navigate=yes';
@@ -652,6 +707,7 @@ function render(q, focusLatLon) {
   }
   listEl.innerHTML = rows.join('');
   listEl.querySelectorAll('.navbtn').forEach(bindNavButton);
+  listEl.querySelectorAll('.coordbtn').forEach(bindCoordButton);
   if (mapViewActive) updateMapMarkers(lastShown, focusLatLon);
 }
 
@@ -944,6 +1000,14 @@ function copyCoords(btn) {
 // Same inline-onclick reasoning as window.toggle above.
 window.copyCoords = copyCoords;
 
+// Long-press on a coordinates button jumps to the coordinate tools page
+// (Converter mode) with the cache's coordinates already filled in.
+function openCoordToolsWithCoords(coords) {
+  showView('coord', 'converter');
+  ccInpEl.value = coords;
+  ccRefreshAll();
+}
+
 function updateSortDirBtn() {
   sortDirBtn.textContent = sortDir === 'desc' ? '⬇️' : '⬆️';
 }
@@ -1022,6 +1086,7 @@ const COORD_MODE_TO_PATH = {
   converter: '/tools/coordinates/conversion',
   projector: '/tools/coordinates/projection',
   circle: '/tools/coordinates/circle',
+  weather: '/tools/coordinates/weather',
 };
 const PATH_TO_COORD_MODE = Object.fromEntries(Object.entries(COORD_MODE_TO_PATH).map(function(e) { return [e[1], e[0]]; }));
 Object.keys(PATH_TO_COORD_MODE).forEach(function(p) { PATH_TO_VIEW[p] = 'coord'; });
@@ -1667,6 +1732,162 @@ function ccScheduleAddressLookup(point) {
   ccAddressTimer = setTimeout(function() { ccFetchAddress(point.lat, point.lon, key); }, 600);
 }
 
+// ─── Weather (Open-Meteo) for the current output point ────────────────────
+// Weather mode's own async enrichment of ccCurrent, mirroring the address
+// lookup above: debounced, aborted on rapid edits, cached by rounded
+// coordinates (2 decimals ~ 1km — roughly Open-Meteo's own grid resolution,
+// so minor input edits don't trigger a refetch). The whole response is
+// cached, not just its rendering, since switching Today/Tomorrow re-renders
+// from the same fetch without hitting the network again.
+const ccWeatherEl = document.getElementById('cc-weather');
+const ccOutputCardEl = document.getElementById('cc-output-card');
+const ccMapWrapEl = document.getElementById('cc-map-wrap');
+const wxContentEl = document.getElementById('wx-content');
+
+let ccWxDay = 'today'; // 'today' | 'tomorrow'
+let ccWxTimer = null;
+let ccWxAbort = null;
+const ccWxCache = new Map();
+
+// WMO weather code -> [day icon, night icon]. Night variants only differ for
+// the clear/mostly-clear codes; everything else looks the same after dark.
+const WMO_ICONS = {
+  0: ['☀️', '🌙'], 1: ['🌤️', '🌙'], 2: ['⛅', '☁️'], 3: ['☁️', '☁️'],
+  45: ['🌫️', '🌫️'], 48: ['🌫️', '🌫️'],
+  51: ['🌦️', '🌦️'], 53: ['🌦️', '🌦️'], 55: ['🌦️', '🌦️'],
+  56: ['🌧️', '🌧️'], 57: ['🌧️', '🌧️'],
+  61: ['🌧️', '🌧️'], 63: ['🌧️', '🌧️'], 65: ['🌧️', '🌧️'],
+  66: ['🌧️', '🌧️'], 67: ['🌧️', '🌧️'],
+  71: ['🌨️', '🌨️'], 73: ['🌨️', '🌨️'], 75: ['🌨️', '🌨️'], 77: ['🌨️', '🌨️'],
+  80: ['🌧️', '🌧️'], 81: ['🌧️', '🌧️'], 82: ['🌧️', '🌧️'],
+  85: ['🌨️', '🌨️'], 86: ['🌨️', '🌨️'],
+  95: ['⛈️', '⛈️'], 96: ['⛈️', '⛈️'], 99: ['⛈️', '⛈️'],
+};
+const WMO_DESC_KEYS = {
+  0: 'wxClear', 1: 'wxMainlyClear', 2: 'wxPartlyCloudy', 3: 'wxOvercast',
+  45: 'wxFog', 48: 'wxFreezingFog',
+  51: 'wxLightDrizzle', 53: 'wxDrizzle', 55: 'wxDenseDrizzle',
+  56: 'wxFreezingDrizzle', 57: 'wxFreezingDrizzle',
+  61: 'wxLightRain', 63: 'wxRain', 65: 'wxHeavyRain',
+  66: 'wxFreezingRain', 67: 'wxFreezingRain',
+  71: 'wxLightSnow', 73: 'wxSnow', 75: 'wxHeavySnow', 77: 'wxSnowGrains',
+  80: 'wxRainShowers', 81: 'wxRainShowers', 82: 'wxViolentRainShowers',
+  85: 'wxSnowShowers', 86: 'wxSnowShowers',
+  95: 'wxThunderstorm', 96: 'wxThunderstormHail', 99: 'wxThunderstormHail',
+};
+function ccWxIcon(code, isDay) { const pair = WMO_ICONS[code]; return pair ? pair[isDay ? 0 : 1] : '❓'; }
+function ccWxDesc(code) { const key = WMO_DESC_KEYS[code]; return key ? t(key) : t('wxUnknown'); }
+function ccWxHHMM(iso) { return iso ? iso.slice(11, 16) : '--:--'; }
+function ccWxCacheKey(lat, lon) { return lat.toFixed(2) + ',' + lon.toFixed(2); }
+
+// Builds one day's hourly rows. Today drops hours already past (so the list
+// opens on "Now"); Tomorrow keeps the full 00:00-23:00 day since the caller
+// scrolls it to 08:00 instead of trimming the night hours away.
+function ccWxRenderHours(data, dayIdx) {
+  const dayStart = data.hourly.time[dayIdx * 24].slice(0, 10);
+  const nowIso = data.current_weather.time;
+  let hours = [];
+  for (let i = dayIdx * 24; i < dayIdx * 24 + 24; i++) {
+    if (data.hourly.time[i].slice(0, 10) !== dayStart) break;
+    hours.push({
+      time: data.hourly.time[i],
+      temp: data.hourly.temperature_2m[i],
+      code: data.hourly.weathercode[i],
+      isDay: data.hourly.is_day[i],
+      pop: data.hourly.precipitation_probability[i],
+      precip: data.hourly.precipitation[i],
+    });
+  }
+  if (dayIdx === 0) hours = hours.filter(function(h) { return h.time >= nowIso.slice(0, 13); });
+
+  return hours.map(function(h) {
+    const isNow = h.time === nowIso;
+    const precipTxt = h.precip > 0 ? h.precip.toFixed(1) + 'mm' : (h.pop >= 20 ? h.pop + '%' : '');
+    return '<div class="wx-hour-row' + (isNow ? ' now' : '') + '" data-time="' + h.time + '">' +
+      '<div class="wx-hour-row-time">' + (isNow ? esc(t('wxNow')) : ccWxHHMM(h.time)) + '</div>' +
+      '<div class="wx-hour-row-icon">' + ccWxIcon(h.code, h.isDay) + '</div>' +
+      '<div class="wx-hour-row-temp">' + Math.round(h.temp) + '°</div>' +
+      '<div class="wx-hour-row-desc">' + esc(ccWxDesc(h.code)) + '</div>' +
+      '<div class="wx-hour-row-precip' + (precipTxt ? '' : ' none') + '">' + (precipTxt || '–') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function ccRenderWeather() {
+  const data = ccWxCache.get(ccWxCacheKey(ccCurrent.lat, ccCurrent.lon));
+  if (!data) return;
+  const dayIdx = ccWxDay === 'today' ? 0 : 1;
+
+  wxContentEl.innerHTML =
+    '<div class="wx-now">' +
+      '<div class="wx-now-icon">' + ccWxIcon(data.current_weather.weathercode, data.current_weather.is_day) + '</div>' +
+      '<div>' +
+        '<div class="wx-now-temp">' + Math.round(data.current_weather.temperature) + '°</div>' +
+        '<div class="wx-now-desc">' + esc(ccWxDesc(data.current_weather.weathercode)) + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="wx-sun-row">' +
+      '<div class="wx-sun-item"><div class="wx-sun-icon">🌅</div><div>' +
+        '<div class="wx-sun-label">' + esc(t('wxSunrise')) + '</div>' +
+        '<div class="wx-sun-time">' + ccWxHHMM(data.daily.sunrise[dayIdx]) + '</div>' +
+      '</div></div>' +
+      '<div class="wx-sun-item"><div class="wx-sun-icon">🌇</div><div>' +
+        '<div class="wx-sun-label">' + esc(t('wxSunset')) + '</div>' +
+        '<div class="wx-sun-time">' + ccWxHHMM(data.daily.sunset[dayIdx]) + '</div>' +
+      '</div></div>' +
+    '</div>' +
+    '<div class="cc-tabs wx-day-tabs" role="tablist">' +
+      '<button type="button" class="cc-tab' + (ccWxDay === 'today' ? ' active' : '') + '" data-day="today">' + esc(t('wxToday')) + '</button>' +
+      '<button type="button" class="cc-tab' + (ccWxDay === 'tomorrow' ? ' active' : '') + '" data-day="tomorrow">' + esc(t('wxTomorrow')) + '</button>' +
+    '</div>' +
+    '<div class="wx-hourly-list" id="wx-hourly-list">' + ccWxRenderHours(data, dayIdx) + '</div>' +
+    '<div class="wx-note">Open-Meteo · ' + esc(t('wxUpdated', { time: ccWxHHMM(data.current_weather.time) })) + '</div>';
+
+  wxContentEl.querySelectorAll('[data-day]').forEach(function(btn) {
+    btn.addEventListener('click', function() { ccWxDay = btn.dataset.day; ccRenderWeather(); });
+  });
+
+  // Tomorrow's list starts at 00:00 (full night forecast still one scroll
+  // away), but the at-a-glance-relevant hours are daytime — land on 08:00
+  // rather than making the user scroll past 8 night rows first.
+  if (ccWxDay === 'tomorrow') {
+    const list = document.getElementById('wx-hourly-list');
+    const target = list.querySelector('[data-time$="T08:00"]');
+    if (target) list.scrollTop = target.offsetTop - list.offsetTop;
+  }
+}
+
+function ccFetchWeather(lat, lon, key) {
+  const ctrl = new AbortController();
+  ccWxAbort = ctrl;
+  const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
+    '&current_weather=true&hourly=temperature_2m,weathercode,precipitation_probability,precipitation,is_day' +
+    '&daily=sunrise,sunset&timezone=auto&forecast_days=2';
+  fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'application/json' } })
+    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function(data) {
+      ccWxCache.set(key, data);
+      if (ccMode === 'weather' && ccCurrent && ccWxCacheKey(ccCurrent.lat, ccCurrent.lon) === key) ccRenderWeather();
+    })
+    .catch(function(err) {
+      if (err.name === 'AbortError') return;
+      wxContentEl.innerHTML = '<div class="wx-error">' + esc(t('wxLoadFailed')) + '</div>';
+    });
+}
+
+function ccScheduleWeatherLookup(point) {
+  clearTimeout(ccWxTimer);
+  if (ccWxAbort) { ccWxAbort.abort(); ccWxAbort = null; }
+
+  if (!point) { wxContentEl.innerHTML = '<div class="wx-empty">' + esc(t('wxEnterCoords')) + '</div>'; return; }
+
+  const key = ccWxCacheKey(point.lat, point.lon);
+  if (ccWxCache.has(key)) { ccRenderWeather(); return; }
+
+  wxContentEl.innerHTML = '<div class="wx-loading">' + esc(t('wxLoading')) + '</div>';
+  ccWxTimer = setTimeout(function() { ccFetchWeather(point.lat, point.lon, key); }, 500);
+}
+
 const CC_PLACEHOLDER = {
   DD: '58.379217, 24.500100',
   DMM: { ns: 'N', ld: '58', lm: '22.753', ew: 'E', od: '024', om: '30.006' },
@@ -1763,8 +1984,12 @@ function ccRefreshAll() {
   }
 
   ccRenderOutput();
-  ccSyncMap();
-  ccScheduleAddressLookup(ccCurrent);
+  if (ccMode === 'weather') {
+    ccScheduleWeatherLookup(ccCurrent);
+  } else {
+    ccSyncMap();
+    ccScheduleAddressLookup(ccCurrent);
+  }
 }
 
 function ccSetMode(m) {
@@ -1773,6 +1998,15 @@ function ccSetMode(m) {
   ccStatusEl.style.display = m === 'converter' ? '' : 'none';
   ccProjFieldsEl.style.display = m === 'projector' ? '' : 'none';
   ccCircleFieldsEl.style.display = m === 'circle' ? '' : 'none';
+
+  // Weather mode only needs the input — swap the output card/address/map
+  // for the forecast panel instead of adding a 4th set of fields to them.
+  const isWeather = m === 'weather';
+  ccOutputCardEl.style.display = isWeather ? 'none' : '';
+  ccMapWrapEl.style.display = isWeather ? 'none' : '';
+  ccWeatherEl.style.display = isWeather ? '' : 'none';
+  if (isWeather) { ccWxDay = 'today'; ccSetAddressText(''); }
+
   // The input card's 3rd line changes height between modes, which resizes
   // the map below it (flex: 1) — Leaflet needs telling or its cached
   // container size goes stale and fitBounds/setView math comes out wrong.

@@ -59,11 +59,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .title-links a + a { margin-left: 8px; }
 .coord { font-variant-numeric: tabular-nums; }
 .dist { color: #888; font-size: 12px; flex-shrink: 0; white-space: nowrap; }
+/* Coordinates button: tap to copy, long-press to open coordinate tools */
 .coordbtn { display: inline-flex; align-items: center; gap: 3px; vertical-align: middle;
             background: #eef4ff; border: 1px solid #cfe0ff; color: #1a1a1a;
             border-radius: 7px; padding: 2px 6px; font-size: 12px; font-family: inherit;
             font-variant-numeric: tabular-nums; cursor: pointer;
-            -webkit-touch-callout: none; user-select: none; }
+            -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+            touch-action: manipulation; }
 .coordbtn:active { background: #dbe8ff; }
 .ownercount { display: inline-block; background: #007aff; color: #fff;
               border-radius: 9px; padding: 1px 7px; font-size: 11px;
@@ -269,3 +271,42 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; marg
                margin: 4px 16px calc(env(safe-area-inset-bottom, 10px) + 10px) 16px;
                border-radius: 14px; overflow: hidden; }
 #cc-map { position: absolute; inset: 0; }
+
+/* Weather mode: replaces the output card/address/map with a forecast panel
+   for the same input point. Fills the rest of the screen like the map does. */
+.cc-weather { flex: 1; min-height: 0; overflow-y: auto;
+              padding: 0 16px calc(env(safe-area-inset-bottom, 10px) + 10px) 16px; }
+.wx-empty { color: #636366; font-size: 14px; text-align: center; padding: 40px 20px; }
+.wx-now { display: flex; align-items: center; gap: 14px; padding: 4px 2px 14px 2px; }
+.wx-now-icon { font-size: 40px; line-height: 1; }
+.wx-now-temp { font-size: 34px; font-weight: 600; }
+.wx-now-desc { font-size: 13px; color: #8e8e93; margin-top: 2px; }
+.wx-sun-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.wx-sun-item { flex: 1; background: #1c1c1e; border-radius: 12px; padding: 10px 12px;
+               display: flex; align-items: center; gap: 10px; }
+.wx-sun-icon { font-size: 20px; }
+.wx-sun-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #636366; }
+.wx-sun-time { font-size: 16px; font-weight: 600; }
+.wx-day-tabs { margin-bottom: 12px; }
+
+/* Hourly forecast: fixed-height internal scroll list, so the sun times and
+   Today/Tomorrow tabs stay put while only the hours scroll. Tomorrow opens
+   auto-scrolled to 08:00 (00:00-07:00 still reachable above it, for a full
+   night forecast) so the at-a-glance view favours the relevant daytime hours. */
+.wx-hourly-list { max-height: 336px; overflow-y: auto; border-radius: 12px;
+                  background: #1c1c1e; margin-bottom: 12px; }
+.wx-hour-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+               border-bottom: 1px solid #2c2c2e; }
+.wx-hour-row:last-child { border-bottom: none; }
+.wx-hour-row.now { background: #0a84ff1a; }
+.wx-hour-row-time { width: 42px; font-size: 13px; font-weight: 600; color: #8e8e93; flex-shrink: 0; }
+.wx-hour-row.now .wx-hour-row-time { color: #0a84ff; }
+.wx-hour-row-icon { width: 26px; text-align: center; font-size: 18px; flex-shrink: 0; }
+.wx-hour-row-temp { width: 38px; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+.wx-hour-row-desc { flex: 1; min-width: 0; font-size: 13px; color: #8e8e93;
+                     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wx-hour-row-precip { font-size: 12px; color: #64d2ff; min-width: 46px; text-align: right; flex-shrink: 0; }
+.wx-hour-row-precip.none { color: #3a3a3c; }
+.wx-loading, .wx-error { font-size: 13px; color: #636366; padding: 20px 2px; text-align: center; }
+.wx-error { color: #ff453a; }
+.wx-note { font-size: 11px; color: #3a3a3c; text-align: center; padding: 6px 0 14px; }
