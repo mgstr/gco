@@ -113,8 +113,12 @@ const qEl = document.getElementById('q');
 const viewToggleBtn = document.getElementById('viewToggleBtn');
 const hideFoundBtn = document.getElementById('hideFoundBtn');
 const hideDisabledBtn = document.getElementById('hideDisabledBtn');
-const idToggleBtn = document.getElementById('idToggleBtn');
-const dtsToggleBtn = document.getElementById('dtsToggleBtn');
+const columnsBtn = document.getElementById('columnsBtn');
+const columnsBackdropEl = document.getElementById('columnsBackdrop');
+const columnsPanelEl = document.getElementById('columnsPanel');
+const columnsListEl = document.getElementById('columnsList');
+const columnsOkBtn = document.getElementById('columnsOkBtn');
+const columnsCancelBtn = document.getElementById('columnsCancelBtn');
 const sortSel = document.getElementById('sortSel');
 const distOpt = document.getElementById('distOpt');
 const sortDirBtn = document.getElementById('sortDirBtn');
@@ -199,8 +203,66 @@ function boolPref(key, def) {
 // separate from the finds data, so it survives independently of it.
 const HideFindsPref = boolPref('gcHideFindsPrefV1', true);
 const HideDisabledPref = boolPref('gcHideDisabledPrefV1', false);
-const ShowIdPref = boolPref('gcShowIdPrefV1', false);
-const ShowDtsPref = boolPref('gcShowDtsPrefV1', false);
+
+// Columns shown in the collapsed search-result row, plus the current list/map
+// view mode — kept as one object (rather than one localStorage key per
+// setting) so a future "save/load configuration" feature can serialize and
+// restore the whole search UI in a single round trip.
+const COLUMN_DEFS = [
+  { key: 'type', required: true },
+  { key: 'id' },
+  { key: 'title', required: true },
+  { key: 'distance', default: true },
+  { key: 'dts' },
+  { key: 'owner' },
+  { key: 'region' },
+];
+
+const SearchUiState = (function() {
+  const KEY = 'gcSearchUiStateV1';
+  function defaults() {
+    const columns = {};
+    COLUMN_DEFS.forEach(function(c) { if (!c.required) columns[c.key] = !!c.default; });
+    return { columns: columns, viewMode: 'list' };
+  }
+  function load() {
+    const state = defaults();
+    let raw;
+    try {
+      raw = localStorage.getItem(KEY);
+    } catch (e) {
+      return state;
+    }
+    if (!raw) return state;
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.columns && typeof parsed.columns === 'object') {
+          Object.keys(state.columns).forEach(function(k) {
+            if (typeof parsed.columns[k] === 'boolean') state.columns[k] = parsed.columns[k];
+          });
+        }
+        if (parsed.viewMode === 'list' || parsed.viewMode === 'map') state.viewMode = parsed.viewMode;
+      }
+    } catch (e) {}
+    return state;
+  }
+  const state = load();
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify(state));
+  }
+  function getColumns() { return state.columns; }
+  function setColumns(columns) {
+    state.columns = columns;
+    save();
+  }
+  function getViewMode() { return state.viewMode; }
+  function setViewMode(mode) {
+    state.viewMode = mode;
+    save();
+  }
+  return { getColumns, setColumns, getViewMode, setViewMode };
+})();
 
 let FOUND_SET = new Set();
 function rebuildFoundSet() {
@@ -228,16 +290,18 @@ function hideDisabledActive() {
 }
 hideDisabledBtn.setAttribute('aria-pressed', String(HideDisabledPref.get()));
 
-// Showing/hiding the GC id and D/T/S columns only affects which CSS class is
-// on #list — the row markup itself always includes both, so no re-render is
-// needed when these are toggled.
-idToggleBtn.setAttribute('aria-pressed', String(ShowIdPref.get()));
-dtsToggleBtn.setAttribute('aria-pressed', String(ShowDtsPref.get()));
-function refreshFieldVisibility() {
-  listEl.classList.toggle('hide-id', idToggleBtn.getAttribute('aria-pressed') !== 'true');
-  listEl.classList.toggle('hide-dts', dtsToggleBtn.getAttribute('aria-pressed') !== 'true');
+// Showing/hiding the optional columns only affects which CSS class is on
+// #list — the row markup itself always includes all columns, so no
+// re-render is needed when these are toggled.
+function refreshColumnVisibility() {
+  const columns = SearchUiState.getColumns();
+  listEl.classList.toggle('hide-id', !columns.id);
+  listEl.classList.toggle('hide-distance', !columns.distance);
+  listEl.classList.toggle('hide-dts', !columns.dts);
+  listEl.classList.toggle('hide-owner', !columns.owner);
+  listEl.classList.toggle('hide-region', !columns.region);
 }
-refreshFieldVisibility();
+refreshColumnVisibility();
 
 const OWNER_COUNTS = {};
 for (let i = 0; i < CACHES.length; i++) {
@@ -659,6 +723,8 @@ function render(q, focusLatLon) {
           '<span class="name">' + esc(c.n) + '</span>' +
           (listDist ? '<span class="dist">' + listDist + '</span>' : '') +
           '<span class="dt">' + c.d + '/' + c.t + (c.sz != null ? '/' + SIZE_LETTERS[c.sz] : '') + '</span>' +
+          '<span class="owner-col">' + esc(c.o || '') + '</span>' +
+          '<span class="region-col">' + esc(c.r || '') + '</span>' +
         '</div>' +
         '<div class="detail">' +
           (c.disabled ? '<div class="disabled-badge">⚠️ ' + esc(t('disabledLabel')) + '</div>' : '') +
@@ -963,6 +1029,16 @@ function updateViewToggleBtn() {
   viewToggleBtn.textContent = mapViewActive ? '☰' : '🗺️';
 }
 
+// The columns button and sort controls only make sense against the list —
+// map mode shows every matching cache as a pin, with no per-column display
+// or sort order to configure.
+function updateListControlsVisibility() {
+  const display = mapViewActive ? 'none' : '';
+  columnsBtn.style.display = display;
+  sortSel.style.display = display;
+  sortDirBtn.style.display = display;
+}
+
 // focusLatLon, when given, centers the map on that cache (e.g. from the
 // preview map's double-tap) instead of fitting to the whole result set.
 function showMapView(focusLatLon) {
@@ -970,6 +1046,8 @@ function showMapView(focusLatLon) {
   listEl.style.display = 'none';
   mapviewEl.style.display = '';
   updateViewToggleBtn();
+  updateListControlsVisibility();
+  SearchUiState.setViewMode('map');
   positionMapView();
   ensureLeaflet();
   ensureSearchMap();
@@ -988,6 +1066,8 @@ function showListView() {
   mapviewEl.style.display = 'none';
   listEl.style.display = '';
   updateViewToggleBtn();
+  updateListControlsVisibility();
+  SearchUiState.setViewMode('list');
   render(qEl.value.trim());
 }
 
@@ -1048,17 +1128,32 @@ hideDisabledBtn.addEventListener('click', function() {
   HideDisabledPref.set(!pressed);
   render(qEl.value.trim());
 });
-idToggleBtn.addEventListener('click', function() {
-  const pressed = idToggleBtn.getAttribute('aria-pressed') === 'true';
-  idToggleBtn.setAttribute('aria-pressed', String(!pressed));
-  ShowIdPref.set(!pressed);
-  refreshFieldVisibility();
-});
-dtsToggleBtn.addEventListener('click', function() {
-  const pressed = dtsToggleBtn.getAttribute('aria-pressed') === 'true';
-  dtsToggleBtn.setAttribute('aria-pressed', String(!pressed));
-  ShowDtsPref.set(!pressed);
-  refreshFieldVisibility();
+// Column checkboxes are edited in the panel's own local state and only
+// committed to SearchUiState (+ re-rendered) when the user presses OK;
+// Cancel/backdrop-tap just closes the panel, discarding any changes.
+function openColumnsPanel() {
+  const columns = SearchUiState.getColumns();
+  columnsListEl.querySelectorAll('input[data-col]').forEach(function(cb) {
+    if (!cb.disabled) cb.checked = !!columns[cb.dataset.col];
+  });
+  columnsBackdropEl.classList.add('visible');
+  columnsPanelEl.classList.add('visible');
+}
+function closeColumnsPanel() {
+  columnsPanelEl.classList.remove('visible');
+  columnsBackdropEl.classList.remove('visible');
+}
+columnsBtn.addEventListener('click', openColumnsPanel);
+columnsBackdropEl.addEventListener('click', closeColumnsPanel);
+columnsCancelBtn.addEventListener('click', closeColumnsPanel);
+columnsOkBtn.addEventListener('click', function() {
+  const columns = {};
+  columnsListEl.querySelectorAll('input[data-col]').forEach(function(cb) {
+    if (!cb.disabled) columns[cb.dataset.col] = cb.checked;
+  });
+  SearchUiState.setColumns(columns);
+  refreshColumnVisibility();
+  closeColumnsPanel();
 });
 sortSel.addEventListener('change', function() {
   userChangedSort = true;
@@ -1079,6 +1174,7 @@ sortDirBtn.addEventListener('click', function() {
 });
 updateSortDirBtn();
 render('');
+if (SearchUiState.getViewMode() === 'map') showMapView();
 
 // ─── Views (search / tools menu / coordinate converter) ────────────────────
 // Path-shaped hash routes, e.g. #/tools/coordinates/conversion — a real path

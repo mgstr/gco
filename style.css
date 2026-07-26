@@ -17,10 +17,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
          -webkit-touch-callout: none; user-select: none; touch-action: manipulation !important; }
 .cap-badge { background: #ff3b30; color: #fff; padding: 1px 5px; border-radius: 4px;
              font-weight: 600; cursor: help; }
-.fieldToggleBtn { font-size: 13px; padding: 1px 8px; border: 1px solid #ccc; border-radius: 6px;
-                  background: #fff; color: #555; flex-shrink: 0; line-height: 1.4; cursor: pointer;
-                  -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
-.fieldToggleBtn[aria-pressed="true"] { background: #007aff; color: #fff; border-color: #007aff; }
+#columnsBtn { font-size: 15px; padding: 1px 8px; border: 1px solid #ccc; border-radius: 6px;
+              background: #fff; color: #555; flex-shrink: 0; line-height: 1.4; cursor: pointer; }
 #sortSel { font-size: 13px; padding: 2px 4px; border: 1px solid #ccc; border-radius: 6px;
            color: #555; flex-shrink: 0; max-width: 34vw; }
 #sortDirBtn { font-size: 15px; padding: 1px 8px; border: 1px solid #ccc; border-radius: 6px;
@@ -39,6 +37,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .dt { font-size: 13px; color: #555; white-space: nowrap; flex-shrink: 0; }
 #list.hide-dts .dt { display: none; }
+.owner-col, .region-col { font-size: 12px; color: #888; white-space: nowrap; flex-shrink: 0;
+                           max-width: 28vw; overflow: hidden; text-overflow: ellipsis; }
+#list.hide-owner .owner-col { display: none; }
+#list.hide-region .region-col { display: none; }
+#list.hide-distance .row-main .dist { display: none; }
 .detail { display: none; margin-top: 8px; font-size: 13px; color: #444;
           border-top: 1px solid #eee; padding-top: 8px; line-height: 1.8; }
 .row.open .detail { display: block; }
@@ -119,6 +122,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
              font-size: 15px; font-weight: 500; border-top: 0.5px solid #f2f2f7; }
 .navmenu a:first-child { border-top: none; }
 .navmenu a:active { background: #f2f2f7; }
+
+/* Columns panel (bottom sheet, opened from #columnsBtn) */
+.columnsbackdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 1099; }
+.columnsbackdrop.visible { display: block; }
+.columnspanel { display: none; position: fixed; left: 0; right: 0; bottom: 0; background: #fff;
+                border-radius: 14px 14px 0 0; box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+                z-index: 1100; max-height: 80vh; overflow-y: auto;
+                padding-bottom: env(safe-area-inset-bottom); }
+.columnspanel.visible { display: block; }
+.columnspanel-header { font-size: 15px; font-weight: 600; color: #555; padding: 14px 16px 6px; }
+.columnitem { display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+              border-top: 0.5px solid #f2f2f7; font-size: 16px;
+              -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
+.columnitem:first-child { border-top: none; }
+.columnitem input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; accent-color: #007aff; }
+.columnitem.required span { color: #999; }
+.columnspanel-actions { display: flex; gap: 10px; padding: 14px 16px 16px; }
+.columnspanel-actions button { flex: 1; font-size: 16px; font-weight: 500; padding: 10px;
+                                border-radius: 10px; border: 1px solid #ccc; background: #fff;
+                                cursor: pointer; }
+#columnsOkBtn { background: #007aff; color: #fff; border-color: #007aff; font-weight: 600; }
 
 /* Tools menu + sub-pages */
 #view-menu, #view-settings, #view-origin, #view-data { min-height: 100vh; background: #fff; }

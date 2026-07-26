@@ -26,8 +26,7 @@
   <div class="statusrow">
     <button type="button" id="viewToggleBtn" data-i18n-aria-label="viewToggleAria">🗺️</button>
     <div id="count"></div>
-    <button type="button" class="fieldToggleBtn" id="idToggleBtn" aria-pressed="false" data-i18n-aria-label="idToggleAria">ID</button>
-    <button type="button" class="fieldToggleBtn" id="dtsToggleBtn" aria-pressed="false" data-i18n-aria-label="dtsToggleAria">D/T/S</button>
+    <button type="button" id="columnsBtn" data-i18n-aria-label="columnsToggleAria">▥</button>
     <select id="sortSel">
       <option value="id" selected data-i18n="sortById"></option>
       <option value="name" data-i18n="sortByName"></option>
@@ -180,6 +179,45 @@
 
 <div class="navbackdrop" id="navBackdrop"></div>
 <div class="navmenu" id="navMenu"></div>
+
+<div class="columnsbackdrop" id="columnsBackdrop"></div>
+<div class="columnspanel" id="columnsPanel">
+  <div class="columnspanel-header" data-i18n="columnsTitle"></div>
+  <div class="columnspanel-list" id="columnsList">
+    <label class="columnitem required">
+      <input type="checkbox" data-col="type" checked disabled>
+      <span data-i18n="columnType"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" data-col="id">
+      <span data-i18n="columnId"></span>
+    </label>
+    <label class="columnitem required">
+      <input type="checkbox" data-col="title" checked disabled>
+      <span data-i18n="columnTitle"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" data-col="distance">
+      <span data-i18n="columnDistance"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" data-col="dts">
+      <span data-i18n="columnDts"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" data-col="owner">
+      <span data-i18n="columnOwner"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" data-col="region">
+      <span data-i18n="columnRegion"></span>
+    </label>
+  </div>
+  <div class="columnspanel-actions">
+    <button type="button" id="columnsCancelBtn" data-i18n="cancelBtn"></button>
+    <button type="button" id="columnsOkBtn" data-i18n="okBtn"></button>
+  </div>
+</div>
 
 <script src="./i18n.js"></script>
 <script src="./app.js"></script>
