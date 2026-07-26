@@ -1,0 +1,38 @@
+{
+  "0": {
+    "et": "Katastriüksus puudub (nt veekogu)",
+    "en": "No cadastral unit found here (e.g. a body of water)"
+  },
+  "1": {
+    "et": "Eraomand",
+    "en": "Private ownership"
+  },
+  "2": {
+    "et": "Riigiomand",
+    "en": "State ownership"
+  },
+  "3": {
+    "et": "Munitsipaalomand",
+    "en": "Municipal ownership"
+  },
+  "4": {
+    "et": "Avalik-õiguslik omand",
+    "en": "Public-law ownership"
+  },
+  "5": {
+    "et": "Segaomand",
+    "en": "Mixed ownership"
+  },
+  "6": {
+    "et": "Omandi ulatus selgitamisel",
+    "en": "Ownership extent being determined"
+  },
+  "7": {
+    "et": "Kinnistamata eraomand",
+    "en": "Unregistered private ownership"
+  },
+  "8": {
+    "et": "Omandivorm märkimata",
+    "en": "Ownership form not recorded"
+  }
+}
