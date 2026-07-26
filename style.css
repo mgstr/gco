@@ -293,6 +293,11 @@ input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; marg
                 font-size: 13px; color: #444; line-height: 1.3; }
 .cc-ownership.loading { color: #636366; font-style: italic; }
 .cc-ownership.err { color: #ff453a; }
+.cc-protected { flex-shrink: 0; padding: 0 16px 10px 16px; margin-top: -6px;
+                font-size: 13px; color: #444; line-height: 1.3; }
+.cc-protected.loading { color: #636366; font-style: italic; }
+.cc-protected.err { color: #ff453a; }
+.cc-protected.warn { color: #ff9f0a; }
 
 /* Map preview fills the rest of the screen below the cards */
 .cc-map-wrap { flex: 1; min-height: 0; position: relative;

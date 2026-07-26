@@ -1780,6 +1780,7 @@ const ccMapBtn = document.getElementById('cc-map-btn');
 const ccAddressEl = document.getElementById('cc-address');
 const ccAddressMetaEl = document.getElementById('cc-address-meta');
 const ccOwnershipEl = document.getElementById('cc-ownership');
+const ccProtectedEl = document.getElementById('cc-protected');
 bindNavButton(ccMapBtn);
 
 // Reverse geocoding (OpenStreetMap Nominatim) for the current output point.
@@ -1918,6 +1919,100 @@ function ccScheduleOwnershipLookup(point) {
 
   ccSetOwnershipText(esc(t('ownershipLookingUp')), 'loading');
   ccOwnershipTimer = setTimeout(function() { ccFetchOwnership(point.lat, point.lon, key); }, 600);
+}
+
+// Live protected-nature-area lookup for the current output point, queried
+// from EELIS (Estonian Nature Information System, run by Keskkonnaagentuur)
+// via its public WMS. One GetFeatureInfo call spans the area outline layer
+// plus its zone layers, since a point can fall inside e.g. a national park
+// AND a specific management zone within it at once — the zone tells you how
+// likely seasonal movement restrictions are, but the exact dates/conditions
+// live in the area's kaitse-eeskiri on Riigi Teataja, not in this dataset.
+let ccProtectedTimer = null;
+let ccProtectedAbort = null;
+const ccProtectedCache = new Map();
+
+const PROTECTED_TYPE_KEY = {
+  KRP: 'protectedTypeNP',
+  KLKA: 'protectedTypeNR',
+  KMKA: 'protectedTypeLR',
+  KP: 'protectedTypePark',
+  VP: 'protectedTypePark',
+  VK: 'protectedTypeGeneric',
+  PS: 'protectedTypeStand',
+};
+
+const PROTECTED_LAYERS = 'eelis:kr_kaitseala,eelis:kr_reservaat,eelis:kr_hoiuala,' +
+  'eelis:kr_looduslik_skv,eelis:kr_hooldatav_skv,eelis:kr_piirang';
+// Zone layers where the protection regulation is most likely to impose
+// seasonal movement bans (nesting season closures, lek sites, etc.).
+const PROTECTED_STRICT_LAYERS = ['kr_looduslik_skv', 'kr_hooldatav_skv', 'kr_reservaat'];
+
+function ccSetProtectedText(html, cls) {
+  ccProtectedEl.innerHTML = html || '';
+  ccProtectedEl.className = 'cc-protected' + (cls ? ' ' + cls : '');
+  ccProtectedEl.style.display = html ? '' : 'none';
+}
+
+function ccProtectedTypeLabel(tyyp) {
+  const key = PROTECTED_TYPE_KEY[tyyp];
+  return key ? t(key) : tyyp;
+}
+
+function ccFetchProtected(lat, lon, key) {
+  const ctrl = new AbortController();
+  ccProtectedAbort = ctrl;
+  const d = 0.0005; // ~50-70m half-width bbox around the point, in degrees
+  const bbox = (lon - d) + ',' + (lat - d) + ',' + (lon + d) + ',' + (lat + d);
+  const url = 'https://gsavalik.envir.ee/geoserver/eelis/ows?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo' +
+    '&LAYERS=' + PROTECTED_LAYERS + '&QUERY_LAYERS=' + PROTECTED_LAYERS + '&SRS=EPSG:4326&BBOX=' + bbox +
+    '&WIDTH=101&HEIGHT=101&X=50&Y=50&INFO_FORMAT=application/json&FEATURE_COUNT=10';
+  fetch(url, { signal: ctrl.signal, headers: { 'Accept': 'application/json' } })
+    .then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function(data) {
+      // Each feature's id is "<layer>.<fid>" (e.g. "kr_piirang.65") — group
+      // by layer so a point matching a park plus one of its zones renders
+      // as a single combined line rather than a list of raw hits.
+      const byLayer = {};
+      ((data && data.features) || []).forEach(function(f) {
+        const layer = f.id.split('.')[0];
+        if (!byLayer[layer]) byLayer[layer] = f.properties;
+      });
+
+      const area = byLayer.kr_kaitseala || byLayer.kr_reservaat || byLayer.kr_hoiuala;
+      const strict = PROTECTED_STRICT_LAYERS.some(function(l) { return byLayer[l]; });
+      let text;
+      if (!area) {
+        text = t('protectedNone');
+      } else {
+        const typeLabel = (byLayer.kr_kaitseala || byLayer.kr_reservaat) ? ccProtectedTypeLabel(area.tyyp) : t('protectedTypeHabitat');
+        text = area.nimi + ' (' + typeLabel + ')';
+        if (strict) text += ' — ' + t('protectedZoneStrict');
+        else if (byLayer.kr_piirang) text += ' — ' + t('protectedZoneLimited');
+      }
+      const html = '<b>' + esc(t('protectedLabel')) + '</b> ' + esc(text);
+      const entry = { html: html, warn: !!(area && strict) };
+      ccProtectedCache.set(key, entry);
+      ccSetProtectedText(html, entry.warn ? 'warn' : null);
+    })
+    .catch(function(err) {
+      if (err.name === 'AbortError') return;
+      ccSetProtectedText(esc(t('protectedLookupFailed')), 'err');
+    });
+}
+
+function ccScheduleProtectedLookup(point) {
+  clearTimeout(ccProtectedTimer);
+  if (ccProtectedAbort) { ccProtectedAbort.abort(); ccProtectedAbort = null; }
+
+  if (!point) { ccSetProtectedText(''); return; }
+
+  const key = ccAddressCacheKey(point.lat, point.lon);
+  const cached = ccProtectedCache.get(key);
+  if (cached) { ccSetProtectedText(cached.html, cached.warn ? 'warn' : null); return; }
+
+  ccSetProtectedText(esc(t('protectedLookingUp')), 'loading');
+  ccProtectedTimer = setTimeout(function() { ccFetchProtected(point.lat, point.lon, key); }, 600);
 }
 
 // ─── Weather (Open-Meteo) for the current output point ────────────────────
@@ -2178,6 +2273,7 @@ function ccRefreshAll() {
     ccSyncMap();
     ccScheduleAddressLookup(ccCurrent);
     ccScheduleOwnershipLookup(ccCurrent);
+    ccScheduleProtectedLookup(ccCurrent);
   }
 }
 
@@ -2194,7 +2290,7 @@ function ccSetMode(m) {
   ccOutputCardEl.style.display = isWeather ? 'none' : '';
   ccMapWrapEl.style.display = isWeather ? 'none' : '';
   ccWeatherEl.style.display = isWeather ? '' : 'none';
-  if (isWeather) { ccWxDay = 'today'; ccSetAddressText(''); ccSetOwnershipText(''); }
+  if (isWeather) { ccWxDay = 'today'; ccSetAddressText(''); ccSetOwnershipText(''); ccSetProtectedText(''); }
 
   // The input card's 3rd line changes height between modes, which resizes
   // the map below it (flex: 1) — Leaflet needs telling or its cached
