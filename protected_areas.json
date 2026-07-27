@@ -1,0 +1,4678 @@
+[
+ {
+  "areaName": "Helme mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Alam-Pedja LKA, Soosaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Seli skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kõrvemaa MKA, Kõrvemaa pv."
+ },
+ {
+  "areaName": "Karksi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karksi MKA, Karksi pv."
+ },
+ {
+  "areaName": "Põhja-Kõrvemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Põhja-Kõrvemaa LKA, Tagavälja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pakri hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väinamere hoiuala (Pärnu)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kärevere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kärevere LKA, Emajõe pv."
+ },
+ {
+  "areaName": "Varbola rannamoodustiste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Varbola rannamoodustiste MKA, Varbola rannamoodustiste pv."
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alam-Pedja LKA, Palupõhja pv."
+ },
+ {
+  "areaName": "Kavilda ürgoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kavilda ürgoru maastikukaitseala, Kavilda ürgoru pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lahemaa RP, Lahemaa pv."
+ },
+ {
+  "areaName": "Käina lahe-Kassari maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Käina lahe-Kassari MKA, Kassari pv."
+ },
+ {
+  "areaName": "Võrtsjärve hoiuala (Tartu)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Võhandu jõe ürgorg",
+  "areaTyyp": "VK",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Võrtsjärve hoiuala (Viljandi)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luke mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lahemaa RP, Muuksi pv."
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Alam-Pedja LKA, Taressaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Saarjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Saarjõe MKA, Pärassaare-Nõmmitsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karisöödi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Karisöödi LKA, Karisöödi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Alam-Pedja LKA, Laeva soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viitna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Viitna MKA, Pikkjärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Endla LKA, Oostriku pv."
+ },
+ {
+  "areaName": "Peipsiveere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Peipsiveere LKA, Kantsi pv."
+ },
+ {
+  "areaName": "Järvselja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Järvselja LKA, Apna pv."
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Otepää LP, Kolmjärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Raikküla-Paka maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Raikküla-Paka MKA, Estonia pv."
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Otepää LP, Kääriku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Halliste luha skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Meenikunno looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Meenikunno LKA, Meenikunno skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Hara saare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Läänemaa Suursoo maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Läänemaa Suursoo MKA, Tänavjärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Otepää LP, Vanamõisa-Restu pv."
+ },
+ {
+  "areaName": "Kõpu looduskaitseala ",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kõpu LKA, Mägipe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nõva LKA, Põõsaspea skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uhaku maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Uhaku MKA, Uhaku pv."
+ },
+ {
+  "areaName": "Kihnu hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Soomaa RP, Soomaa pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Saartneeme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Üügu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Üügu MKA, Üügu pv."
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Salevere skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kolga lahe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kolga lahe MKA, Pedassaare pv."
+ },
+ {
+  "areaName": "Neeruti maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Neeruti MKA, Karuaugu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kisejärve maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kisejärve MKA, Kisejärve pv."
+ },
+ {
+  "areaName": "Põhja-Kõrvemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Põhja-Kõrvemaa LKA, Jussi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alatskivi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alatskivi MKA, Alatskivi pv."
+ },
+ {
+  "areaName": "Luhasoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luhasoo LKA, Luhasoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Kotka skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väinamere hoiuala (Läänemaa)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Paljassaare hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Helme kiriku park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Paunküla maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Paunküla MKA, Paunküla skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pullapää panga hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ants Laikmaa kodupark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kadrioru park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kallukse maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kallukse MKA, Kallukse pv."
+ },
+ {
+  "areaName": "Piusa jõe ürgoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Piusa jõe ürgoru MKA, Piusa jõe ürgoru pv."
+ },
+ {
+  "areaName": "Kirikumäe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kirikumäe MKA, Kirikumäe pv."
+ },
+ {
+  "areaName": "Porkuni maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Porkuni MKA, Porkuni parkmetsa pv."
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Endla LKA, Sopa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Maasikaraba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Haanja LP, Vällamäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kübassaare maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kübassaare MKA, Kübassaare metsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Avaste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Avaste LKA, Soontagana skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Loodi looduspark ",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Loodi LP, Paistu ürgoru skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõinastu hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viieristi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Viieristi LKA, Viieristi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vilsandi RP, Läänemere pv."
+ },
+ {
+  "areaName": "Kõpu looduskaitseala ",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kõpu LKA, Ristna pv."
+ },
+ {
+  "areaName": "Marimetsa-Õmma hoiuala (Harjumaa)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Valgeranna hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Puhtu-Laelatu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Puhtu-Laelatu LKA, Kõbaja laidude skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karula RP, Rebäsemõisa-Kolski pv."
+ },
+ {
+  "areaName": "Toomemäe park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pakri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pakri MKA, Pakri poolsaare pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lahemaa RP, Ilumäe pv."
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Haanja LP, Munamäe skv",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Puhatu soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pakri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pakri MKA, Pakri saarte pv."
+ },
+ {
+  "areaName": "Pihla-Kaibaldi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pihla-Kaibaldi LKA, Pihlasoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nõva LKA, Peraküla skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Siniallikate looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Siniallikate LKA, Siniallikate skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Alam-Pedja LKA, Emajõe luha skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kolga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kolga LKA, Kolga skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Letipea maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Letipea MKA, Letipea pv."
+ },
+ {
+  "areaName": "Vabaduse parkmets",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Kõrve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kesselaiu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kesselaiu MKA, Kesselaiu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Koorunõmme looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Koorunõmme LKA, Merise-Abula skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kääpa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kääpa MKA, Pedassaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kesselaiu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kesselaiu MKA, Kesselaiu pv."
+ },
+ {
+  "areaName": "Loodi looduspark ",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Loodi LP, Sinialliku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tahkuna looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tahkuna LKA, Lõimastu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lahemaa RP, Mõisaparkide pv."
+ },
+ {
+  "areaName": "Rannamõisa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Rannamõisa MKA, Rannamõisa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vahtrepa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vahtrepa MKA, Vahtrepa pv."
+ },
+ {
+  "areaName": "Sookuninga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sookuninga LKA, Rongu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Osmussaare maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Osmussaare MKA, Tuletorni pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Vainupea skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mihkel Ranna dendraarium",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Naissaare LP, Jurka küla pv."
+ },
+ {
+  "areaName": "Hiiumaa laidude maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Hiiumaa laidude MKA, Viigri skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pakri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Pakri MKA, Pakri poolsaare metsade skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Roosna-Alliku mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kärstna park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Koigi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Koigi MKA, Raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mullutu-Loode looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Mullutu-Loode LKA, Loode skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Panga maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Panga MKA, Panga skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Koorküla põlispuude grupp",
+  "areaTyyp": "VP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Pedassaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rabivere maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Rabivere MKA, Rabivere pv."
+ },
+ {
+  "areaName": "Peipsiveere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Peipsiveere LKA, Suursoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Võlumäe-Linnamäe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Võlumäe-Linnamäe MKA, Võlumäe-Linnamäe pv."
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Vilsandi RP, Vesiloo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rõngu mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Paganamaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Paganamaa MKA, Paganamaa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Loodi looduspark ",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Loodi LP, Nõmme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mustjärve raba hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Unipiha mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Keila-Joa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Alam-Pedja LKA, Madise skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Otepää LP, Pühajärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väinamere hoiuala (Saare)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Barclay de Tolly mausoleumi park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Matsalu RP, Parkide pv."
+ },
+ {
+  "areaName": "Elva maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Elva MKA, Elva pv."
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Otepää LP, Neeruti-Käpa pv."
+ },
+ {
+  "areaName": "Kapu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kapu LKA, Kapu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Elistvere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ontika maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Ontika MKA, Pangametsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vooremaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vooremaa MKA, Vooremaa pv."
+ },
+ {
+  "areaName": "Kolga lahe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kolga lahe MKA, Rammu pv."
+ },
+ {
+  "areaName": "Vaskjõe looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Vaskjõe LKA, Tammuru skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Muraka raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kaali maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kaali MKA, Kaali skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Valgejärve maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Valgejärve MKA, Valgejärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Türisalu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Türisalu MKA, Türisalu pv."
+ },
+ {
+  "areaName": "Muraste mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Võhandu jõe hoiuala (Põlva)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kalvi mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Suurekõrve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Odalätsi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Odalätsi MKA, Allikate pv."
+ },
+ {
+  "areaName": "Laulasmaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Laulasmaa MKA, Laulasmaa pv."
+ },
+ {
+  "areaName": "Väinamere hoiuala (Hiiu)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrgessaare-Mudaste hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viidumäe looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Viidumäe LKA, Audaku pv."
+ },
+ {
+  "areaName": "Kaugatoma-Lõu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kaugatoma-Lõu MKA, Kaugatoma-Lõu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Loodi looduspark ",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Loodi LP, Loodi pv."
+ },
+ {
+  "areaName": "Põhja-Kõrvemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Põhja-Kõrvemaa LKA, Kivijärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tareste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Tareste MKA, Rannametsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vana-Vigala mõisa park ja Hirvepark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haapsalu lossipark ja Krahviaed",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Valgejõe-Laukasoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mõdriku-Roela maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Mõdriku-Roela MKA, Roela skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mukri looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Mukri LKA, Ellamaa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Elva maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Elva MKA, Illupalu-Vitipalu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Haanja LP, Pärandmaastiku pv."
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Ruunaraipe-Sauga skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kostivere maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kostivere MKA, Kostivere pv."
+ },
+ {
+  "areaName": "Parika looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Parika LKA, Parika skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Õisu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Õisu MKA, Õisu jõeoru skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Raikküla-Paka maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Raikküla-Paka MKA, Pakamäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tarvastu metsapark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lavassaare looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Lavassaare LKA, Lavassaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sirtsi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sirtsi LKA, Sirtsi-Udriku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kose-Uuemõisa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõnnumaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kõnnumaa MKA, Kõnnumaa pv."
+ },
+ {
+  "areaName": "Võhandu jõe hoiuala (Võru)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nigula looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nigula LKA, Nigula skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lindi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Lindi LKA, Lindi raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Naskali skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Saarjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Saarjõe MKA, Saarjõe pv."
+ },
+ {
+  "areaName": "Põhja-Kõrvemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Põhja-Kõrvemaa LKA, Uurita pv."
+ },
+ {
+  "areaName": "Muraste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Muraste LKA, Muraste skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ahja jõe ürgoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Ahja jõe ürgoru MKA, Taevaskoja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Harku mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Karula RP, Õdri skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aegna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Aegna MKA, Eerikneeme pv."
+ },
+ {
+  "areaName": "Kurgja-Linnutaja maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kurgja-Linnutaja MKA, Kurgja pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lahemaa RP, Mere pv."
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Kuresoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Älvi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Osmussaare maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Osmussaare MKA,  Bieni pv."
+ },
+ {
+  "areaName": "Saarjärve looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Saarjärve LP, Kabelimäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vilsandi RP, Vilsandi pv."
+ },
+ {
+  "areaName": "Parmu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Parmu LKA, Parmu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Õhne jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pakri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pakri MKA, Pakri külade pv."
+ },
+ {
+  "areaName": "Kõpu looduskaitseala ",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kõpu LKA, Rebastemäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lahemaa RP, Juminda pv."
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Pääsma laane skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Pärlijõe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Küdema lahe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Emumäe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Emumäe MKA, Emumäe pv."
+ },
+ {
+  "areaName": "Järveküla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Järveküla LKA, Järveküla pv."
+ },
+ {
+  "areaName": "Käina lahe-Kassari maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Käina lahe-Kassari MKA, Vaemla skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Otepää LP, Vana-Otepää skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rutu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Rutu MKA, Rutu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Äntu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Äntu MKA, Äntu pv."
+ },
+ {
+  "areaName": "Marimetsa-Õmma hoiuala (Rapla)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vääna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Vääna MKA, Tõlinõmme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sorgu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sorgu LKA, Sorkholmi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Oru pargi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Oru pargi MKA, Oru pargi pv."
+ },
+ {
+  "areaName": "Uljaste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Uljaste MKA, Uljaste oosi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Neeruti maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Neeruti MKA, Hobujärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vilsandi RP, Atla pv."
+ },
+ {
+  "areaName": "Piusa jõe ürgoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Piusa jõe ürgoru MKA, Härma skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pamma maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Pamma MKA, Pamma skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Puhtu-Laelatu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Puhtu-Laelatu LKA, Laelatu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Puhtu-Laelatu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Puhtu-Laelatu LKA, Puhtu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Loodi looduspark ",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Loodi LP, Polli mägede skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vääna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vääna MKA, Vääna pv."
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Lemmjõe keele skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Raudna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alutaguse RP, Jõuga pv."
+ },
+ {
+  "areaName": "Hino maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Hino MKA, Hino pv."
+ },
+ {
+  "areaName": "Ehmja-Turvalepa hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Iiripilli skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vasula pärnaallee; (Vasula puiestee)",
+  "areaTyyp": "VP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Öördi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva-Osmussaare hoiuala (Läänemaa)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Piusa-Võmmorski hoiuala (Põlva)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Väinamere idapoolne skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Marimetsa-Õmma hoiuala (Läänemaa)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Käina lahe-Kassari maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Käina lahe-Kassari MKA, Kassari sääre skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Teringi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Teringi MKA, Teringi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Salajõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Salajõe MKA, Salajõe pv."
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Matsalu RP, Matsalu pv."
+ },
+ {
+  "areaName": "Pagari mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Prangli maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Prangli MKA, Prangli pv."
+ },
+ {
+  "areaName": "Jägala jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kärevere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kärevere LKA, Tähtvere pv."
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vilsandi RP, Kuusnõmme pv."
+ },
+ {
+  "areaName": "Prandi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Prandi LKA, Prandi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Silma looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Silma LKA, Haapsalu lahe pv."
+ },
+ {
+  "areaName": "Vanapark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aseri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Aseri MKA, Aseri skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Sandra skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ohepalu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ohepalu LKA, Udriku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kahtla-Kübassaare hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Saarjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Saarjõe MKA, Tagametsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Mohni skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kostivere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuksema kabelipark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kaisma hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alam-Pedja LKA, Sooküla pv."
+ },
+ {
+  "areaName": "Ohepalu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ohepalu LKA, Kaansoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tuhalaane põlispuude grupp",
+  "areaTyyp": "PS",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kolu mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Endla LKA, Nava-Kaerasaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kikepera looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kikepera LKA, Kikepera skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tudusoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tudusoo LKA, Järvesoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tahkuna looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tahkuna LKA, Järidemetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vanaõue maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vanaõue MKA, Sakala tee pv."
+ },
+ {
+  "areaName": "Nabala-Tuhala looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nabala-Tuhala LKA, Nabala pv."
+ },
+ {
+  "areaName": "Nabala-Tuhala looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nabala-Tuhala LKA, Rahaaugu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Kodru skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Koorküla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Koorküla LKA, Kadastiku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Padise mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kabala mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uljaste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Uljaste MKA, Uljaste raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vääna mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Parkide kompleks (Harjumäe park, Hirvepark, Lindamäe park)",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aaspere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Puhtu-Laelatu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Puhtu-Laelatu LKA, Rame lahe laidude skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rannaniidi pankade maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Rannaniidi pankade MKA, Rannaniidi pankade pv."
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Haanja LP, Keskusala pv."
+ },
+ {
+  "areaName": "Tudusoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tudusoo LKA, Punasoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuimetsa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kuimetsa MKA, Kuimetsa pv."
+ },
+ {
+  "areaName": "Osmussaare maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Osmussaare MKA, Osmussaare skv",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Abruka looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Abruka LKA, Salumetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kiusumetsa hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Prangli maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Prangli MKA, Aksi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vanamõisa lahe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Saarjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Saarjõe MKA, Tõrvaaugu pv."
+ },
+ {
+  "areaName": "Vahtrepa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Vahtrepa MKA, Kallaste panga skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pihla-Kaibaldi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pihla-Kaibaldi LKA, Kaibaldi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Vilsandi RP, Laukabe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tagamõisa hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Palojärve hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Oruveski skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Korjuse skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ingliste mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Elva-Peedu metsapark",
+  "areaTyyp": "VP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nõva LKA, Keibu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viljandi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Viljandi MKA, Viljandi pv."
+ },
+ {
+  "areaName": "Ropka-Ihaste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ropka-Ihaste LKA, Ihaste skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Hiiumaa laidude maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Hiiumaa laidude MKA, Laidude skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pangodi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pangodi MKA, Pangodi pv."
+ },
+ {
+  "areaName": "Suure-Aru looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Suure-Aru LKA, Suurearu soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Jaaniveski skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Botaanikaaia pv."
+ },
+ {
+  "areaName": "Sangaste mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Naage maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Naage MKA, Naage skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ohepalu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ohepalu LKA, Ohepalu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Keeri-Karijärve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Keeri-Karijärve LKA, Keeri-Karijärve pv."
+ },
+ {
+  "areaName": "Sarve maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Sarve MKA, Sarve pv."
+ },
+ {
+  "areaName": "Loobu jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vormsi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Vormsi MKA, Rumpo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vaivara maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Vaivara MKA, Tornimäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vaivara maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vaivara MKA, Pargimäe pv."
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Naissaare LP, Hülkari skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Põhja-Kõrvemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Põhja-Kõrvemaa LKA, Koitjärve pv."
+ },
+ {
+  "areaName": "Koiva-Mustjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Koiva-Mustjõe MKA, Parnika skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tudusoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tudusoo LKA, Luusaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Viimsi metsa pv."
+ },
+ {
+  "areaName": "Laidevahe looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Laidevahe LKA, Rannaküla pv."
+ },
+ {
+  "areaName": "Kõrgessaare looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kõrgessaare LKA, Kõrgessaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pühalepa hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Naissaare LP, Naissaare pv."
+ },
+ {
+  "areaName": "Manija maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Manija MKA, Manija pv."
+ },
+ {
+  "areaName": "Pärnu lahe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ruhnu hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Abruka hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vormsi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vormsi MKA, Huitbergi pv."
+ },
+ {
+  "areaName": "Kõpu looduskaitseala ",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kõpu LKA, Kaleste skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Albu mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vormsi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vormsi MKA, Saxby pv."
+ },
+ {
+  "areaName": "Vormsi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vormsi MKA, Prästviigi pv."
+ },
+ {
+  "areaName": "Vormsi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vormsi MKA, Kärrsläti pv."
+ },
+ {
+  "areaName": "Pärnu jõe hoiuala (Järva)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Haanja LP, Hoiuküla pv."
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Haanja LP, Tavaala pv."
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Rooglaiu-Saastna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Matsalu metsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sõrve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Sõrve LKA, Sõrve pv."
+ },
+ {
+  "areaName": "Mõdriku-Roela maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Mõdriku-Roela MKA, Udujärve-Mustjärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vasalemma mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ropka-Ihaste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ropka-Ihaste LKA, Ropka skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Läänemaa Suursoo maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Läänemaa Suursoo MKA, Linnuraba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Haanja LP, Pargi pv."
+ },
+ {
+  "areaName": "Põduste luha hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Jalase maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Jalase MKA, Sõbessoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vatla mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Käsmu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nedrema looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nedrema LKA, Nedrema skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pärnu rannaniidu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pärnu rannaniidu LKA, Naisteranna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kura kurgu hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuusiku hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karala-Pilguse hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Loobu mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haavakannu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Haavakannu LKA, Laanemetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Naissaare LP, Savikalda skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aegna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Aegna MKA, Kurikneeme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Porkuni maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Porkuni MKA, Porkuni pv."
+ },
+ {
+  "areaName": "Äntu park",
+  "areaTyyp": "VP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Prangli hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nõva LKA, Lepaaugu pv."
+ },
+ {
+  "areaName": "Silma looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Silma LKA, Tagalahe-Sutlepa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väikese väina hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Keibu-Ristna hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nõva LKA, Liivanõmme pv."
+ },
+ {
+  "areaName": "Tündre looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Tündre LKA, Kollaspalu pv."
+ },
+ {
+  "areaName": "Söe arboreetum",
+  "areaTyyp": "VP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sookuninga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sookuninga LKA, Rakste skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõnnumaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõnnumaa MKA, Loosalu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alutaguse RP, Vasknarva pv."
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Naissaare LP, Kunilamäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kurna mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Niidu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Niidu MKA, Niidu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Palganeeme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõmme-Mustamäe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nõmme-Mustamäe MKA, Nõmme-Mustamäe pv."
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Kakerdaja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väätsa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Väätsa LKA, Kotku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Orkjärve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Orkjärve LKA, Aude soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Orkjärve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Orkjärve LKA, Orkjärve raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lasila mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aegna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Aegna MKA, Aegna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ahja mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Raadi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Raadi LKA, Raadi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Võilaiu hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viitna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Viitna MKA, Linajärve pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Hauaneeme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Priisle pv."
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Vabaõhukooli pv."
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Nehatu pv."
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Lükati pv."
+ },
+ {
+  "areaName": "Anija mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Laupa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uuemõisa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pärnu jõe hoiuala (Pärnu)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Endla LKA, Kaasikjärve-Teosaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Naissaare LP, Naissaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Leidissoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Leidissoo LKA, Tammetõru skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Leidissoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Leidissoo LKA, Vallipää pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Ulliallika skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Selisoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ruila looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ruila LKA, Ruila soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ohepalu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ohepalu LKA, Mädajärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Naissaare LP, Lõunaküla pv."
+ },
+ {
+  "areaName": "Naissaare looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Naissaare LP, Kivikangrute skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Udria maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Udria MKA, Pimestiku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva-Osmussaare hoiuala (Harjumaa)",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ohepalu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ohepalu LKA, Tuksmani skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uulu-Võiste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Uulu-Võiste MKA, Uulu-Võiste pv."
+ },
+ {
+  "areaName": "Uulu-Võiste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Uulu-Võiste MKA, Leina skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nabala-Tuhala looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nabala-Tuhala LKA,Tuhala pv."
+ },
+ {
+  "areaName": "Paeküla hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Padaoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Padaoru MKA, Leinoja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rubina looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Rubina LKA, Rubina skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Jäärja mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Massiaru hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sookuninga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sookuninga LKA, Sandre skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sookuninga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sookuninga LKA, Jäärja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haiba mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Varangu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Varangu LKA, Varangu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Türi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Türi MKA, Türi pv."
+ },
+ {
+  "areaName": "Sargvere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kavastu park",
+  "areaTyyp": "VP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ontika maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Ontika MKA, Saka mõisapargi pv."
+ },
+ {
+  "areaName": "Marimetsa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Marimetsa LKA, Marimetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tuhu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tuhu LKA, Tuhu soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luua mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Äntu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Äntu MKA, Äntu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Liivaküla-Äntu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Liivaküla-Äntu LKA, Liivaküla-Äntu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuusiku mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alutaguse RP, Kirikumäe pv."
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Poruni skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Esna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Esna MKA, Esna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Linnuraba looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Linnuraba LKA, Linnuraba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kolga lahe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kolga lahe MKA, Rammu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kolga lahe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kolga lahe MKA, Malusi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Otepää LP, Otepää pv."
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Vanamänniku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nõva LKA, Uuejõe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Vilsandi RP, Salava skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Läänemaa Suursoo maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Läänemaa Suursoo MKA, Veskijärve pv."
+ },
+ {
+  "areaName": "Kumna mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Roheline turg",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Iru pv."
+ },
+ {
+  "areaName": "Vasalemma jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Hummuli mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Läänemaa Suursoo maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Läänemaa Suursoo MKA, Pillijärve pv."
+ },
+ {
+  "areaName": "Seljamäe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Neeruti maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Neeruti MKA, Neeruti pv."
+ },
+ {
+  "areaName": "Neeruti maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Neeruti MKA, Sinijärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rannapark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Laukesoo looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Laukesoo LKA, Laukesoo pv."
+ },
+ {
+  "areaName": "Vääna jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väimela mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ahja jõe ürgoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Ahja jõe ürgoru MKA, Ahja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viidumäe looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Viidumäe LKA, Nakimetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Suuremõisa lahe looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Suuremõisa lahe LKA, Suuremõisa lahe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pirita jõeoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pirita jõeoru MKA, Kloostrimetsa pv."
+ },
+ {
+  "areaName": "Käina lahe-Kassari maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Käina lahe-Kassari MKA, Käina skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Olustvere park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sindi kirikupark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tikste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Tikste MKA, Tikste pv."
+ },
+ {
+  "areaName": "Tikste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Tikste MKA, Pokardi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tõrva EAMS-i park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tõrva linna puhkepark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nõva LKA, Rooslepa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tõrva gümnaasiumi metsapark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuninga tänava puiestee",
+  "areaTyyp": "PS",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Imatu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nõva LKA, Mustjärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Läänemaa Suursoo maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Läänemaa Suursoo MKA, Kõrgeraba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Võiduküla skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Soone skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Jäneda skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mahtra looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Mahtra LKA, Leva skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tõhela-Ermistu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tõhela-Ermistu LKA, Tõhela-Ermistu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rõuge mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mahtra looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Mahtra LKA, Järlepa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Raadi mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Meelva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Meelva LKA, Suursoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Kikepera skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karujärve hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Vilsandi RP, Uus Nootamaa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Jalase maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Jalase MKA, Abrumetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Luidete skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aela maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Aela MKA, Viirika skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Varesemägede maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Varesemägede MKA, Varesemägede pv."
+ },
+ {
+  "areaName": "Parila looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Parila LKA, Parila skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viljandi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Viljandi MKA, Lossipargi pv."
+ },
+ {
+  "areaName": "Kõrvemaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõrvemaa MKA, Tarvasjõe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väätsa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ropka-Ihaste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Ropka-Ihaste LKA, Anne pv."
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Endla LKA, Põhja-Linnusaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Järni hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Valli park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nõva looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nõva LKA, Liivase pv."
+ },
+ {
+  "areaName": "Nabala-Tuhala looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Nabala-Tuhala LKA, Tammiku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uulu-Võiste maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Uulu-Võiste MKA, Uulu-Võiste skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kallaste hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Intsikurmu parkmets",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vääna hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Endla LKA, Kanamatsi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Riisa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tornide väljaku park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Peipsiveere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Peipsiveere LKA, Piirissaare pv."
+ },
+ {
+  "areaName": "Laitse mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pirita jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Tõramaa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karula RP, Silla pv."
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karula RP, Kaika pv."
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Karula RP, Peräjärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karula RP, Saera pv."
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karula RP, Mähkli pv."
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Merinõmme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viitna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Viitna MKA, Viitna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Vilsandi RP, Kuusnõmme skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Vilsandi RP, Harilaiu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vilsandi rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Vilsandi RP, Kõruse pv."
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Rüütli skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Alutaguse RP, Kurtna pv."
+ },
+ {
+  "areaName": "Audru mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Varessaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rakvere Rahvapark ehk Rakvere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Suitsu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Metsatuka skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kikepera looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kikepera LKA, Kikepera pv."
+ },
+ {
+  "areaName": "Elva maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Elva MKA, Vapramäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alam-Pedja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Alam-Pedja LKA, Põltsamaa raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Palamuse kirikupark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pärnu rannaniidu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pärnu rannaniidu LKA, Kristiine pv."
+ },
+ {
+  "areaName": "Laiuse kirikupark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Hellenurme mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Pikla skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mõdriku mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vaindloo hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rannamõisa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Rannamõisa MKA, Rannamõisa pv."
+ },
+ {
+  "areaName": "Toompark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Jaagupi hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Papioru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Papioru MKA, Papioru pv."
+ },
+ {
+  "areaName": "Anne looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Anne LKA, Anne pv."
+ },
+ {
+  "areaName": "Viitna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Viitna MKA, Nabudi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tammsaare park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kääpa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kääpa MKA, Tammeluha pv."
+ },
+ {
+  "areaName": "Peipsiveere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Peipsiveere LKA, Koosa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Peipsiveere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Peipsiveere LKA, Praaga pv."
+ },
+ {
+  "areaName": "Pahkla mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kunda jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuremaa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sõmeri hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kastna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kastna MKA, Kastna pv."
+ },
+ {
+  "areaName": "Tõstamaa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pootsi mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tõstamaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Tõstamaa MKA, Suti pv."
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Sooküla skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Puhtu-Laelatu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Puhtu-Laelatu LKA, Puhtu-Laelatu pv."
+ },
+ {
+  "areaName": "Allikukivi park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kastna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kastna MKA, Sepama skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ropka-Ihaste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ropka-Ihaste LKA, Aardla järve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Laiksaare looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Laiksaare LKA, Rebase skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Punamäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Pulgoja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõnnumaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõnnumaa MKA, Keava skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ahja jõe ürgoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Ahja jõe ürgoru MKA, Ahja jõe pv."
+ },
+ {
+  "areaName": "Järvselja looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Järvselja LKA, Järvselja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Väike-Palkna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Väike-Palkna MKA, Väike-Palkna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kärasi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kärasi LKA, Kärasi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Heinasoo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mahu-Rannametsa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Mahu-Rannametsa LKA, Veskilauri skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Letipea maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Letipea MKA, Letipea skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Paganamaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Paganamaa MKA, Paganamaa pv."
+ },
+ {
+  "areaName": "Räpina poldri hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Aseri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Aseri MKA, Mustmetsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Mustoja maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Mustoja MKA, Lipumäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ubari maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Ubari MKA, Ubari skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Endla looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Endla LKA, Võlingi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Karula RP, Ähijärve pv."
+ },
+ {
+  "areaName": "Tähemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tähemaa LKA, Tähemaa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Essu mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Palivere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pähklisaare looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pähklisaare LKA, Pähklisaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vana-Kuuste looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Vana-Kuuste LKA, Vana-Kuuste skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pärnu rannaniidu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pärnu rannaniidu LKA, Vana-Pärnu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pärnu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Pärnu MKA, Kodara skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ülenurme mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tilsi mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kuie mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõnnumaa maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Kõnnumaa MKA, Palasi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sookuninga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sookuninga LKA, Kodaja skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sõrve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sõrve LKA, Tugamanni skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Saku mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tamula järve hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lindi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Lindi LKA, Lindi pv."
+ },
+ {
+  "areaName": "Niidu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Niidu MKA, Niidu pv."
+ },
+ {
+  "areaName": "Põdrangu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Põdrangu LKA, Põdrangu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pärnu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Pärnu MKA, Rööpa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uue-Võidu maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Uue-Võidu MKA, Uue-Võidu pv."
+ },
+ {
+  "areaName": "Pärnu rannaniidu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pärnu rannaniidu LKA, Rannaniidu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Käina lahe-Kassari maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Käina lahe-Kassari MKA, Piibunina skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Vaivara maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Vaivara MKA, Viivikonna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kabli looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kabli LKA, Rannikumere pv."
+ },
+ {
+  "areaName": "Tehumardi nõmme hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Järve luidete maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Järve luidete MKA, Järve luidete skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Haanja LP, Tuhkrijärve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Luitemaa LKA, Luitemaa pv."
+ },
+ {
+  "areaName": "Rubina looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Rubina LKA, Veisjärve pv."
+ },
+ {
+  "areaName": "Padaoru maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Padaoru MKA, Padaoru pv."
+ },
+ {
+  "areaName": "Lasa järve hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Keila mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Uhtju looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Uhtju LKA, Uhtju skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Paunküla maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Paunküla MKA, Paunküla pv."
+ },
+ {
+  "areaName": "Sõrve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Sõrve LKA, Sõrve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Verijärve maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Verijärve MKA, Verijärve pv."
+ },
+ {
+  "areaName": "Kuninga-Rimmu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kuninga-Rimmu LKA, Kuninga-Rimmu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sõpruse park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kavastu park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Rabivere maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Rabivere MKA, Rabivere skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alutaguse rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Alutaguse RP, Kurtna skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Are mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Padakõrve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Padakõrve LKA, Kärgandi pv."
+ },
+ {
+  "areaName": "Padakõrve looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Padakõrve LKA, Järvepera skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Peipsiveere looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Peipsiveere LKA, Piirissaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Tolkuse skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Rannametsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Särevere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Riksu ranniku hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haimre mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Viimsi mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Voka mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kastna hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lindi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Lindi LKA, Potsepa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Lahemaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Lahemaa RP, Viru raba skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Haanja looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Haanja LP, Hinni skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Tagametsa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Tagametsa LKA, Tagametsa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Karula rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Karula RP, Plaagi skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Koiva-Mustjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Koiva-Mustjõe MKA, Koiva konnu skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Otepää looduspark",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Otepää LP, Alevi pv."
+ },
+ {
+  "areaName": "Käru mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Matsalu rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Matsalu RP, Kasari luha skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kabli looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Kabli LKA, Looduskeskuse pv."
+ },
+ {
+  "areaName": "Sämi maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Sämi MKA, Sämi soo skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Muti maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Muti MKA, Muti pv."
+ },
+ {
+  "areaName": "Loodi looduspark ",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Loodi LP, Holstre mägede skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Löwenruh' park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kärdla linnapark",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pilpa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Pilpa LKA, Pilpa skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Alu mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Purila mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Laimetsa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kreutzwaldi park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kehtna mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Luitemaa looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Luitemaa LKA, Maarjapeakse skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pakri maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pakri MKA, Pakrineeme pv."
+ },
+ {
+  "areaName": "Järve mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kurtna mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Soomaa rahvuspark",
+  "areaTyyp": "KRP",
+  "isHabitat": false,
+  "strictZone": "Soomaa RP, Vireksaare skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Toolse looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Toolse LKA, Toolse pv."
+ },
+ {
+  "areaName": "Munamäe park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sookuninga looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Sookuninga LKA, Sookuninga pv."
+ },
+ {
+  "areaName": "Veltsa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Nigula looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Nigula LKA, Nigula pv."
+ },
+ {
+  "areaName": "Aegna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Aegna MKA, Kalavälja pv."
+ },
+ {
+  "areaName": "Aegna maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Aegna MKA, Lemmikneeme pv."
+ },
+ {
+  "areaName": "Kuressaare lahe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kõõvistmäe looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kõõvistmäe LKA, Kõõvistmäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Koiva-Mustjõe maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Koiva-Mustjõe MKA, Koiva pv."
+ },
+ {
+  "areaName": "Reiu jõe hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Udria maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Udria MKA, Udria pv."
+ },
+ {
+  "areaName": "Pööravere mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Audru poldri looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Audru poldri LKA, Poldri skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Udria maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Udria MKA, Udria skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Audru poldri looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Audru poldri LKA, Audru pv."
+ },
+ {
+  "areaName": "Aela maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Aela MKA, Aela skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Suuremõisa mõisa park",
+  "areaTyyp": "KP",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kergu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Kergu LKA, Lepiku skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Ohepalu looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": "Ohepalu LKA, Rutkamäe skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Sarve maastikukaitseala",
+  "areaTyyp": "KMKA",
+  "isHabitat": false,
+  "strictZone": "Sarve MKA, Ida-Sarve skv.",
+  "limitedZone": null
+ },
+ {
+  "areaName": "Kaugatoma-Lõu hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ },
+ {
+  "areaName": "Pihla-Kaibaldi looduskaitseala",
+  "areaTyyp": "KLKA",
+  "isHabitat": false,
+  "strictZone": null,
+  "limitedZone": "Pihla-Kaibaldi LKA, Pihla-Kaibaldi pv."
+ },
+ {
+  "areaName": "Ranna-Põitse hoiuala",
+  "areaTyyp": null,
+  "isHabitat": true,
+  "strictZone": null,
+  "limitedZone": null
+ }
+]
