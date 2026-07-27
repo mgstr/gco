@@ -66,7 +66,7 @@ function agoText(dateStr) {
 }
 
 // ─── App init — runs once cache data has loaded from data.json ────────────
-function initApp(CACHES, OWNERSHIP) {
+function initApp(CACHES, OWNERSHIP, MOVEMENT_RESTRICTIONS, PROTECTED_AREAS) {
 let currentView = 'search';
 // Coordinate tools (Converter/Projector/Circle) — one Leaflet map shared by
 // all three modes, with mode-specific overlays created lazily on first use.
@@ -376,6 +376,16 @@ function ownershipLabel(code) {
   return entry ? (entry[I18N_LANG] || entry.en) : null;
 }
 
+// 1 = "Eraomand"/private ownership (see scripts/enrich_land_ownership.py's
+// OWNERSHIP_CODES) - the one case worth calling out, since it's usually
+// what determines whether visiting needs the owner's permission.
+const OWNERSHIP_PRIVATE_CODE = 1;
+
+function ccOwnershipValueHtml(code) {
+  const label = esc(ownershipLabel(code) || t('ownershipUnknown'));
+  return code === OWNERSHIP_PRIVATE_CODE ? '<span class="own-private">' + label + '</span>' : label;
+}
+
 // Small round type icon for the search-results list row, using the same
 // glyph/color artwork as the map pins (GC_PIN_TYPES) instead of the old
 // separate icons/*.png set, so both views agree on what each type looks like.
@@ -677,6 +687,83 @@ function bindCoordButton(btn) {
 
 const RENDER_CAP = 200;
 
+const PROTECTED_TYPE_KEY = {
+  KRP: 'protectedTypeNP',
+  KLKA: 'protectedTypeNR',
+  KMKA: 'protectedTypeLR',
+  KP: 'protectedTypePark',
+  VP: 'protectedTypePark',
+  VK: 'protectedTypeGeneric',
+  PS: 'protectedTypeStand',
+};
+
+function ccProtectedTypeLabel(tyyp) {
+  const key = PROTECTED_TYPE_KEY[tyyp];
+  return key ? t(key) : tyyp;
+}
+
+// 'MM-DD' -> 'DD.MM.' (recurring annual dates, so no year) — scripts/
+// extract_movement_restrictions.py builds movement_restrictions.json with
+// this format from the regulation text's day/month figures.
+function ccFmtRestrictionDate(mmdd) {
+  const parts = mmdd.split('-');
+  return parts[1] + '.' + parts[0] + '.';
+}
+
+function ccFmtRestrictionRange(r) {
+  return ccFmtRestrictionDate(r.from) + '–' + ccFmtRestrictionDate(r.to);
+}
+
+// 'MM-DD' strings compare correctly with plain string comparison (both
+// operands are always zero-padded to the same width), except when the
+// restriction wraps across the year boundary (e.g. '09-01'..'01-31').
+function ccDateInRange(mmdd, from, to) {
+  return from <= to ? (mmdd >= from && mmdd <= to) : (mmdd >= from || mmdd <= to);
+}
+
+function ccRestrictionActiveNow(restriction) {
+  const now = new Date();
+  const mmdd = String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  return restriction.restrictions.some(function(r) { return ccDateInRange(mmdd, r.from, r.to); });
+}
+
+// Shared between the coordinate tool's live per-point WMS lookup
+// (ccFetchProtected, further down) and the cache list's bulk-precomputed
+// "pa" field (protected_areas.json, built by scripts/enrich_protected_areas.py)
+// - both boil down to the same shape: { areaName, areaTyyp, isHabitat,
+// strictZone, limitedZone }, where strictZone/limitedZone are the matched
+// zone's plain "nimi" string (or null), used to look up its actual
+// restriction dates in MOVEMENT_RESTRICTIONS. Defined up here (rather than
+// alongside ccFetchProtected) because render() below calls it synchronously
+// during initApp's own setup, before later const declarations in this
+// function would otherwise have run.
+//
+// Returns ready-to-insert HTML rather than plain text: the area name itself
+// (colored to flag protected status) doubles as the link to its
+// kaitse-eeskiri when one was resolved, and the restriction dates (when
+// known) are colored red/green depending on whether today falls inside
+// them - so callers just concatenate this after their own "<b>Label</b> ".
+function ccProtectedSituationText(s) {
+  const typeLabel = s.isHabitat ? t('protectedTypeHabitat') : ccProtectedTypeLabel(s.areaTyyp);
+  const areaText = esc(s.areaName + ' (' + typeLabel + ')');
+  const restriction = s.strictZone && MOVEMENT_RESTRICTIONS ? MOVEMENT_RESTRICTIONS[s.strictZone] : null;
+  const regulationUrl = restriction ? restriction.regulationUrl : null;
+  const nameHtml = regulationUrl
+    ? '<a class="pa-name" href="' + esc(regulationUrl) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">' + areaText + '</a>'
+    : '<span class="pa-name">' + areaText + '</span>';
+  let statusHtml = '';
+  if (restriction && restriction.restrictions.length) {
+    const active = ccRestrictionActiveNow(restriction);
+    const ranges = restriction.restrictions.map(ccFmtRestrictionRange).join(', ');
+    statusHtml = ' — <span class="' + (active ? 'pa-closed' : 'pa-open') + '">' + esc(t('protectedZoneStrictDates', { dates: ranges })) + '</span>';
+  } else if (s.strictZone) {
+    statusHtml = ' — ' + esc(t('protectedZoneStrict'));
+  } else if (s.limitedZone) {
+    statusHtml = ' — ' + esc(t('protectedZoneLimited'));
+  }
+  return { html: nameHtml + statusHtml };
+}
+
 function render(q, focusLatLon) {
   openCacheMaps.forEach(function(m) { m.remove(); });
   openCacheMaps = [];
@@ -745,8 +832,10 @@ function render(q, focusLatLon) {
           ((c.r || c.own != null) ? '<div>' +
             (c.r ? '<b>' + t('addressLabel') + '</b> ' + esc(c.r) : '') +
             (c.r && c.own != null ? ' · ' : '') +
-            (c.own != null ? '<b>' + t('landLabel') + '</b> ' + esc(ownershipLabel(c.own) || c.own) : '') +
+            (c.own != null ? '<b>' + t('landLabel') + '</b> ' + ccOwnershipValueHtml(c.own) : '') +
             '</div>' : '') +
+          (c.pa != null && PROTECTED_AREAS && PROTECTED_AREAS[c.pa] ?
+            '<div><b>' + t('protectedLabel') + '</b> ' + ccProtectedSituationText(PROTECTED_AREAS[c.pa]).html + '</div>' : '') +
           '<div><b>' + t('hiddenLabel') + '</b> ' + c.h + ' <span class="agotext">(' + agoText(c.h) + ')</span> ' + t('byLabel') + ' ' + esc(c.o) +
             (OWNER_COUNTS[c.o] ? ' <span class="ownercount">' + OWNER_COUNTS[c.o] + '</span>' : '') + '</div>' +
           (function() {
@@ -1897,7 +1986,7 @@ function ccFetchOwnership(lat, lon, key) {
         const omvorm = feature.properties.omvorm;
         code = OMVORM_TO_CODE[omvorm] != null ? OMVORM_TO_CODE[omvorm] : 0;
       }
-      const html = '<b>' + esc(t('landLabel')) + '</b> ' + esc(ownershipLabel(code) || t('ownershipUnknown'));
+      const html = '<b>' + esc(t('landLabel')) + '</b> ' + ccOwnershipValueHtml(code);
       ccOwnershipCache.set(key, html);
       ccSetOwnershipText(html);
     })
@@ -1932,32 +2021,17 @@ let ccProtectedTimer = null;
 let ccProtectedAbort = null;
 const ccProtectedCache = new Map();
 
-const PROTECTED_TYPE_KEY = {
-  KRP: 'protectedTypeNP',
-  KLKA: 'protectedTypeNR',
-  KMKA: 'protectedTypeLR',
-  KP: 'protectedTypePark',
-  VP: 'protectedTypePark',
-  VK: 'protectedTypeGeneric',
-  PS: 'protectedTypeStand',
-};
-
-const PROTECTED_LAYERS = 'eelis:kr_kaitseala,eelis:kr_reservaat,eelis:kr_hoiuala,' +
-  'eelis:kr_looduslik_skv,eelis:kr_hooldatav_skv,eelis:kr_piirang';
-// Zone layers where the protection regulation is most likely to impose
-// seasonal movement bans (nesting season closures, lek sites, etc.).
-const PROTECTED_STRICT_LAYERS = ['kr_looduslik_skv', 'kr_hooldatav_skv', 'kr_reservaat'];
-
 function ccSetProtectedText(html, cls) {
   ccProtectedEl.innerHTML = html || '';
   ccProtectedEl.className = 'cc-protected' + (cls ? ' ' + cls : '');
   ccProtectedEl.style.display = html ? '' : 'none';
 }
 
-function ccProtectedTypeLabel(tyyp) {
-  const key = PROTECTED_TYPE_KEY[tyyp];
-  return key ? t(key) : tyyp;
-}
+const PROTECTED_LAYERS = 'eelis:kr_kaitseala,eelis:kr_reservaat,eelis:kr_hoiuala,' +
+  'eelis:kr_looduslik_skv,eelis:kr_hooldatav_skv,eelis:kr_piirang';
+// Zone layers where the protection regulation is most likely to impose
+// seasonal movement bans (nesting season closures, lek sites, etc.).
+const PROTECTED_STRICT_LAYERS = ['kr_looduslik_skv', 'kr_hooldatav_skv', 'kr_reservaat'];
 
 function ccFetchProtected(lat, lon, key) {
   const ctrl = new AbortController();
@@ -1980,20 +2054,22 @@ function ccFetchProtected(lat, lon, key) {
       });
 
       const area = byLayer.kr_kaitseala || byLayer.kr_reservaat || byLayer.kr_hoiuala;
-      const strict = PROTECTED_STRICT_LAYERS.some(function(l) { return byLayer[l]; });
-      let text;
+      const strictLayer = PROTECTED_STRICT_LAYERS.filter(function(l) { return byLayer[l]; })[0];
+      let html;
       if (!area) {
-        text = t('protectedNone');
+        html = '<b>' + esc(t('protectedLabel')) + '</b> ' + esc(t('protectedNone'));
       } else {
-        const typeLabel = (byLayer.kr_kaitseala || byLayer.kr_reservaat) ? ccProtectedTypeLabel(area.tyyp) : t('protectedTypeHabitat');
-        text = area.nimi + ' (' + typeLabel + ')';
-        if (strict) text += ' — ' + t('protectedZoneStrict');
-        else if (byLayer.kr_piirang) text += ' — ' + t('protectedZoneLimited');
+        const result = ccProtectedSituationText({
+          areaName: area.nimi,
+          areaTyyp: area.tyyp,
+          isHabitat: !(byLayer.kr_kaitseala || byLayer.kr_reservaat),
+          strictZone: strictLayer ? byLayer[strictLayer].nimi : null,
+          limitedZone: byLayer.kr_piirang ? byLayer.kr_piirang.nimi : null,
+        });
+        html = '<b>' + esc(t('protectedLabel')) + '</b> ' + result.html;
       }
-      const html = '<b>' + esc(t('protectedLabel')) + '</b> ' + esc(text);
-      const entry = { html: html, warn: !!(area && strict) };
-      ccProtectedCache.set(key, entry);
-      ccSetProtectedText(html, entry.warn ? 'warn' : null);
+      ccProtectedCache.set(key, html);
+      ccSetProtectedText(html);
     })
     .catch(function(err) {
       if (err.name === 'AbortError') return;
@@ -2009,7 +2085,7 @@ function ccScheduleProtectedLookup(point) {
 
   const key = ccAddressCacheKey(point.lat, point.lon);
   const cached = ccProtectedCache.get(key);
-  if (cached) { ccSetProtectedText(cached.html, cached.warn ? 'warn' : null); return; }
+  if (cached) { ccSetProtectedText(cached); return; }
 
   ccSetProtectedText(esc(t('protectedLookingUp')), 'loading');
   ccProtectedTimer = setTimeout(function() { ccFetchProtected(point.lat, point.lon, key); }, 600);
@@ -2403,11 +2479,13 @@ if (countEl0) countEl0.textContent = t('loadingData');
 function loadData() {
   Promise.all([
     fetch('./data.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
-    fetch('./ownership.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    fetch('./ownership.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
+    fetch('./movement_restrictions.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
+    fetch('./protected_areas.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
   ])
     .then(function(results) {
       const data = results[0];
-      initApp(data.caches, results[1]);
+      initApp(data.caches, results[1], results[2], results[3]);
       const versionEl = document.getElementById('settingsVersion');
       if (versionEl) versionEl.textContent = data.version;
     })
