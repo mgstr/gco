@@ -39,8 +39,8 @@
             aria-pressed="false" data-i18n-aria-label="hideFoundAria">
       <span class="hidefound-icon" aria-hidden="true">🙂</span>
     </button>
-    <button type="button" class="findsToggleBtn" id="hideDisabledBtn"
-            aria-pressed="false" data-i18n-aria-label="hideDisabledAria">
+    <button type="button" class="findsToggleBtn" id="hideBadBtn"
+            aria-pressed="false" data-i18n-aria-label="hideBadAria">
       <span class="hidefound-icon" aria-hidden="true">⚠️</span>
     </button>
   </div>
@@ -217,6 +217,37 @@
   <div class="columnspanel-actions">
     <button type="button" id="columnsCancelBtn" data-i18n="cancelBtn"></button>
     <button type="button" id="columnsOkBtn" data-i18n="okBtn"></button>
+  </div>
+</div>
+
+<!-- Reachable only via a long-press on hideBadBtn, not from the Settings
+     menu — reuses the columns panel's bottom-sheet CSS. -->
+<div class="columnsbackdrop" id="badCachesBackdrop"></div>
+<div class="columnspanel" id="badCachesPanel">
+  <div class="columnspanel-header" data-i18n="badCachesTitle"></div>
+  <div class="columnspanel-list" id="badCachesList">
+    <label class="columnitem required">
+      <input type="checkbox" id="badRuleDisabled" checked disabled>
+      <span data-i18n="disabledLabel"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" id="badRuleAttention">
+      <span data-i18n="attrFirstaid"></span>
+    </label>
+    <label class="columnitem badrule-dnf">
+      <input type="checkbox" id="badRuleDnf">
+      <span data-i18n="badReasonDnfPre"></span>
+      <input type="number" id="badRuleDnfCount" class="badrule-dnf-count" min="1" max="5" step="1">
+      <span data-i18n="badReasonDnfPost"></span>
+    </label>
+    <label class="columnitem">
+      <input type="checkbox" id="badRuleRestriction">
+      <span data-i18n="badReasonRestriction"></span>
+    </label>
+  </div>
+  <div class="columnspanel-actions">
+    <button type="button" id="badCachesCancelBtn" data-i18n="cancelBtn"></button>
+    <button type="button" id="badCachesOkBtn" data-i18n="okBtn"></button>
   </div>
 </div>
 

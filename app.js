@@ -15,7 +15,7 @@ const GC_PIN_TYPES = {
   "unknown": { color: "#87705a", glyph: "<path d=\"M25.204 17.157c-6.201-1.093-12.114 3.047-13.207 9.248s3.047 12.114 9.248 13.208c6.201 1.093 12.114-3.047 13.207-9.248 1.093-6.202-3.048-12.115-9.248-13.208zm-1.818 2.285l-2.116 1.504-.575-1.419-.223-1.182-.852 1.302-1.34-.045.619-.511-.27-.142-2.08 2.019.605 1.044.94-1.905 1.146.614.315 1.826.007-.001-.006.009.1.578-.331-.219.231-.359-.001-.008-.911.123s.227.694.162.686c-.26-.028-.863.15-.863.15-.614.399-1.757 1.758-1.757 1.758l-.172.873-.746-.749-.736.071-.515 1.374.462.279.589-.297.461.778-.022.693 1.037.112 1.949.597.995 2.088.766.555-1.552 1.807-.96 2.1-.78.663-.242.556-1.088-1.242.073-1.771-.708-2.319.002-1.542.933-.752-2.131-2.131-.893-1.565s.234-2.329 4.296-5.665c3.523-2.894 7.354-1.841 7.354-1.841l-.856 1.357-.316.149zm4.813 14.854l-1.041 1.383-1.652 1.036-.508-1.616.039-2.364-.324-2.416-1.475.051-.854-1.751.731-1.252 1.242-1.427.509-.22.735.177.629.062.396.77 1.885.341s.058-.017.719 1.041c.661 1.058.634 1.256.634 1.256l-.488.819-.294.048.849.274-1.732 3.788zm3.539-6.157l-.998-.049s-.156-.713-.625-1.078c-.469-.365-1.548-.913-1.548-.913L27.955 26l-.355-.661-.48.506-.066-.302-.534.027-.769-1.145-.78.12-.505.359-.446-.114.155-.586.72.012.308-.971-.488-.223.123-.714-.468.08.518-.239-.051-.432.135-.097.388 1.333.821-.258.092-.548.195.566.832.017.557-1.219-.195-.021-.076-.578-.706 1.446-.41-.641-.134.143-.339-.496 2.188-1.811 1.655 1.143 1.005.232s1.442 1.258 1.986 3.865c.545 2.607.843 4.081.843 4.081l-.915 2.045-1.021-2.78zm-3.62-18.991l-1.03 5.844 7.82-1.634-6.79-4.21zm-2.791 7.164c.241.042.557-.173.557-.173l1.352-7.665-.984-.173-1.352 7.665c.001 0 .187.304.427.346z\" fill=\"#fff\"/>" }
 };
 const FOUND_PIN_COLOR = "#ffd60a";
-const DISABLED_PIN_COLOR = "#b8b8b8";
+const BAD_PIN_COLOR = "#b8b8b8";
 
 // ─── Leaflet (shared by cache-detail maps and the coordinate converter) ────
 // Self-hosted (./vendor/leaflet) and precached by the service worker, so
@@ -112,13 +112,21 @@ if (leafletLoaded) leafletReadyHandler();
 const qEl = document.getElementById('q');
 const viewToggleBtn = document.getElementById('viewToggleBtn');
 const hideFoundBtn = document.getElementById('hideFoundBtn');
-const hideDisabledBtn = document.getElementById('hideDisabledBtn');
+const hideBadBtn = document.getElementById('hideBadBtn');
 const columnsBtn = document.getElementById('columnsBtn');
 const columnsBackdropEl = document.getElementById('columnsBackdrop');
 const columnsPanelEl = document.getElementById('columnsPanel');
 const columnsListEl = document.getElementById('columnsList');
 const columnsOkBtn = document.getElementById('columnsOkBtn');
 const columnsCancelBtn = document.getElementById('columnsCancelBtn');
+const badCachesBackdropEl = document.getElementById('badCachesBackdrop');
+const badCachesPanelEl = document.getElementById('badCachesPanel');
+const badRuleAttentionEl = document.getElementById('badRuleAttention');
+const badRuleDnfEl = document.getElementById('badRuleDnf');
+const badRuleDnfCountEl = document.getElementById('badRuleDnfCount');
+const badRuleRestrictionEl = document.getElementById('badRuleRestriction');
+const badCachesCancelBtn = document.getElementById('badCachesCancelBtn');
+const badCachesOkBtn = document.getElementById('badCachesOkBtn');
 const sortSel = document.getElementById('sortSel');
 const distOpt = document.getElementById('distOpt');
 const sortDirBtn = document.getElementById('sortDirBtn');
@@ -202,7 +210,39 @@ function boolPref(key, def) {
 // Whether the "hide my finds" checkbox itself was last checked/unchecked —
 // separate from the finds data, so it survives independently of it.
 const HideFindsPref = boolPref('gcHideFindsPrefV1', true);
-const HideDisabledPref = boolPref('gcHideDisabledPrefV1', false);
+const HideBadPref = boolPref('gcHideBadPrefV1', false);
+
+// Which rules count a cache as "bad" (see badCacheReasons() below), plus the
+// DNF rule's configurable streak length. Disabled caches are unconditionally
+// bad and have no entry here. Edited via the panel opened by long-pressing
+// hideBadBtn (see openBadCachesPanel), not the main Settings menu.
+const BadCachesConfig = (function() {
+  const KEY = 'gcBadCachesConfigV1';
+  const DEFAULTS = { attention: true, dnf: true, dnfCount: 3, restriction: true };
+  function load() {
+    let raw;
+    try {
+      raw = localStorage.getItem(KEY);
+    } catch (e) {
+      return Object.assign({}, DEFAULTS);
+    }
+    if (!raw) return Object.assign({}, DEFAULTS);
+    try {
+      const parsed = JSON.parse(raw);
+      return Object.assign({}, DEFAULTS, parsed && typeof parsed === 'object' ? parsed : {});
+    } catch (e) {
+      return Object.assign({}, DEFAULTS);
+    }
+  }
+  let state = load();
+  function get() { return state; }
+  function set(next) {
+    state = Object.assign({}, DEFAULTS, next);
+    state.dnfCount = Math.min(5, Math.max(1, parseInt(state.dnfCount, 10) || DEFAULTS.dnfCount));
+    localStorage.setItem(KEY, JSON.stringify(state));
+  }
+  return { get, set };
+})();
 
 // Columns shown in the collapsed search-result row, plus the current list/map
 // view mode — kept as one object (rather than one localStorage key per
@@ -285,10 +325,10 @@ function refreshHideFoundVisibility() {
 }
 refreshHideFoundVisibility();
 
-function hideDisabledActive() {
-  return hideDisabledBtn.getAttribute('aria-pressed') === 'true';
+function hideBadActive() {
+  return hideBadBtn.getAttribute('aria-pressed') === 'true';
 }
-hideDisabledBtn.setAttribute('aria-pressed', String(HideDisabledPref.get()));
+hideBadBtn.setAttribute('aria-pressed', String(HideBadPref.get()));
 
 // Showing/hiding the optional columns only affects which CSS class is on
 // #list — the row markup itself always includes all columns, so no
@@ -389,11 +429,12 @@ function ccOwnershipValueHtml(code) {
 // Small round type icon for the search-results list row, using the same
 // glyph/color artwork as the map pins (GC_PIN_TYPES) instead of the old
 // separate icons/*.png set, so both views agree on what each type looks like.
-// Disabled caches render gray and found caches render yellow, same as their
-// map pin (disabled takes priority over found, same as getCachePinIcon).
-function cacheTypeIconHtml(ty, disabled, found) {
+// Bad caches (see badCacheReasons()) render gray and found caches render
+// yellow, same as their map pin (bad takes priority over found, same as
+// getCachePinIcon).
+function cacheTypeIconHtml(ty, bad, found) {
   const type = GC_PIN_TYPES[ty] || GC_PIN_TYPES['traditional'];
-  const bg = disabled ? DISABLED_PIN_COLOR : (found ? FOUND_PIN_COLOR : type.color);
+  const bg = bad ? BAD_PIN_COLOR : (found ? FOUND_PIN_COLOR : type.color);
   return '<span class="type-icon" style="background:' + bg + '">' +
     '<svg viewBox="0 0 48 48">' + type.glyph + '</svg></span>';
 }
@@ -401,15 +442,15 @@ function cacheTypeIconHtml(ty, disabled, found) {
 // Map-view pin icon by cache type (c.ty holds the English type code — see
 // GC_PIN_TYPES above). Falls back to the traditional-cache glyph for any
 // type not in the map. Found caches always render as a flat yellow pin,
-// regardless of type, so found status reads at a glance on the map.
-// Disabled caches take priority over found and always render as a flat
-// gray pin instead.
-function getCachePinIcon(ty, found, disabled) {
+// regardless of type, so found status reads at a glance on the map. Bad
+// caches take priority over found and always render as a flat gray pin
+// instead.
+function getCachePinIcon(ty, found, bad) {
   if (!cachePinIcons) cachePinIcons = {};
-  const key = ty + (disabled ? ':disabled' : (found ? ':found' : ''));
+  const key = ty + (bad ? ':bad' : (found ? ':found' : ''));
   if (!cachePinIcons[key]) {
     const type = GC_PIN_TYPES[ty] || GC_PIN_TYPES['traditional'];
-    const bg = disabled ? DISABLED_PIN_COLOR : (found ? FOUND_PIN_COLOR : type.color);
+    const bg = bad ? BAD_PIN_COLOR : (found ? FOUND_PIN_COLOR : type.color);
     cachePinIcons[key] = L.divIcon({
       className: '',
       html: '<div class="cache-pin-wrap"><div class="cache-pin" style="background:' + bg + '">' +
@@ -727,6 +768,41 @@ function ccRestrictionActiveNow(restriction) {
   return restriction.restrictions.some(function(r) { return ccDateInRange(mmdd, r.from, r.to); });
 }
 
+// Same "is today inside one of this zone's restricted date ranges" check as
+// ccProtectedSituationText, but reduced to a plain boolean for the "bad
+// cache" restriction rule (see badCacheReasons below) rather than building
+// display HTML.
+function cacheRestrictionActiveNow(s) {
+  const zone = s.strictZone || s.limitedZone;
+  const restriction = zone && MOVEMENT_RESTRICTIONS ? MOVEMENT_RESTRICTIONS[zone] : null;
+  return !!(restriction && restriction.restrictions.length && ccRestrictionActiveNow(restriction));
+}
+
+// A cache is "bad" when it trips one or more rules: being disabled is
+// unconditional, the rest are toggleable via BadCachesConfig (edited in the
+// panel opened by long-pressing hideBadBtn). Returns localized reason
+// strings, in a fixed priority order, shared by the flyout banner, the
+// hide-bad filter, and list/map icon graying — so all four always agree.
+function badCacheReasons(c) {
+  const cfg = BadCachesConfig.get();
+  const reasons = [];
+  if (c.disabled) reasons.push(t('disabledLabel'));
+  if (cfg.attention && c.at && c.at.indexOf('firstaid') !== -1) reasons.push(t('attrFirstaid'));
+  if (cfg.dnf && c.lg && c.lg.length >= cfg.dnfCount &&
+      c.lg.slice(0, cfg.dnfCount).split('').every(function(ch) { return ch === 'D'; })) {
+    reasons.push(t('badReasonDnf', { n: cfg.dnfCount }));
+  }
+  if (cfg.restriction && c.pa != null && PROTECTED_AREAS && PROTECTED_AREAS[c.pa] &&
+      cacheRestrictionActiveNow(PROTECTED_AREAS[c.pa])) {
+    reasons.push(t('badReasonRestriction'));
+  }
+  return reasons;
+}
+
+function isBadCache(c) {
+  return badCacheReasons(c).length > 0;
+}
+
 // Shared between the coordinate tool's live per-point WMS lookup
 // (ccFetchProtected, further down) and the cache list's bulk-precomputed
 // "pa" field (protected_areas.json, built by scripts/enrich_protected_areas.py)
@@ -768,17 +844,17 @@ function render(q, focusLatLon) {
   openCacheMaps.forEach(function(m) { m.remove(); });
   openCacheMaps = [];
   const hideFound = hideFoundActive();
-  const hideDisabled = hideDisabledActive();
+  const hideBad = hideBadActive();
   const source = sortSel.value === 'name' ? CACHES_BY_NAME
     : (sortSel.value === 'distance' && CACHES_BY_DISTANCE) ? CACHES_BY_DISTANCE
     : CACHES;
   let results = q ? source.filter(c => matches(c, q)) : source.slice();
   if (hideFound) results = results.filter(c => !isFound(c));
-  if (hideDisabled) results = results.filter(c => !c.disabled);
+  if (hideBad) results = results.filter(c => !isBadCache(c));
   if (sortDir === 'desc') results.reverse();
 
   const totalCount = CACHES.filter(c =>
-    (!hideFound || !isFound(c)) && (!hideDisabled || !c.disabled)
+    (!hideFound || !isFound(c)) && (!hideBad || !isBadCache(c))
   ).length;
 
   if (!results.length) {
@@ -800,7 +876,7 @@ function render(q, focusLatLon) {
   const rows = [];
   for (let i = 0; i < shown.length; i++) {
     const c = shown[i];
-    const icon = cacheTypeIconHtml(c.ty, c.disabled, isFound(c));
+    const icon = cacheTypeIconHtml(c.ty, isBadCache(c), isFound(c));
     const listDist = distanceFor(c);
     rows.push(
       '<div class="row" onclick="toggle(this)">' +
@@ -814,7 +890,10 @@ function render(q, focusLatLon) {
           '<span class="region-col">' + esc(c.r || '') + '</span>' +
         '</div>' +
         '<div class="detail">' +
-          (c.disabled ? '<div class="disabled-badge">⚠️ ' + esc(t('disabledLabel')) + '</div>' : '') +
+          (function() {
+            const reasons = badCacheReasons(c);
+            return reasons.length ? '<div class="bad-badge">⚠️ ' + esc(reasons.join(', ')) + '</div>' : '';
+          })() +
           '<div class="title-row"><b>' + esc(c.n) + '</b>' +
             (c.g || c.gp ? '<span class="title-links">' +
               (c.g ? '<a href="https://coord.info/' + c.g + '" target="_blank">GC</a>' : '') +
@@ -859,7 +938,7 @@ function render(q, focusLatLon) {
                      ' <button type="button" class="navbtn" data-default="' + escAttr(map.default) + '" data-alts="' + escAttr(JSON.stringify(map.alts)) + '">' + esc(t('mapBtn')) + '</button>';
             })() : '') +
           '</div>' +
-          (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '" data-disabled="' + (c.disabled ? '1' : '0') + '"></div>' : '') +
+          (c.lat != null ? '<div class="cachemap" id="cache-map-' + i + '" data-lat="' + c.lat + '" data-lon="' + c.lon + '" data-ty="' + escAttr(c.ty) + '" data-found="' + (isFound(c) ? '1' : '0') + '" data-bad="' + (isBadCache(c) ? '1' : '0') + '"></div>' : '') +
           (c.hint ? (function() {
             const openClass = isFound(c) ? '' : ' open';
             return '<div class="detail-section-header' + openClass + '" onclick="event.stopPropagation(); toggleSection(this)">' +
@@ -973,14 +1052,14 @@ function ensureCacheMap(mapDiv) {
   const lon = parseFloat(mapDiv.dataset.lon);
   const ty = mapDiv.dataset.ty;
   const found = mapDiv.dataset.found === '1';
-  const disabled = mapDiv.dataset.disabled === '1';
+  const bad = mapDiv.dataset.bad === '1';
   const map = L.map(mapDiv, { zoomControl: false, doubleClickZoom: false });
   map.fitBounds(ESTONIA_BOUNDS); // whole-Estonia view, sized to the container; only the marker moves per cache
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
-  L.marker([lat, lon], { icon: getCachePinIcon(ty, found, disabled) }).addTo(map);
+  L.marker([lat, lon], { icon: getCachePinIcon(ty, found, bad) }).addTo(map);
   bindDoubleTap(mapDiv, function() { focusCacheOnMap(lat, lon); });
   mapDiv._map = map;
   openCacheMaps.push(map);
@@ -1093,7 +1172,7 @@ function updateMapMarkers(list, focusLatLon) {
   let focusMarker = null;
   list.forEach(function(c) {
     if (c.lat == null) return;
-    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(c.ty, isFound(c), c.disabled) }).addTo(searchMap);
+    const marker = L.marker([c.lat, c.lon], { icon: getCachePinIcon(c.ty, isFound(c), isBadCache(c)) }).addTo(searchMap);
     marker.bindTooltip(c.n);
     marker.on('click', function() {
       showListView();
@@ -1211,10 +1290,34 @@ hideFoundBtn.addEventListener('click', function() {
   HideFindsPref.set(!pressed);
   render(qEl.value.trim());
 });
-hideDisabledBtn.addEventListener('click', function() {
-  const pressed = hideDisabledBtn.getAttribute('aria-pressed') === 'true';
-  hideDisabledBtn.setAttribute('aria-pressed', String(!pressed));
-  HideDisabledPref.set(!pressed);
+// A long-press on hideBadBtn opens the bad-cache rules panel instead of
+// toggling the filter; the click that a touch/mouse release fires right
+// after the long-press timer already fired is suppressed so it doesn't also
+// toggle the filter.
+const HIDE_BAD_LONG_PRESS_MS = 550;
+let hideBadLongPressTimer = null;
+let hideBadLongPressFired = false;
+function startHideBadLongPress() {
+  hideBadLongPressFired = false;
+  clearTimeout(hideBadLongPressTimer);
+  hideBadLongPressTimer = setTimeout(function() {
+    hideBadLongPressFired = true;
+    openBadCachesPanel();
+  }, HIDE_BAD_LONG_PRESS_MS);
+}
+function cancelHideBadLongPress() {
+  clearTimeout(hideBadLongPressTimer);
+}
+hideBadBtn.addEventListener('pointerdown', startHideBadLongPress);
+hideBadBtn.addEventListener('pointerup', cancelHideBadLongPress);
+hideBadBtn.addEventListener('pointerleave', cancelHideBadLongPress);
+hideBadBtn.addEventListener('pointercancel', cancelHideBadLongPress);
+hideBadBtn.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+hideBadBtn.addEventListener('click', function() {
+  if (hideBadLongPressFired) { hideBadLongPressFired = false; return; }
+  const pressed = hideBadBtn.getAttribute('aria-pressed') === 'true';
+  hideBadBtn.setAttribute('aria-pressed', String(!pressed));
+  HideBadPref.set(!pressed);
   render(qEl.value.trim());
 });
 // Column checkboxes are edited in the panel's own local state and only
@@ -1244,6 +1347,40 @@ columnsOkBtn.addEventListener('click', function() {
   refreshColumnVisibility();
   closeColumnsPanel();
 });
+
+// Bad-cache rules panel — same open/edit-locally/commit-on-OK pattern as the
+// columns panel above, opened by long-pressing hideBadBtn rather than a
+// Settings menu item.
+function openBadCachesPanel() {
+  const cfg = BadCachesConfig.get();
+  badRuleAttentionEl.checked = cfg.attention;
+  badRuleDnfEl.checked = cfg.dnf;
+  badRuleDnfCountEl.value = cfg.dnfCount;
+  badRuleDnfCountEl.disabled = !cfg.dnf;
+  badRuleRestrictionEl.checked = cfg.restriction;
+  badCachesBackdropEl.classList.add('visible');
+  badCachesPanelEl.classList.add('visible');
+}
+function closeBadCachesPanel() {
+  badCachesPanelEl.classList.remove('visible');
+  badCachesBackdropEl.classList.remove('visible');
+}
+badCachesBackdropEl.addEventListener('click', closeBadCachesPanel);
+badCachesCancelBtn.addEventListener('click', closeBadCachesPanel);
+badRuleDnfEl.addEventListener('change', function() {
+  badRuleDnfCountEl.disabled = !badRuleDnfEl.checked;
+});
+badCachesOkBtn.addEventListener('click', function() {
+  BadCachesConfig.set({
+    attention: badRuleAttentionEl.checked,
+    dnf: badRuleDnfEl.checked,
+    dnfCount: badRuleDnfCountEl.value,
+    restriction: badRuleRestrictionEl.checked
+  });
+  closeBadCachesPanel();
+  render(qEl.value.trim());
+});
+
 sortSel.addEventListener('change', function() {
   userChangedSort = true;
   sortDir = DEFAULT_SORT_DIR[sortSel.value];
