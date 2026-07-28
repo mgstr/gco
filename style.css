@@ -93,6 +93,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 .detail-section-header.open .chev { transform: rotate(90deg); }
 .detail-section-body { display: none; margin: 4px 0 2px; white-space: pre-wrap; }
 .detail-section-header.open + .detail-section-body { display: block; }
+.logentry { margin-bottom: 10px; }
+.logentry:last-child { margin-bottom: 0; }
+.logentry-text { margin: 4px 0 2px; padding: 8px 10px; background: #f7f8fa;
+                  border-left: 3px solid #007aff; border-radius: 0 6px 6px 0;
+                  font-style: italic; color: #333; }
 #empty { text-align: center; padding: 40px 20px; color: #888; font-size: 15px; }
 #mapview { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1; background: #e5e5e5; }
 #map-canvas { width: 100%; height: 100%; touch-action: manipulation !important; }

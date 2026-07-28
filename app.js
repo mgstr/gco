@@ -778,6 +778,79 @@ function cacheRestrictionActiveNow(s) {
   return !!(restriction && restriction.restrictions.length && ccRestrictionActiveNow(restriction));
 }
 
+// c.lg entries' "ty" field is the raw Groundspeak log-type string as stored
+// by GSAK (see scripts/merge_gsak_attributes.py's load_gsak_logs) — these are
+// every type actually observed in a GSAK backup's Logs table, plus a
+// fallback for anything else Groundspeak might add later.
+const LOG_TYPE_DNF = "Didn't find it";
+const LOG_TYPE_ICONS = {
+  "Found it": "✅",
+  "Didn't find it": "❌",
+  "Write note": "📝",
+  "Owner Maintenance": "🔧",
+  "Needs Maintenance": "🚧",
+  "Temporarily Disable Listing": "⏸️",
+  "Enable Listing": "▶️",
+  "Publish Listing": "🆕",
+  "Post Reviewer Note": "📋",
+  "Attended": "🎉",
+  "Update Coordinates": "📍",
+  "Will Attend": "📅",
+  "Webcam Photo Taken": "📷",
+  "Needs Archived": "🗄️",
+  "Announcement": "📢",
+  "Unarchive": "📦",
+};
+const DEFAULT_LOG_ICON = "❓";
+const LOG_TYPE_KEYS = {
+  "Found it": "logTypeFoundIt",
+  "Didn't find it": "logTypeDidntFindIt",
+  "Write note": "logTypeWriteNote",
+  "Owner Maintenance": "logTypeOwnerMaintenance",
+  "Needs Maintenance": "logTypeNeedsMaintenance",
+  "Temporarily Disable Listing": "logTypeTempDisableListing",
+  "Enable Listing": "logTypeEnableListing",
+  "Publish Listing": "logTypePublishListing",
+  "Post Reviewer Note": "logTypePostReviewerNote",
+  "Attended": "logTypeAttended",
+  "Update Coordinates": "logTypeUpdateCoordinates",
+  "Will Attend": "logTypeWillAttend",
+  "Webcam Photo Taken": "logTypeWebcamPhotoTaken",
+  "Needs Archived": "logTypeNeedsArchived",
+  "Announcement": "logTypeAnnouncement",
+  "Unarchive": "logTypeUnarchive",
+};
+
+function logTypeIcon(ty) {
+  return LOG_TYPE_ICONS[ty] || DEFAULT_LOG_ICON;
+}
+
+function logTypeLabel(ty) {
+  const key = LOG_TYPE_KEYS[ty];
+  return key ? t(key) : ty;
+}
+
+// c.lg (see scripts/merge_gsak_attributes.py's load_gsak_logs) holds up to N
+// of a cache's most recent logs, most-recent first. Collapsed by default
+// (unlike hint/description, which default open once found) since this is
+// the least likely detail a user needs at a glance.
+function latestLogsHtml(logs) {
+  if (!logs || !logs.length) return '';
+  const icons = logs.map(function(log) {
+    return '<span title="' + escAttr(logTypeLabel(log.ty)) + '">' + logTypeIcon(log.ty) + '</span>';
+  }).join('');
+  const entries = logs.map(function(log) {
+    return '<div class="logentry">' +
+      '<div><b>' + esc(logTypeLabel(log.ty)) + '</b> ' + log.d + ' <span class="agotext">(' + agoText(log.d) + ')</span> ' + t('byLabel') + ' ' + esc(log.by) + '</div>' +
+      (log.tx ? '<div class="logentry-text">' + esc(log.tx) + '</div>' : '') +
+      '</div>';
+  }).join('');
+  return '<div class="detail-section-header" onclick="event.stopPropagation(); toggleSection(this)">' +
+    '<span class="chev">▸</span> <b>' + t('latestLogsLabel') + '</b> ' + icons + ' <span class="agotext">(' + agoText(logs[0].d) + ')</span>' +
+    '</div>' +
+    '<div class="detail-section-body">' + entries + '</div>';
+}
+
 // A cache is "bad" when it trips one or more rules: being disabled is
 // unconditional, the rest are toggleable via BadCachesConfig (edited in the
 // panel opened by long-pressing hideBadBtn). Returns localized reason
@@ -789,7 +862,7 @@ function badCacheReasons(c) {
   if (c.disabled) reasons.push(t('disabledLabel'));
   if (cfg.attention && c.at && c.at.indexOf('firstaid') !== -1) reasons.push(t('attrFirstaid'));
   if (cfg.dnf && c.lg && c.lg.length >= cfg.dnfCount &&
-      c.lg.slice(0, cfg.dnfCount).split('').every(function(ch) { return ch === 'D'; })) {
+      c.lg.slice(0, cfg.dnfCount).every(function(log) { return log.ty === LOG_TYPE_DNF; })) {
     reasons.push(t('badReasonDnf', { n: cfg.dnfCount }));
   }
   if (cfg.restriction && c.pa != null && PROTECTED_AREAS && PROTECTED_AREAS[c.pa] &&
@@ -926,6 +999,7 @@ function render(q, focusLatLon) {
               '</div>' +
               '<div class="logquote">' + esc(find[1]) + '</div>';
           })() +
+          latestLogsHtml(c.lg) +
           '<div class="coord"><b>' + t('coordinatesLabel') + '</b> ' +
             '<button type="button" class="coordbtn" data-coords="' + esc(c.la + ' ' + c.lo) + '">' + c.la + ' · ' + c.lo + ' 📋</button>' +
             (listDist ? ' <span class="dist">' + listDist + '</span>' : '') +
