@@ -2614,11 +2614,14 @@ ccCopyBtn.addEventListener('click', function() {
 });
 
 // DM tab minutes are individually copyable — the GC app expects them pasted
-// into a separate minutes field, so this copies just the bare number.
+// into a separate minutes field, so this copies just the bare number. The
+// official app only accepts a comma decimal separator, but this UI keeps
+// the on-screen "." (matching the rest of the converter) and swaps it for
+// "," only in the copied clipboard text.
 ccOutDmEl.addEventListener('click', function(e) {
   const btn = e.target.closest('.cc-dm-min-btn');
   if (!btn || ccOutDmEl.classList.contains('empty')) return;
-  navigator.clipboard.writeText(btn.dataset.val).then(function() { ccFlashCopied(btn); });
+  navigator.clipboard.writeText(btn.dataset.val.replace('.', ',')).then(function() { ccFlashCopied(btn); });
 });
 
 document.getElementById('cc-paste-btn').addEventListener('click', function() {
