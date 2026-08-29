@@ -2690,26 +2690,113 @@ ccLocBtn.addEventListener('click', function() {
 const countEl0 = document.getElementById('count');
 if (countEl0) countEl0.textContent = t('loadingData');
 
-function loadData() {
-  Promise.all([
-    fetch('./data.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
-    fetch('./ownership.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
-    fetch('./movement_restrictions.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); }),
-    fetch('./protected_areas.json').then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-  ])
-    .then(function(results) {
-      const data = results[0];
-      initApp(data.caches, results[1], results[2], results[3]);
-      const versionEl = document.getElementById('settingsVersion');
-      if (versionEl) versionEl.textContent = data.version;
-    })
-    .catch(function(err) {
-      const listEl0 = document.getElementById('list');
-      if (countEl0) countEl0.textContent = '';
-      listEl0.innerHTML = '<div id="empty">' + t('loadFailed')
-        + '<br><button type="button" id="dataRetryBtn" class="data-load-btn" style="display:inline-block;margin-top:12px">' + esc(t('retryBtn')) + '</button></div>';
-      document.getElementById('dataRetryBtn').addEventListener('click', loadData);
+// Data load strategy: render instantly from the last IndexedDB snapshot (no
+// size cap like localStorage — data.json alone is 13MB+), then revalidate
+// against the network in the background. Only surface a reload prompt if
+// the fetched data.json is actually a different version than what's cached.
+const DATA_FILES = ['data.json', 'ownership.json', 'movement_restrictions.json', 'protected_areas.json'];
+const IDB_NAME = 'geocaches-cache';
+const IDB_STORE = 'files';
+
+function idbOpen() {
+  return new Promise(function(resolve, reject) {
+    if (!('indexedDB' in window)) { reject(new Error('indexedDB unavailable')); return; }
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = function() { req.result.createObjectStore(IDB_STORE); };
+    req.onsuccess = function() { resolve(req.result); };
+    req.onerror = function() { reject(req.error); };
+  });
+}
+
+function idbGetAll(keys) {
+  return idbOpen().then(function(db) {
+    return new Promise(function(resolve, reject) {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const store = tx.objectStore(IDB_STORE);
+      const out = {};
+      let pending = keys.length;
+      keys.forEach(function(key) {
+        const req = store.get(key);
+        req.onsuccess = function() { out[key] = req.result; if (--pending === 0) resolve(out); };
+        req.onerror = function() { reject(req.error); };
+      });
     });
+  });
+}
+
+function idbSetAll(entries) {
+  return idbOpen().then(function(db) {
+    return new Promise(function(resolve, reject) {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      Object.keys(entries).forEach(function(key) { store.put(entries[key], key); });
+      tx.oncomplete = function() { resolve(); };
+      tx.onerror = function() { reject(tx.error); };
+    });
+  });
+}
+
+function fetchAllFresh() {
+  return Promise.all(DATA_FILES.map(function(name) {
+    return fetch('./' + name).then(function(res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); });
+  })).then(function(results) {
+    const entries = {};
+    DATA_FILES.forEach(function(name, i) { entries[name] = results[i]; });
+    return entries;
+  });
+}
+
+function renderEntries(entries) {
+  const data = entries['data.json'];
+  initApp(data.caches, entries['ownership.json'], entries['movement_restrictions.json'], entries['protected_areas.json']);
+  const versionEl = document.getElementById('settingsVersion');
+  if (versionEl) versionEl.textContent = data.version;
+  return data.version;
+}
+
+function showUpdateToast() {
+  if (document.querySelector('.update-toast')) return;
+  const toast = document.createElement('div');
+  toast.className = 'update-toast';
+  const span = document.createElement('span');
+  span.textContent = t('updateAvailable');
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.textContent = t('reloadBtn');
+  btn.addEventListener('click', function() { location.reload(); });
+  toast.appendChild(span);
+  toast.appendChild(btn);
+  document.body.appendChild(toast);
+}
+
+function showLoadError() {
+  const listEl0 = document.getElementById('list');
+  if (countEl0) countEl0.textContent = '';
+  listEl0.innerHTML = '<div id="empty">' + t('loadFailed')
+    + '<br><button type="button" id="dataRetryBtn" class="data-load-btn" style="display:inline-block;margin-top:12px">' + esc(t('retryBtn')) + '</button></div>';
+  document.getElementById('dataRetryBtn').addEventListener('click', loadData);
+}
+
+function loadData() {
+  idbGetAll(DATA_FILES).then(function(cached) {
+    const haveAll = DATA_FILES.every(function(k) { return cached[k] != null; });
+    if (!haveAll) {
+      return fetchAllFresh().then(function(entries) {
+        renderEntries(entries);
+        idbSetAll(entries).catch(function() {});
+      }).catch(showLoadError);
+    }
+    const cachedVersion = renderEntries(cached);
+    fetchAllFresh().then(function(entries) {
+      if (entries['data.json'].version !== cachedVersion) {
+        idbSetAll(entries).catch(function() {});
+        showUpdateToast();
+      }
+    }).catch(function() {}); // offline or fetch failed — cached view already shown
+  }).catch(function() {
+    // IndexedDB unavailable (e.g. private browsing) — fetch without caching
+    fetchAllFresh().then(renderEntries).catch(showLoadError);
+  });
 }
 loadData();
 

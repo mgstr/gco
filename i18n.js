@@ -176,6 +176,8 @@ const STRINGS = {
     loadingData: 'Loading data…',
     loadFailed: 'Failed to load data.<br>Check your internet connection and try again.',
     retryBtn: 'Try again',
+    updateAvailable: 'New data available.',
+    reloadBtn: 'Reload',
 
     typeTraditional: 'Traditional',
     typeMystery: 'Mystery',
@@ -437,6 +439,8 @@ const STRINGS = {
     loadingData: 'Laen andmeid…',
     loadFailed: 'Andmete laadimine ebaõnnestus.<br>Kontrolli internetiühendust ja proovi uuesti.',
     retryBtn: 'Proovi uuesti',
+    updateAvailable: 'Uued andmed on saadaval.',
+    reloadBtn: 'Laadi uuesti',
 
     typeTraditional: 'Tavaline',
     typeMystery: 'Mõistatus',
